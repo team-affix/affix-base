@@ -140,12 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="monitor.h" />
+    <ClInclude Include="mutex.h" />
     <ClInclude Include="persistent_thread.h" />
     <ClInclude Include="persistent_thread_group.h" />
     <ClInclude Include="ptr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mutex.cpp" />
     <ClCompile Include="persistent_thread.cpp" />
     <ClCompile Include="persistent_thread_group.cpp" />
   </ItemGroup>

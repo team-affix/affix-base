@@ -39,6 +39,9 @@
     <ClInclude Include="ptr.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
+    <ClInclude Include="mutex.h">
+      <Filter>Header Files\threading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files\testing</Filter>
     </ClCompile>
     <ClCompile Include="persistent_thread_group.cpp">
+      <Filter>Source Files\threading</Filter>
+    </ClCompile>
+    <ClCompile Include="mutex.cpp">
       <Filter>Source Files\threading</Filter>
     </ClCompile>
   </ItemGroup>
