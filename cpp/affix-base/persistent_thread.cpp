@@ -22,15 +22,15 @@ persistent_thread::persistent_thread(const persistent_thread& a_other) {
 }
 
 void persistent_thread::operator=(const persistent_thread& a_other) {
-	m_continue = a_other.m_continue;
-	m_execute_start = a_other.m_execute_start	;
 	m_function = a_other.m_function;
 }
 
 void persistent_thread::init() {
 	m_thread = thread([&]() {
 		while (m_continue.val())
-			if (m_executing.val()) {
+			if (m_execute_start.val()) {
+				m_executing.val() = true;
+				m_execute_start.val() = false;
 				m_function();
 				m_executing.val() = false;
 			}
@@ -39,7 +39,7 @@ void persistent_thread::init() {
 
 void persistent_thread::execute() {
 	join();
-	m_executing.val() = true;
+	m_execute_start.val() = true;
 }
 
 void persistent_thread::execute(function<void()> a_func) {
@@ -48,5 +48,5 @@ void persistent_thread::execute(function<void()> a_func) {
 }
 
 void persistent_thread::join() {
-	while (m_executing.val());
+	while (m_execute_start.val() || m_executing.val());
 }

@@ -9,13 +9,14 @@ using affix::callback::monitor;
 
 int main() {
 
-	persistent_thread_group ptg;;
-	ptg.push_back(persistent_thread([&]() { std::cout << "1" << std::endl; }));
-	ptg.push_back(persistent_thread([&]() { std::cout << "2" << std::endl; }));
-	ptg.push_back(persistent_thread([&]() { std::cout << "3" << std::endl; }));
-	ptg.push_back(persistent_thread([&]() { std::cout << "4" << std::endl; }));
-	ptg.push_back(persistent_thread([&]() { std::cout << "5" << std::endl; }));
-	ptg.push_back(persistent_thread([&]() { std::cout << "6" << std::endl; }));
+	persistent_thread_group ptg({
+		persistent_thread([&] {std::cout << "1 ts processed" << std::endl; }),
+		persistent_thread([&] {std::cout << "1 ts processed" << std::endl; }),
+		persistent_thread([&] {std::cout << "1 ts processed" << std::endl; }),
+		persistent_thread([&] {std::cout << "1 ts processed" << std::endl; }),
+		persistent_thread([&] {std::cout << "1 ts processed" << std::endl; }),
+		persistent_thread([&] {std::cout << "1 ts processed" << std::endl; })
+	});
 
 	ptg.compile();
 	ptg.execute();

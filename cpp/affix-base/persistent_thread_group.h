@@ -18,8 +18,7 @@ namespace affix {
 			void join();
 
 		private:
-			ptr<bool> m_continue = new bool(true);
-			ptr<bool> m_executing = new bool(false);
+			ptr<bool> m_execute_start = new bool(false);
 
 		};
 	}

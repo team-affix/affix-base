@@ -11,14 +11,12 @@ persistent_thread_group::persistent_thread_group(vector<persistent_thread> a_vec
 }
 
 void persistent_thread_group::compile() {
-	for (int i = 0; i < size(); i++) {
-		at(i).m_continue.link(m_continue);
-		at(i).m_executing.link(m_executing);
-	}
+	for (int i = 0; i < size(); i++)
+		at(i).m_execute_start.link(m_execute_start);
 }
 
 void persistent_thread_group::execute() {
-	m_executing.val() = true;
+	m_execute_start.val() = true;
 }
 
 void persistent_thread_group::join() {

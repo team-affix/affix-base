@@ -28,7 +28,7 @@ namespace affix {
 		public:
 			ptr<bool> m_continue = new bool(true);
 			ptr<bool> m_execute_start = new bool(false);
-			ptr<bool> m_execute_end = new bool(false);
+			ptr<bool> m_executing = new bool(false);
 			function<void()> m_function;
 
 		private:
