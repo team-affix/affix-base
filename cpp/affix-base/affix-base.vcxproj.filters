@@ -22,10 +22,22 @@
     <Filter Include="Source Files\testing">
       <UniqueIdentifier>{a6da813f-b391-4f91-a905-68edbb10dcae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\data">
+      <UniqueIdentifier>{59445cd8-c548-4b55-977b-42e586f5b175}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="persistent_thread.h">
       <Filter>Header Files\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="monitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="persistent_thread_group.h">
+      <Filter>Header Files\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="ptr.h">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files\testing</Filter>
+    </ClCompile>
+    <ClCompile Include="persistent_thread_group.cpp">
+      <Filter>Source Files\threading</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
