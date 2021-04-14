@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\threading">
+      <UniqueIdentifier>{236d53b1-a8b3-4f1c-9491-5491c3295dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sockets">
+      <UniqueIdentifier>{1b1ef6cf-8a4b-4327-ac52-7942c0732e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sorting">
+      <UniqueIdentifier>{7013d948-36b0-4bc5-a4e6-87db8347c309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\data">
+      <UniqueIdentifier>{aeb883c6-8e06-4b1f-aa8f-c86c2f3c6c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\callback">
+      <UniqueIdentifier>{26c5b680-9034-4eb6-b932-e6192cdfdfb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\data">
+      <UniqueIdentifier>{6350650f-82ec-41aa-ac94-6a1e8d28a837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\callback">
+      <UniqueIdentifier>{eb4d68bc-35a9-4450-87ad-ead49ced8893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sorting">
+      <UniqueIdentifier>{be4f1728-faf0-469b-8fa3-3fce08eeeb07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sockets">
+      <UniqueIdentifier>{fc1f1ca0-a7c5-412c-a938-3f98e52bd053}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\threading">
+      <UniqueIdentifier>{28a914f0-60c3-4901-a289-823f16b6f613}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="persistent_thread_group.cpp">
+      <Filter>Source Files\threading</Filter>
+    </ClCompile>
+    <ClCompile Include="mutex.cpp">
+      <Filter>Source Files\threading</Filter>
+    </ClCompile>
+    <ClCompile Include="persistent_thread.cpp">
+      <Filter>Source Files\threading</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mutex.h">
+      <Filter>Header Files\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="node.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="persistent_thread.h">
+      <Filter>Header Files\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="persistent_thread_group.h">
+      <Filter>Header Files\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="ptr.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="watch.h">
+      <Filter>Header Files\callback</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

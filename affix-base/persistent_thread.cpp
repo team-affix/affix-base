@@ -34,7 +34,7 @@ void persistent_thread::init() {
 				m_function();
 				m_executing.val() = false;
 			}
-	});
+		});
 }
 
 void persistent_thread::execute() {

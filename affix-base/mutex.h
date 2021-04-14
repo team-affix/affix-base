@@ -11,7 +11,6 @@ namespace affix {
 			void unlock();
 
 		private:
-			size_t queue;
 
 		};
 	}
