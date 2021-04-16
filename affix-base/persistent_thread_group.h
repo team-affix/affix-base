@@ -2,10 +2,10 @@
 #include "persistent_thread.h"
 #include <vector>
 
-using affix::threading::persistent_thread;
+using affix_base::threading::persistent_thread;
 using std::vector;
 
-namespace affix {
+namespace affix_base {
 	namespace threading {
 		class persistent_thread_group : public vector<persistent_thread> {
 		public:

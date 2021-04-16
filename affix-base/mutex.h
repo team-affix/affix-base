@@ -1,6 +1,6 @@
 #pragma once
 
-namespace affix {
+namespace affix_base {
 	namespace threading {
 		class mutex {
 		public:

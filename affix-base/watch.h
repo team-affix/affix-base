@@ -3,11 +3,11 @@
 #include <functional>
 #include <thread>
 
-using affix::data::node;
+using affix_base::data::node;
 using std::function;
 using std::thread;
 
-namespace affix {
+namespace affix_base {
 	namespace callback {
 		template<class T>
 		class watch {
@@ -74,11 +74,12 @@ namespace affix {
 			function<void(T&)> m_on_update;
 
 		private:
-			static inline bool m_continue = false;
-			static inline node<watch<T>> s_watches;
-			static inline ptr<thread> s_thd = nullptr;
+			static bool m_continue;
+			static node<watch<T>> s_watches;
+			static ptr<thread> s_thd = nullptr;
 
 		};
+
 	}
 }
 

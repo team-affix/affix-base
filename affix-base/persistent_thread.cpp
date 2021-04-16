@@ -1,6 +1,6 @@
 #include "persistent_thread.h"
 
-using affix::threading::persistent_thread;
+using affix_base::threading::persistent_thread;
 
 persistent_thread::~persistent_thread() {
 	m_continue.val() = false;

@@ -3,7 +3,7 @@
 
 using std::shared_ptr;
 
-namespace affix {
+namespace affix_base {
 	namespace data {
 		template<class T>
 		class ptr : public shared_ptr<T> {

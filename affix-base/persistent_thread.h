@@ -3,11 +3,11 @@
 #include <thread>
 #include <functional>
 
-using affix::data::ptr;
+using affix_base::data::ptr;
 using std::thread;
 using std::function;
 
-namespace affix {
+namespace affix_base {
 	namespace threading {
 		class persistent_thread {
 		public:

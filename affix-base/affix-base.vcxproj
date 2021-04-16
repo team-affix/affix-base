@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -139,16 +139,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="log_result.cpp" />
     <ClCompile Include="mutex.cpp" />
     <ClCompile Include="persistent_thread.cpp" />
     <ClCompile Include="persistent_thread_group.cpp" />
+    <ClCompile Include="severity.cpp" />
+    <ClCompile Include="severity.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="affix_base.h" />
+    <ClInclude Include="callback.h" />
+    <ClInclude Include="data.h" />
+    <ClInclude Include="enums.h" />
+    <ClInclude Include="logging.h" />
+    <ClInclude Include="log_result.h" />
     <ClInclude Include="mutex.h" />
     <ClInclude Include="node.h" />
     <ClInclude Include="persistent_thread.h" />
     <ClInclude Include="persistent_thread_group.h" />
     <ClInclude Include="ptr.h" />
+    <ClInclude Include="sockets.h" />
+    <ClInclude Include="sorting.h" />
+    <ClInclude Include="threading.h" />
     <ClInclude Include="watch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -25,9 +25,6 @@
     <Filter Include="Header Files\data">
       <UniqueIdentifier>{aeb883c6-8e06-4b1f-aa8f-c86c2f3c6c54}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\callback">
-      <UniqueIdentifier>{26c5b680-9034-4eb6-b932-e6192cdfdfb6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\data">
       <UniqueIdentifier>{6350650f-82ec-41aa-ac94-6a1e8d28a837}</UniqueIdentifier>
     </Filter>
@@ -43,6 +40,21 @@
     <Filter Include="Source Files\threading">
       <UniqueIdentifier>{28a914f0-60c3-4901-a289-823f16b6f613}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\logging">
+      <UniqueIdentifier>{0e1f1c04-2c3f-4210-8b78-ceec3819bc5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\logging">
+      <UniqueIdentifier>{debf2c03-5d8d-481e-a681-bfcde49f96f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\enums">
+      <UniqueIdentifier>{5e663192-750a-4f61-ba6f-9b0c0c7c0a6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\enums">
+      <UniqueIdentifier>{38a4743c-2578-44d0-bc8e-5b9e3615c627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\callback">
+      <UniqueIdentifier>{26c5b680-9034-4eb6-b932-e6192cdfdfb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -53,6 +65,15 @@
     </ClCompile>
     <ClCompile Include="persistent_thread.cpp">
       <Filter>Source Files\threading</Filter>
+    </ClCompile>
+    <ClCompile Include="log_result.cpp">
+      <Filter>Source Files\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="severity.h">
+      <Filter>Header Files\enums</Filter>
+    </ClCompile>
+    <ClCompile Include="severity.cpp">
+      <Filter>Source Files\enums</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +94,33 @@
     </ClInclude>
     <ClInclude Include="watch.h">
       <Filter>Header Files\callback</Filter>
+    </ClInclude>
+    <ClInclude Include="log_result.h">
+      <Filter>Header Files\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="affix_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="callback.h">
+      <Filter>Header Files\callback</Filter>
+    </ClInclude>
+    <ClInclude Include="data.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="logging.h">
+      <Filter>Header Files\logging</Filter>
+    </ClInclude>
+    <ClInclude Include="enums.h">
+      <Filter>Header Files\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="sockets.h">
+      <Filter>Header Files\sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="sorting.h">
+      <Filter>Header Files\sorting</Filter>
+    </ClInclude>
+    <ClInclude Include="threading.h">
+      <Filter>Header Files\threading</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

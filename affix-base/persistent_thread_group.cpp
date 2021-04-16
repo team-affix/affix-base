@@ -1,6 +1,6 @@
 #include "persistent_thread_group.h"
 
-using affix::threading::persistent_thread_group;
+using affix_base::threading::persistent_thread_group;
 
 persistent_thread_group::persistent_thread_group() {
 

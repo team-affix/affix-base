@@ -1,9 +1,9 @@
 #pragma once
 #include "ptr.h"
 
-using affix::data::ptr;
+using affix_base::data::ptr;
 
-namespace affix {
+namespace affix_base {
 	namespace data {
 		template<class T>
 		class node {

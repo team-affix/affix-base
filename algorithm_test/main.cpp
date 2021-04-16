@@ -1,14 +1,26 @@
-#include "node.h"
+#include "watch.h"
 #include <iostream>
 
-using namespace affix::data;
+using namespace affix_base::callback;
+
+void on_variable_update(int& val) {
+
+}
+
+class my_class {
+public:
+	int variable = 0;
+};
 
 int main() {
 
-	node<int> n = 10;
-	n.insert(1, 11);
+	watch<int>::start_thread();
 
-	std::cout << n.fwd(1).val() << std::endl;
+
+
+	my_class mc;
+	watch<int> w(mc.variable, on_variable_update);
+	w.start();
 
 	return 0;
 }

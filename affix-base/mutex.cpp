@@ -1,6 +1,6 @@
 #include "mutex.h"
 
-using affix::threading::mutex;
+using affix_base::threading::mutex;
 
 mutex::mutex() {
 
