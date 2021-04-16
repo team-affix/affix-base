@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "severity.h"
 
 using namespace affix_base;

@@ -75,6 +75,9 @@
     <ClCompile Include="severity.cpp">
       <Filter>Source Files\enums</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mutex.h">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="threading.h">
       <Filter>Header Files\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

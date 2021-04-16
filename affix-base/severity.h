@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include <string>
 
 #define SEVERITY_UNKNOWN_STR "UNKNOWN"

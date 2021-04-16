@@ -1,6 +1,6 @@
 #pragma once
+#include "pch.h"
 #include "severity.h"
-#include <string>
 
 using affix_base::enums::severity;
 using std::string;

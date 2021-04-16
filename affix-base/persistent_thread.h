@@ -1,7 +1,6 @@
 #pragma once
+#include "pch.h"
 #include "ptr.h"
-#include <thread>
-#include <functional>
 
 using affix_base::data::ptr;
 using std::thread;

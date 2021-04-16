@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 
 namespace affix_base {
 	namespace threading {

@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "persistent_thread.h"
 
 using affix_base::threading::persistent_thread;

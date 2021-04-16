@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "ptr.h"
 
 using affix_base::data::ptr;

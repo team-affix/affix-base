@@ -1,6 +1,6 @@
 #pragma once
+#include "pch.h"
 #include "persistent_thread.h"
-#include <vector>
 
 using affix_base::threading::persistent_thread;
 using std::vector;

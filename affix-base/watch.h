@@ -1,7 +1,6 @@
 #pragma once
+#include "pch.h"
 #include "node.h"
-#include <functional>
-#include <thread>
 
 using affix_base::data::node;
 using std::function;
@@ -74,9 +73,9 @@ namespace affix_base {
 			function<void(T&)> m_on_update;
 
 		private:
-			static bool m_continue;
-			static node<watch<T>> s_watches;
-			static ptr<thread> s_thd = nullptr;
+			inline static bool m_continue;
+			inline static node<watch<T>> s_watches;
+			inline static ptr<thread> s_thd = nullptr;
 
 		};
 

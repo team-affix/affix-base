@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "mutex.h"
 
 using affix_base::threading::mutex;
