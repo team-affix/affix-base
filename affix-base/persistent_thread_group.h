@@ -8,6 +8,9 @@ using std::vector;
 namespace affix_base {
 	namespace threading {
 		class persistent_thread_group : public vector<persistent_thread> {
+		protected:
+			ptr<bool> m_execute_start = new bool(false);
+
 		public:
 			persistent_thread_group();
 			persistent_thread_group(vector<persistent_thread> a_vec);
@@ -16,9 +19,6 @@ namespace affix_base {
 			void compile();
 			void execute();
 			void join();
-
-		private:
-			ptr<bool> m_execute_start = new bool(false);
 
 		};
 	}

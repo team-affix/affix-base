@@ -4,8 +4,9 @@
 using affix_base::threading::persistent_thread;
 
 persistent_thread::~persistent_thread() {
-	m_continue.val() = false;
+	m_persist.val() = false;
 	m_thread.join();
+	m_function = nullptr;
 }
 
 persistent_thread::persistent_thread() {
@@ -28,26 +29,49 @@ void persistent_thread::operator=(const persistent_thread& a_other) {
 
 void persistent_thread::init() {
 	m_thread = thread([&]() {
-		while (m_continue.val())
-			if (m_execute_start.val()) {
+		while (m_persist.val())
+			if (m_call.val()) {
 				m_executing.val() = true;
-				m_execute_start.val() = false;
+				m_call.val() = false;
 				m_function();
 				m_executing.val() = false;
+				if (m_repeat.val())
+					call();
 			}
-		});
+	});
 }
 
-void persistent_thread::execute() {
-	join();
-	m_execute_start.val() = true;
+void persistent_thread::call() {
+	join_call();
+	m_call.val() = true;
 }
 
-void persistent_thread::execute(function<void()> a_func) {
+void persistent_thread::call(function<void()> a_func) {
 	m_function = a_func;
-	execute();
+	call();
 }
 
-void persistent_thread::join() {
-	while (m_execute_start.val() || m_executing.val());
+void persistent_thread::repeat() {
+	join_call();
+	m_repeat.val() = true;
+	call();
+}
+
+void persistent_thread::repeat(function<void()> a_func) {
+	m_function = a_func;
+	repeat();
+}
+
+void persistent_thread::stop_repeat() {
+	m_repeat.val() = false;
+	join_repeat();
+}
+
+void persistent_thread::join_call() {
+	while (m_call.val() || m_executing.val());
+}
+
+void persistent_thread::join_repeat() {
+	while (m_repeat.val());
+	join_call();
 }
