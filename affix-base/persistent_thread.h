@@ -25,16 +25,16 @@ namespace affix_base {
 		public:
 			void call();
 			void call(function<void()> a_func);
-			void repeat();
-			void repeat(function<void()> a_func);
-			void stop_repeat();
+			void loop();
+			void loop(function<void()> a_func);
+			void stop_loop();
 			void join_call();
-			void join_repeat();
+			void join_loop();
 
 		public:
 			ptr<bool> m_persist = new bool(true);
 			ptr<bool> m_call = new bool(false);
-			ptr<bool> m_repeat = new bool(false);
+			ptr<bool> m_loop = new bool(false);
 			ptr<bool> m_executing = new bool(false);
 			function<void()> m_function;
 

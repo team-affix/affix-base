@@ -35,7 +35,7 @@ void persistent_thread::init() {
 				m_call.val() = false;
 				m_function();
 				m_executing.val() = false;
-				if (m_repeat.val())
+				if (m_loop.val())
 					call();
 			}
 	});
@@ -51,27 +51,27 @@ void persistent_thread::call(function<void()> a_func) {
 	call();
 }
 
-void persistent_thread::repeat() {
+void persistent_thread::loop() {
 	join_call();
-	m_repeat.val() = true;
+	m_loop.val() = true;
 	call();
 }
 
-void persistent_thread::repeat(function<void()> a_func) {
+void persistent_thread::loop(function<void()> a_func) {
 	m_function = a_func;
-	repeat();
+	loop();
 }
 
-void persistent_thread::stop_repeat() {
-	m_repeat.val() = false;
-	join_repeat();
+void persistent_thread::stop_loop() {
+	m_loop.val() = false;
+	join_loop();
 }
 
 void persistent_thread::join_call() {
 	while (m_call.val() || m_executing.val());
 }
 
-void persistent_thread::join_repeat() {
-	while (m_repeat.val());
+void persistent_thread::join_loop() {
+	while (m_loop.val());
 	join_call();
 }

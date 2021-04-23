@@ -6,28 +6,28 @@ namespace affix_base {
 		template<class T>
 		class ref {
 		public:
-			T* pointer = nullptr;
+			T* m_pointer = nullptr;
 
 		public:
 			ref() {
 
 			}
-			ref(T* _pointer) {
-				pointer = _pointer;
+			ref(T* a_pointer) {
+				m_pointer = a_pointer;
 			}
 
 		public:
-			void operator=(T _other) {
-				*pointer = _other;
+			void operator=(T a_other) {
+				*m_pointer = a_other;
 			}
-			void operator=(T* _pointer) {
-				pointer = _pointer;
+			void operator=(T* a_pointer) {
+				m_pointer = a_pointer;
 			}
-			void operator=(ref<T>& _other) {
-				*pointer = *_other.pointer;
+			void operator=(ref<T>& a_other) {
+				*m_pointer = *a_other.pointer;
 			}
 			operator T& () {
-				return *pointer;
+				return *m_pointer;
 			}
 
 		};
