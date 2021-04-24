@@ -176,6 +176,7 @@
     <ClInclude Include="persistent_thread.h" />
     <ClInclude Include="persistent_thread_group.h" />
     <ClInclude Include="ptr.h" />
+    <ClInclude Include="queue_mt.h" />
     <ClInclude Include="ref.h" />
     <ClInclude Include="sockets.h" />
     <ClInclude Include="sorting.h" />

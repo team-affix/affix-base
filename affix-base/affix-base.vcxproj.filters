@@ -122,5 +122,8 @@
     <ClInclude Include="insertion_index.h">
       <Filter>Header Files\sorting</Filter>
     </ClInclude>
+    <ClInclude Include="queue_mt.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
