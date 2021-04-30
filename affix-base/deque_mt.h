@@ -10,9 +10,9 @@ namespace affix_base {
 			std::deque<T> m_deque;
 
 		public:
-			virtual ~queue_mt() { clear(); }
-			queue_mt() = default;
-			queue_mt(const queue_mt<T>&) = delete;
+			virtual ~deque_mt() { clear(); }
+			deque_mt() = default;
+			deque_mt(const deque_mt<T>&) = delete;
 
 		public:
 			const T& front() {
