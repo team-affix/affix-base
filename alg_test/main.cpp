@@ -1,6 +1,5 @@
 #include "affix_base.h"
 #include "ref.h"
-
 #include "crypto_rsa.h"
 
 int main() {
