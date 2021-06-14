@@ -34,10 +34,8 @@ namespace affix_base {
 			ptr(T* a_raw_ptr) {
 				raw_ptr = new T * (a_raw_ptr);
 			}
-			void operator=(T* a_raw_ptr) {
-				raw_ptr = new T * (a_raw_ptr);
-			}
 			void operator=(ptr<T> a_other) {
+				unlink();
 				link(a_other);
 			}
 			ptr(const ptr<T>& a_other) {
