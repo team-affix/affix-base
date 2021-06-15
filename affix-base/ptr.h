@@ -27,10 +27,6 @@ namespace affix_base {
 			ptr(T* a_raw_ptr) {
 				raw_ptr = new T * (a_raw_ptr);
 			}
-			void operator=(T* a_raw_ptr) {
-				unlink();
-				raw_ptr = new T * (a_raw_ptr);
-			}
 			void operator=(ptr<T> a_other) {
 				unlink();
 				link(a_other);
@@ -40,7 +36,7 @@ namespace affix_base {
 			}
 			template<typename J>
 			ptr(const ptr<J>& a_other) {
-				link(const_cast<ptr<J>&>(a_other));
+				link(const_cast<ptr<T>&>(a_other));
 			}
 
 		public:
@@ -74,9 +70,7 @@ namespace affix_base {
 				raw_ptr = (T**)a_other.get_raw();
 			}
 			void unlink() {
-				bool m_prev_null = m_prev == nullptr;
-				bool m_next_null = m_next == nullptr;
-				if (m_prev_null && m_next_null) {
+				if (m_prev == nullptr && m_next == nullptr) {
 					if (raw_ptr != nullptr) {
 						if (*raw_ptr != nullptr)
 							delete* raw_ptr;
@@ -85,9 +79,9 @@ namespace affix_base {
 					raw_ptr = nullptr;
 				}
 				else {
-					if (!m_prev_null)
+					if (m_prev != nullptr)
 						m_prev->m_next = m_next;
-					if (!m_next_null)
+					if (m_next != nullptr)
 						m_next->m_prev = m_prev;
 					m_prev = nullptr;
 					m_next = nullptr;
