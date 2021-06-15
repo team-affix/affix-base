@@ -19,7 +19,14 @@ namespace affix_base {
 
 		public:
 			virtual ~ptr() {
-				unlink();
+				if (m_prev != nullptr || m_next != nullptr) {
+					unlink();
+				}
+				else {
+					delete* raw_ptr;
+					delete raw_ptr;
+					raw_ptr = nullptr;
+				}
 			}
 			ptr() {
 
@@ -70,22 +77,12 @@ namespace affix_base {
 				raw_ptr = (T**)a_other.get_raw();
 			}
 			void unlink() {
-				if (m_prev == nullptr && m_next == nullptr) {
-					if (raw_ptr != nullptr) {
-						if (*raw_ptr != nullptr)
-							delete* raw_ptr;
-						delete raw_ptr;
-					}
-					raw_ptr = nullptr;
-				}
-				else {
-					if (m_prev != nullptr)
-						m_prev->m_next = m_next;
-					if (m_next != nullptr)
-						m_next->m_prev = m_prev;
-					m_prev = nullptr;
-					m_next = nullptr;
-				}
+				if (m_prev != nullptr)
+					m_prev->m_next = m_next;
+				if (m_next != nullptr)
+					m_next->m_prev = m_prev;
+				m_prev = nullptr;
+				m_next = nullptr;
 			}
 
 		};
