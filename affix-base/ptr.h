@@ -8,8 +8,8 @@ namespace affix_base {
 
 		class ptr_base {
 		public:
-			ptr_base* m_next = nullptr;
-			ptr_base* m_prev = nullptr;
+			mutable ptr_base* m_next = nullptr;
+			mutable ptr_base* m_prev = nullptr;
 		};
 
 		template<typename T>
@@ -33,6 +33,13 @@ namespace affix_base {
 			}
 			void operator=(ptr<T> a_other) {
 				unlink();
+				link(a_other);
+			}
+			ptr(ptr<T>& a_other) {
+				link(a_other);
+			}
+			template<typename J>
+			ptr(ptr<J>& a_other) {
 				link(a_other);
 			}
 			ptr(const ptr<T>& a_other) {
