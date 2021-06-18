@@ -5,7 +5,7 @@ using std::shared_ptr;
 
 namespace affix_base {
 	namespace data {
-		template<class T>
+		template<typename T>
 		class ptr : public shared_ptr<T> {
 		public:
 			ptr() {
@@ -21,6 +21,10 @@ namespace affix_base {
 			}
 			operator T* () {
 				return shared_ptr<T>::get();
+			}
+			template<typename J>
+			operator J* () {
+				return (J*)shared_ptr<T>::get();
 			}
 
 		public:
