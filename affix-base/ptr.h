@@ -8,14 +8,14 @@ namespace affix_base {
 
 		class ptr_base {
 		public:
-			mutable ptr_base* m_next = nullptr;
-			mutable ptr_base* m_prev = nullptr;
+			ptr_base* m_next = nullptr;
+			ptr_base* m_prev = nullptr;
 		};
 
 		template<typename T>
 		class ptr : public ptr_base {
 		protected:
-			T** raw_ptr = nullptr;
+			T* raw_ptr = nullptr;
 
 		public:
 			virtual ~ptr() {
@@ -25,21 +25,17 @@ namespace affix_base {
 
 			}
 			ptr(T* a_raw_ptr) {
-				raw_ptr = new T * (a_raw_ptr);
+				raw_ptr = a_raw_ptr;
 			}
 			void operator=(T* a_raw_ptr) {
 				unlink();
-				raw_ptr = new T * (a_raw_ptr);
+				raw_ptr = a_raw_ptr;
 			}
 			void operator=(ptr<T> a_other) {
 				unlink();
 				link(a_other);
 			}
 			ptr(ptr<T>& a_other) {
-				link(a_other);
-			}
-			template<typename J>
-			ptr(ptr<J>& a_other) {
 				link(a_other);
 			}
 			ptr(const ptr<T>& a_other) {
@@ -51,25 +47,22 @@ namespace affix_base {
 			}
 
 		public:
-			T**& get_raw() {
+			T* get() {
 				return raw_ptr;
-			}
-			T*& get() {
-				return *raw_ptr;
 			}
 			T& val() {
 				return *get();
 			}
-			/*operator T* () {
-				return get();
-			}*/
 			T* operator->() {
 				return get();
 			}
 			T& operator*() {
 				return val();
 			}
-
+			template<typename J>
+			operator J* () {
+				return (J*)get();
+			}
 
 		public:
 			template<typename J>
@@ -78,17 +71,13 @@ namespace affix_base {
 				if (a_other.m_next != nullptr)
 					a_other.m_next->m_prev = this;
 				a_other.m_next = this;
-				raw_ptr = (T**)a_other.get_raw();
+				raw_ptr = (T*)a_other.get();
 			}
 			void unlink() {
 				bool m_prev_null = m_prev == nullptr;
 				bool m_next_null = m_next == nullptr;
 				if (m_prev_null && m_next_null) {
-					if (raw_ptr != nullptr) {
-						if (*raw_ptr != nullptr)
-							delete* raw_ptr;
-						delete raw_ptr;
-					}
+					delete raw_ptr;
 					raw_ptr = nullptr;
 				}
 				else {
