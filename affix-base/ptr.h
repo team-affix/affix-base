@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include <iostream>
 
 using std::shared_ptr;
 
@@ -8,6 +9,7 @@ namespace affix_base {
 
 		class ptr_base {
 		public:
+			ptr_base() { m_next = nullptr; m_prev = nullptr; }
 			ptr_base* m_next = nullptr;
 			ptr_base* m_prev = nullptr;
 		};
@@ -33,9 +35,6 @@ namespace affix_base {
 			}
 			void operator=(ptr<T> a_other) {
 				unlink();
-				link(a_other);
-			}
-			ptr(ptr<T>& a_other) {
 				link(a_other);
 			}
 			ptr(const ptr<T>& a_other) {
@@ -81,12 +80,15 @@ namespace affix_base {
 					raw_ptr = nullptr;
 				}
 				else {
-					if (!m_prev_null)
+					if (!m_prev_null) {
+						//std::cout << m_prev->m_next << std::endl;
 						m_prev->m_next = m_next;
+					}
 					if (!m_next_null)
 						m_next->m_prev = m_prev;
 					m_prev = nullptr;
 					m_next = nullptr;
+					raw_ptr = nullptr;
 				}
 			}
 
