@@ -9,7 +9,6 @@ namespace affix_base {
 
 		class ptr_base {
 		public:
-			ptr_base() { m_next = nullptr; m_prev = nullptr; }
 			ptr_base* m_next = nullptr;
 			ptr_base* m_prev = nullptr;
 		};
@@ -30,11 +29,9 @@ namespace affix_base {
 				raw_ptr = a_raw_ptr;
 			}
 			void operator=(T* a_raw_ptr) {
-				unlink();
 				raw_ptr = a_raw_ptr;
 			}
 			void operator=(ptr<T> a_other) {
-				unlink();
 				link(a_other);
 			}
 			ptr(const ptr<T>& a_other) {
@@ -66,24 +63,36 @@ namespace affix_base {
 		public:
 			template<typename J>
 			void link(ptr<J>& a_other) {
+
+				// NEVER JOIN TO SELF
+				if (this == (ptr<T>*)&a_other)
+					return;
+
+				// DISPOSE OF RESOURCES
+				unlink();
+
+				// LINK
 				m_prev = &a_other;
 				if (a_other.m_next != nullptr)
 					a_other.m_next->m_prev = this;
 				a_other.m_next = this;
+
+				// RETRIEVE VALUE
 				raw_ptr = (T*)a_other.get();
+
 			}
 			void unlink() {
 				bool m_prev_null = m_prev == nullptr;
 				bool m_next_null = m_next == nullptr;
 				if (m_prev_null && m_next_null) {
-					delete raw_ptr;
-					raw_ptr = nullptr;
+					if (raw_ptr != nullptr) {
+						delete raw_ptr;
+						raw_ptr = nullptr;
+					}
 				}
 				else {
-					if (!m_prev_null) {
-						//std::cout << m_prev->m_next << std::endl;
+					if (!m_prev_null)
 						m_prev->m_next = m_next;
-					}
 					if (!m_next_null)
 						m_next->m_prev = m_prev;
 					m_prev = nullptr;
