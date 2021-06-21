@@ -185,6 +185,7 @@
     </ClCompile>
     <ClCompile Include="persistent_thread.cpp" />
     <ClCompile Include="persistent_thread_group.cpp" />
+    <ClCompile Include="ptr.cpp" />
     <ClCompile Include="severity.cpp" />
     <ClCompile Include="severity.h" />
   </ItemGroup>
