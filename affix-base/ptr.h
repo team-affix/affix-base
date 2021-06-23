@@ -82,7 +82,8 @@ namespace affix_base {
 				// LEAVE ANY RESOURCE GROUPS
 				unlink();
 
-				assert(a_raw != nullptr);
+				if (a_raw == nullptr)
+					return;
 
 				// CHECK MAP FOR PRE-OWNED MEMORY ADDRESS
 				map<void*, ptr_base*>::iterator res_pair = res_map.find(a_raw);
