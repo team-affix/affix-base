@@ -5,17 +5,14 @@
 
 using std::shared_ptr;
 using std::map;
+using std::vector;
 
 namespace affix_base {
 	namespace data {
 
 		class ptr_base {
 		protected:
-			static map<void*, ptr_base*> res_map;
-
-		public:
-			ptr_base* m_next = nullptr;
-			ptr_base* m_prev = nullptr;
+			static map<void*, vector<ptr_base*>> res_map;
 
 		};
 
@@ -57,17 +54,16 @@ namespace affix_base {
 				return m_raw;
 			}
 			T& val() {
-				return *get();
-			}
-			T val() const {
-				assert(m_raw != nullptr);
 				return *m_raw;
 			}
-			operator T* () {
+			const T& val() const {
+				return *m_raw;
+			}
+			operator T* () const {
 				return get();
 			}
 			template<typename J>
-			operator J* () {
+			operator J* () const {
 				return (J*)m_raw;
 			}
 			T* operator->() {
@@ -86,81 +82,65 @@ namespace affix_base {
 					return;
 
 				// CHECK MAP FOR PRE-OWNED MEMORY ADDRESS
-				map<void*, ptr_base*>::iterator res_pair = res_map.find(a_raw);
+				map<void*, vector<ptr_base*>>::iterator res_pair = res_map.find(a_raw);
+
 				if (res_pair != res_map.end()) {
+					vector<ptr_base*>& group = res_pair->second;
+					vector<ptr_base*>::iterator elem_this = std::find(group.begin(), group.end(), this);
+					if (elem_this == group.end()) {
 #if PTR_DEBUG
-					std::cout << "GROUP JOIN" << std::endl;
+						std::cout << "GROUP JOIN" << std::endl;
 #endif
-					// JOIN PREEXISTING GROUP
-					group_join(res_pair->second);
+						// JOIN PREEXISTING GROUP
+						group.push_back(this);
+					}
 				}
 				else {
 #if PTR_DEBUG
 					std::cout << "GROUP CREATE" << std::endl;
 #endif
 					// CREATE NEW GROUP FOR THIS RESOURCE
-					res_map.insert({ a_raw, this });
-				}
+					res_map.insert({ a_raw, { this } });
+			}
 
 				// ACQUIRE RESOURCE
 				m_raw = a_raw;
-			}
+		}
 			void unlink() {
-				// CHECK MAP FOR OWNERSHIP OVER A RESOURCE
-				map<void*, ptr_base*>::iterator res_pair = res_map.find(m_raw);
-				if (m_raw != nullptr && res_pair != res_map.end() && res_pair->second == this)
-					if (m_prev != nullptr) {
-#if PTR_DEBUG
-						std::cout << "PASS OWNERSHIP TO PREV" << std::endl;
-#endif
-						// PASS OWNERSHIP TO m_prev
-						res_pair->second = m_prev;
-					}
-					else if (m_next != nullptr) {
-#if PTR_DEBUG
-						std::cout << "PASS OWNERSHIP TO NEXT" << std::endl;
-#endif
-						// PASS OWNERSHIP TO m_next
-						res_pair->second = m_next;
-					}
-					else {
-#if PTR_DEBUG
-						std::cout << "DELETE RESOURCE" << std::endl;
-#endif
-						// DELETE RESOURCE
-						res_map.erase(res_pair);
-						delete m_raw;
-					}
 
-				//std::cout << "GROUP LEAVE" << std::endl;
-				group_leave();
+				if (m_raw == nullptr)
+					return;
+
+				// CHECK MAP FOR OWNERSHIP OVER A RESOURCE
+				map<void*, vector<ptr_base*>>::iterator res_pair = res_map.find(m_raw);
+
+				if (res_pair != res_map.end()) {
+					vector<ptr_base*>& group = res_pair->second;
+					vector<ptr_base*>::iterator elem_this = std::find(group.begin(), group.end(), this);
+					if (elem_this != group.end()) {
+						if (group.size() > 1) {
+#if PTR_DEBUG
+							std::cout << "LEAVE GROUP" << std::endl;
+#endif
+							// PASS OWNERSHIP TO m_prev
+							group.erase(elem_this);
+						}
+						else {
+#if PTR_DEBUG
+							std::cout << "DELETE RESOURCE" << std::endl;
+#endif
+							// DELETE RESOURCE
+							res_map.erase(res_pair);
+							delete m_raw;
+				}
+			}
+	}
 
 				// CLEAR RESOURCE
 				m_raw = nullptr;
-			}
+}
 
-		protected:
-			void group_join(ptr_base* a_other) {
-				// NEVER LINK TO SELF
-				if (a_other == (ptr_base*)this)
-					return;
-
-				if (a_other->m_next != nullptr)
-					a_other->m_next->m_prev = this;
-				m_next = a_other->m_next;
-				a_other->m_next = this;
-				m_prev = a_other;
-			}
-			void group_leave() {
-				if (m_prev != nullptr)
-					m_prev->m_next = m_next;
-				if (m_next != nullptr)
-					m_next->m_prev = m_prev;
-				m_prev = nullptr;
-				m_next = nullptr;
-			}
-
-		};
+};
 
 	}
 }
