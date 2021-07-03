@@ -38,7 +38,11 @@ namespace affix_base {
 			ptr(J* a_raw) {
 				link((T*)a_raw);
 			}
-			void operator=(ptr<T> a_other) {
+			void operator=(const ptr<T>& a_other) {
+				link(a_other.m_raw);
+			}
+			template<typename J>
+			void operator=(const ptr<J>& a_other) {
 				link(a_other.m_raw);
 			}
 			template<typename J>
