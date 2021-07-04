@@ -2,6 +2,9 @@
 #include "pch.h"
 #include <map>
 #define PTR_DEBUG 0
+#if PTR_DEBUG
+#include <iostream>
+#endif
 
 using std::shared_ptr;
 using std::map;
@@ -12,7 +15,7 @@ namespace affix_base {
 
 		class ptr_base {
 		protected:
-			static map<void*, vector<ptr_base*>> res_map;
+			static map<void*, size_t> res_map;
 
 		};
 
@@ -86,65 +89,60 @@ namespace affix_base {
 					return;
 
 				// CHECK MAP FOR PRE-OWNED MEMORY ADDRESS
-				map<void*, vector<ptr_base*>>::iterator res_pair = res_map.find(a_raw);
+				map<void*, size_t>::iterator res_pair = res_map.find(a_raw);
 
 				if (res_pair != res_map.end()) {
-					vector<ptr_base*>& group = res_pair->second;
-					vector<ptr_base*>::iterator elem_this = std::find(group.begin(), group.end(), this);
-					if (elem_this == group.end()) {
+					size_t& group_size = res_pair->second;
 #if PTR_DEBUG
-						std::cout << "GROUP JOIN" << std::endl;
+					std::cout << "GROUP JOIN" << std::endl;
 #endif
-						// JOIN PREEXISTING GROUP
-						group.push_back(this);
-					}
+					// JOIN PREEXISTING GROUP
+					group_size++;
 				}
 				else {
 #if PTR_DEBUG
 					std::cout << "GROUP CREATE" << std::endl;
 #endif
 					// CREATE NEW GROUP FOR THIS RESOURCE
-					res_map.insert({ a_raw, { this } });
-			}
+					res_map.insert({ a_raw, 1 });
+				}
 
 				// ACQUIRE RESOURCE
 				m_raw = a_raw;
-		}
+			}
 			void unlink() {
 
 				if (m_raw == nullptr)
 					return;
 
 				// CHECK MAP FOR OWNERSHIP OVER A RESOURCE
-				map<void*, vector<ptr_base*>>::iterator res_pair = res_map.find(m_raw);
+				map<void*, size_t>::iterator res_pair = res_map.find(m_raw);
 
 				if (res_pair != res_map.end()) {
-					vector<ptr_base*>& group = res_pair->second;
-					vector<ptr_base*>::iterator elem_this = std::find(group.begin(), group.end(), this);
-					if (elem_this != group.end()) {
-						if (group.size() > 1) {
+					size_t& group_size = res_pair->second;
+					if (group_size > 1) {
 #if PTR_DEBUG
-							std::cout << "LEAVE GROUP" << std::endl;
+						std::cout << "LEAVE GROUP" << std::endl;
 #endif
-							// PASS OWNERSHIP TO m_prev
-							group.erase(elem_this);
-						}
-						else {
+						// PASS OWNERSHIP TO m_prev
+						group_size--;
+					}
+					else {
 #if PTR_DEBUG
-							std::cout << "DELETE RESOURCE" << std::endl;
+						std::cout << "DELETE RESOURCE" << std::endl;
 #endif
-							// DELETE RESOURCE
-							res_map.erase(res_pair);
-							delete m_raw;
+						// DELETE RESOURCE
+						res_map.erase(res_pair);
+						delete m_raw;
+					}
+			
 				}
-			}
-	}
 
 				// CLEAR RESOURCE
 				m_raw = nullptr;
-}
+			}
 
-};
+		};
 
 	}
 }
