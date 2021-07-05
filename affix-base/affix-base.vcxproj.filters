@@ -128,8 +128,5 @@
     <ClInclude Include="deque_mt.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="memory_functions.h">
-      <Filter>Header Files\data</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

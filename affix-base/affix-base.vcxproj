@@ -197,7 +197,6 @@
     <ClInclude Include="insertion_index.h" />
     <ClInclude Include="logging.h" />
     <ClInclude Include="log_result.h" />
-    <ClInclude Include="memory_functions.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="persistent_thread.h" />
     <ClInclude Include="persistent_thread_group.h" />
