@@ -1,14 +1,23 @@
 #include "affix_base.h"
 
+bool match_string_to_deque(const string& a_str, const std::deque<uint8_t>& a_deque) {
+	for (int i = 0; i < a_str.size(); i++)
+		if (a_str[i] != a_deque[i])
+			return false;
+	return true;
+}
+
 int main() {
 
-	using affix_base::data::builder;
+	using affix_base::data::rolling_buffer;
 
-	builder b(8);
+	string str_message = "AFFIX MESSAGE";
 
-	while (!(b << 0));
+	rolling_buffer<uint8_t> byte_buffer(str_message.size());
 
-	uint64_t u = b.build<uint64_t>();
+	for (int i = 0; !match_string_to_deque(str_message, byte_buffer.buffer()); i++) {
+		byte_buffer << str_message[i];
+	}
 
 	return EXIT_SUCCESS;
 }
