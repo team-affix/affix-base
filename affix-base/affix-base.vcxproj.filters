@@ -78,6 +78,9 @@
     <ClCompile Include="ptr.cpp">
       <Filter>Source Files\data</Filter>
     </ClCompile>
+    <ClCompile Include="builder.cpp">
+      <Filter>Source Files\data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="persistent_thread.h">
@@ -124,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="insertion_index.h">
       <Filter>Header Files\sorting</Filter>
+    </ClInclude>
+    <ClInclude Include="builder.h">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

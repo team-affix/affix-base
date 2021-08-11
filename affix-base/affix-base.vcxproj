@@ -327,6 +327,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="builder.cpp" />
     <ClCompile Include="log_result.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -367,6 +368,7 @@
     <ClInclude Include="ref.h" />
     <ClInclude Include="sockets.h" />
     <ClInclude Include="sorting.h" />
+    <ClInclude Include="builder.h" />
     <ClInclude Include="threading.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
