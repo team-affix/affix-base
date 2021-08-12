@@ -16,7 +16,7 @@ int main() {
 
 	string str = "testing123";
 
-	d.move_to_back(str);
+	d.push_back(str);
 
 	string str2 = str;
 
