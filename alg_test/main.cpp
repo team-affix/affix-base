@@ -10,11 +10,15 @@ bool match_string_to_deque(const string& a_str, const std::deque<uint8_t>& a_deq
 int main() {
 
 	using affix_base::data::builder;
+	using affix_base::data::ts_deque;
 
-	builder b(1);
-	b << 3;
+	ts_deque<string> d;
 
-	vector<uint8_t>& vec = b.buffer();
+	string str = "testing123";
+
+	d.move_to_back(str);
+
+	string str2 = str;
 
 	return EXIT_SUCCESS;
 }

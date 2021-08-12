@@ -25,6 +25,12 @@ namespace affix_base {
 				std::lock_guard l_lock(m_mutex);
 				m_deque.push_front(a_val);
 			}
+			void move_to_back(T& a_val) {
+				push_back(std::move(a_val));
+			}
+			void move_to_front(T& a_val) {
+				push_front(std::move(a_val));
+			}
 			T pop_back() {
 				std::lock_guard l_lock(m_mutex);
 				T result = m_deque.back();
