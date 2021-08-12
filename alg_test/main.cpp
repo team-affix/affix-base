@@ -9,15 +9,12 @@ bool match_string_to_deque(const string& a_str, const std::deque<uint8_t>& a_deq
 
 int main() {
 
-	using affix_base::data::rolling_buffer;
+	using affix_base::data::builder;
 
-	string str_message = "AFFIX MESSAGE";
+	builder b(1);
+	b << 3;
 
-	rolling_buffer<uint8_t> byte_buffer(str_message.size());
-
-	for (int i = 0; !match_string_to_deque(str_message, byte_buffer.buffer()); i++) {
-		byte_buffer << str_message[i];
-	}
+	vector<uint8_t>& vec = b.buffer();
 
 	return EXIT_SUCCESS;
 }

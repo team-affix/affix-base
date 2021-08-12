@@ -31,6 +31,7 @@ namespace affix_base {
 			uint8_t* data();
 
 		public:
+			vector<uint8_t>& buffer();
 			template<typename T>
 			T build() {
 				T result;

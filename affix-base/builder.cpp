@@ -2,6 +2,7 @@
 #include "builder.h"
 
 using affix_base::data::builder;
+using std::vector;
 
 builder::builder() {
 
@@ -21,4 +22,8 @@ size_t builder::capacity() {
 
 uint8_t* builder::data() {
 	return m_buffer.data();
+}
+
+vector<uint8_t>& builder::buffer() {
+	return m_buffer;
 }
