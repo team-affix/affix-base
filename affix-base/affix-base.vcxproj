@@ -157,7 +157,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../cryptopp;../asio/asio/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -177,7 +177,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../cryptopp;../asio/asio/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -198,7 +198,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../cryptopp;../asio/asio/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -221,7 +221,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../cryptopp;../asio/asio/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -242,7 +242,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../cryptopp;../asio/asio/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -261,7 +261,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../cryptopp;../asio/asio/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -282,7 +282,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../cryptopp;../asio/asio/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -305,7 +305,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../cryptopp;../asio/asio/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -348,6 +348,7 @@
   <ItemGroup>
     <ClInclude Include="affix_base.h" />
     <ClInclude Include="callback.h" />
+    <ClInclude Include="cryptography.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="enums.h" />
     <ClInclude Include="insertion_index.h" />
@@ -362,7 +363,7 @@
     <ClInclude Include="ptr.h" />
     <ClInclude Include="ref.h" />
     <ClInclude Include="rolling_buffer.h" />
-    <ClInclude Include="sockets.h" />
+    <ClInclude Include="rsa.h" />
     <ClInclude Include="sorting.h" />
     <ClInclude Include="builder.h" />
     <ClInclude Include="threading.h" />

@@ -10,6 +10,7 @@ bool match_string_to_deque(const string& a_str, const std::deque<uint8_t>& a_deq
 int main() {
 
 	using namespace affix_base::data;
+	using namespace affix_base::cryptography;
 
 
 

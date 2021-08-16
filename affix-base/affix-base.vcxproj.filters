@@ -16,9 +16,6 @@
     <Filter Include="Header Files\threading">
       <UniqueIdentifier>{236d53b1-a8b3-4f1c-9491-5491c3295dda}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\sockets">
-      <UniqueIdentifier>{1b1ef6cf-8a4b-4327-ac52-7942c0732e05}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\sorting">
       <UniqueIdentifier>{7013d948-36b0-4bc5-a4e6-87db8347c309}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="Source Files\sorting">
       <UniqueIdentifier>{be4f1728-faf0-469b-8fa3-3fce08eeeb07}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\sockets">
-      <UniqueIdentifier>{fc1f1ca0-a7c5-412c-a938-3f98e52bd053}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\threading">
       <UniqueIdentifier>{28a914f0-60c3-4901-a289-823f16b6f613}</UniqueIdentifier>
@@ -57,6 +51,9 @@
     </Filter>
     <Filter Include="Header Files\networking">
       <UniqueIdentifier>{ff56e433-c588-41c8-8eb6-e3fc4401ce38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cryptography">
+      <UniqueIdentifier>{37fee7c2-c4bd-47f6-9318-09a99e081664}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -113,9 +110,6 @@
     <ClInclude Include="enums.h">
       <Filter>Header Files\enums</Filter>
     </ClInclude>
-    <ClInclude Include="sockets.h">
-      <Filter>Header Files\sockets</Filter>
-    </ClInclude>
     <ClInclude Include="sorting.h">
       <Filter>Header Files\sorting</Filter>
     </ClInclude>
@@ -151,6 +145,12 @@
     </ClInclude>
     <ClInclude Include="message.h">
       <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="cryptography.h">
+      <Filter>Header Files\cryptography</Filter>
+    </ClInclude>
+    <ClInclude Include="rsa.h">
+      <Filter>Header Files\cryptography</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
