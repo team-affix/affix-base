@@ -11,9 +11,8 @@ int main() {
 
 	using namespace affix_base::data;
 
-	vector<int> v1 = { 0, 1, 2, 3 };
-	vector<double> v2 = cast<int, double>(v1);
-	vector<double> v3 = range(v2, 0, 2);
+
 
 	return EXIT_SUCCESS;
+
 }

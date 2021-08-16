@@ -55,6 +55,9 @@
     <Filter Include="Header Files\callback">
       <UniqueIdentifier>{26c5b680-9034-4eb6-b932-e6192cdfdfb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\networking">
+      <UniqueIdentifier>{ff56e433-c588-41c8-8eb6-e3fc4401ce38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -139,6 +142,15 @@
     </ClInclude>
     <ClInclude Include="vector_extensions.h">
       <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="networking.h">
+      <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="connection.h">
+      <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="message.h">
+      <Filter>Header Files\networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
