@@ -37,6 +37,7 @@ namespace affix_base {
 			uint32_t m_id = 0;
 			std::function<void(connection&, vector<uint8_t>&)> m_process_inbound_data;
 			std::function<void(connection&, vector<uint8_t>&)> m_process_outbound_data;
+			std::function<void(connection&)> m_on_data_sent;
 			std::function<void(connection&)> m_on_local_disconnect;
 			std::function<void(connection&)> m_on_remote_disconnect;
 
@@ -67,11 +68,13 @@ namespace affix_base {
 
 				m_socket.async_write_some(asio::buffer(l_full_data.data(), l_full_data.size()),
 					[&](error_code a_ec, size_t a_length) {
-					if (remote_disconnected(a_ec))
-						return;
+						if (remote_disconnected(a_ec))
+							return;
 	#if NET_COMMON_DEBUG
 					std::cout << "[ CONNECTION ] Sent data; size: " << a_length << std::endl;
 	#endif
+					if (m_on_data_sent != nullptr)
+						m_on_data_sent(*this);
 				});
 
 			}
