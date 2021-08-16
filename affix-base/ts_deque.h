@@ -43,6 +43,29 @@ namespace affix_base {
 				m_deque.pop_front();
 				return result;
 			}
+
+		public:
+			deque<T>::iterator begin() {
+				std::lock_guard<mutex> l_lock(m_mutex);
+				return m_deque.begin();
+			}
+			deque<T>::iterator end() {
+				std::lock_guard<mutex> l_lock(m_mutex);
+				return 
+			}
+			deque<T>::reverse_iterator rbegin() {
+				std::lock_guard<mutex> l_lock(m_mutex);
+				return m_deque.rbegin();
+			}
+			deque<T>::reverse_iterator rend() {
+				std::lock_guard<mutex> l_lock(m_mutex);
+				return m_deque.rend();
+			}
+			T& operator[](size_t a_index) {
+				std::lock_guard<mutex> l_lock(m_mutex);
+				return m_deque[a_index];
+			}
+
 		};
 	}
 }
