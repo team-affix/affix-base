@@ -137,5 +137,8 @@
     <ClInclude Include="rolling_buffer.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
+    <ClInclude Include="vector_extensions.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

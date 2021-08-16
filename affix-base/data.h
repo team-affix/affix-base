@@ -4,3 +4,4 @@
 #include "builder.h"
 #include "ts_deque.h"
 #include "rolling_buffer.h"
+#include "vector_extensions.h"

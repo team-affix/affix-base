@@ -9,16 +9,11 @@ bool match_string_to_deque(const string& a_str, const std::deque<uint8_t>& a_deq
 
 int main() {
 
-	using affix_base::data::builder;
-	using affix_base::data::ts_deque;
+	using namespace affix_base::data;
 
-	ts_deque<string> d;
-
-	string str = "testing123";
-
-	d.push_back(str);
-
-	string str2 = str;
+	vector<int> v1 = { 0, 1, 2, 3 };
+	vector<double> v2 = cast<int, double>(v1);
+	vector<double> v3 = range(v2, 0, 2);
 
 	return EXIT_SUCCESS;
 }

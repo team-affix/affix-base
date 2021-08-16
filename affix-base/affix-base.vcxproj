@@ -372,6 +372,7 @@
     <ClInclude Include="builder.h" />
     <ClInclude Include="threading.h" />
     <ClInclude Include="ts_deque.h" />
+    <ClInclude Include="vector_extensions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
