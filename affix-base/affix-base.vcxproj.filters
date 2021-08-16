@@ -55,6 +55,9 @@
     <Filter Include="Header Files\cryptography">
       <UniqueIdentifier>{37fee7c2-c4bd-47f6-9318-09a99e081664}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\timing">
+      <UniqueIdentifier>{4e3bc857-439a-4e37-bcc0-492a3d75597b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -151,6 +154,12 @@
     </ClInclude>
     <ClInclude Include="rsa.h">
       <Filter>Header Files\cryptography</Filter>
+    </ClInclude>
+    <ClInclude Include="utc_time.h">
+      <Filter>Header Files\timing</Filter>
+    </ClInclude>
+    <ClInclude Include="timing.h">
+      <Filter>Header Files\timing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
