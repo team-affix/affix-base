@@ -4,6 +4,7 @@
 #include "message.h"
 #include "rolling_buffer.h"
 #include "ts_deque.h"
+#include "ptr.h"
 #include <iostream>
 
 namespace affix_base {
@@ -15,6 +16,7 @@ namespace affix_base {
 		using affix_base::data::rolling_buffer;
 		using std::string;
 		using affix_base::data::ts_deque;
+		using affix_base::data::ptr;
 		using namespace asio;
 	
 		class connection : public std::enable_shared_from_this<connection> {
@@ -66,6 +68,9 @@ namespace affix_base {
 				l_full_data.insert(l_full_data.end(), l_data_size_vector.begin(), l_data_size_vector.end());
 				l_full_data.insert(l_full_data.end(), a_data_vector.begin(), a_data_vector.end());
 
+				ptr<uint32_t> l_full_data_size = new uint32_t(l_full_data.size());
+				ptr<uint32_t> l_sent_data_size = new uint32_t(0);
+
 				m_socket.async_write_some(asio::buffer(l_full_data.data(), l_full_data.size()),
 					[&](error_code a_ec, size_t a_length) {
 						if (remote_disconnected(a_ec))
@@ -73,7 +78,9 @@ namespace affix_base {
 	#if NET_COMMON_DEBUG
 					std::cout << "[ CONNECTION ] Sent data; size: " << a_length << std::endl;
 	#endif
-					if (m_on_data_sent != nullptr)
+					l_sent_data_size.val() += a_length;
+					bool full_data_sent = l_sent_data_size.val() == l_full_data_size.val();
+					if (full_data_sent && m_on_data_sent != nullptr)
 						m_on_data_sent(*this);
 				});
 
