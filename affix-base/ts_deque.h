@@ -1,10 +1,14 @@
 #pragma once
 #include "pch.h"
+#include <deque>
+#include <mutex>
 
 namespace affix_base {
 	namespace data {
+
 		using std::deque;
 		using std::mutex;
+		using std::vector;
 
 		template<typename T>
 		class ts_deque {
@@ -13,7 +17,7 @@ namespace affix_base {
 			mutex m_mutex;
 
 		public:
-			const size_t size() const {
+			const size_t size() {
 				std::lock_guard<mutex> l_lock(m_mutex);
 				return m_deque.size();
 			}
@@ -45,25 +49,15 @@ namespace affix_base {
 			}
 
 		public:
-			deque<T>::iterator begin() {
-				std::lock_guard<mutex> l_lock(m_mutex);
-				return m_deque.begin();
+			void lock() {
+				m_mutex.lock();
 			}
-			deque<T>::iterator end() {
-				std::lock_guard<mutex> l_lock(m_mutex);
-				return 
+			void unlock() {
+				m_mutex.unlock();
 			}
-			deque<T>::reverse_iterator rbegin() {
+			deque<T>& get() {
 				std::lock_guard<mutex> l_lock(m_mutex);
-				return m_deque.rbegin();
-			}
-			deque<T>::reverse_iterator rend() {
-				std::lock_guard<mutex> l_lock(m_mutex);
-				return m_deque.rend();
-			}
-			T& operator[](size_t a_index) {
-				std::lock_guard<mutex> l_lock(m_mutex);
-				return m_deque[a_index];
+				return m_deque;
 			}
 
 		};
