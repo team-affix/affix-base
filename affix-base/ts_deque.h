@@ -60,7 +60,7 @@ namespace affix_base {
 				m_mutex.unlock();
 			}
 			deque<T>& get() {
-				std::lock_guard<mutex> l_lock(m_mutex);
+				lock();
 				return m_deque;
 			}
 
