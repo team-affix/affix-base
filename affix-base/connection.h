@@ -61,27 +61,32 @@ namespace affix_base {
 				uint32_t l_data_size = a_data_vector.size();
 				vector<uint8_t> l_data_size_vector(sizeof(uint32_t));
 				memcpy(l_data_size_vector.data(), &l_data_size, sizeof(uint32_t));
-			
-				vector<uint8_t> l_full_data;
-				l_full_data.insert(l_full_data.end(), MESSAGE_INCOMING.begin(), MESSAGE_INCOMING.end());
-				l_full_data.insert(l_full_data.end(), l_data_size_vector.begin(), l_data_size_vector.end());
-				l_full_data.insert(l_full_data.end(), a_data_vector.begin(), a_data_vector.end());
 
-				ptr<uint32_t> l_full_data_size = new uint32_t(l_full_data.size());
-				ptr<uint32_t> l_sent_data_size = new uint32_t(0);
+				shared_ptr<vector<uint8_t>> l_full_data = shared_ptr<vector<uint8_t>>(new vector<uint8_t>());
+				l_full_data->insert(l_full_data->end(), MESSAGE_INCOMING.begin(), MESSAGE_INCOMING.end());
+				l_full_data->insert(l_full_data->end(), l_data_size_vector.begin(), l_data_size_vector.end());
+				l_full_data->insert(l_full_data->end(), a_data_vector.begin(), a_data_vector.end());
 
-				m_socket.async_write_some(asio::buffer(l_full_data.data(), l_full_data.size()),
+				async_write_loop(l_full_data);
+
+			}
+			void async_write_loop(shared_ptr<vector<uint8_t>> a_full_data) {
+
+				m_socket.async_write_some(asio::buffer(a_full_data->data(), a_full_data->size()),
 					[&](error_code a_ec, size_t a_length) {
-						if (remote_disconnected(a_ec))
+						if (a_ec)
 							return;
-	#if NET_COMMON_DEBUG
-					std::cout << "[ CONNECTION ] Sent data; size: " << a_length << std::endl;
-	#endif
-					l_sent_data_size.val() += a_length;
-					bool full_data_sent = l_sent_data_size.val() == l_full_data_size.val();
-					if (full_data_sent && m_on_data_sent != nullptr)
-						m_on_data_sent(*this);
-				});
+#if NET_COMMON_DEBUG
+						std::cout << "[ CONNECTION ] Sent data; size: " << a_length << std::endl;
+#endif
+						if (a_full_data->size() > 0) {
+							async_write_loop(a_full_data);
+						}
+						else if (m_on_data_sent != nullptr) {
+							m_on_data_sent(*this);
+						}
+
+					});
 
 			}
 			void async_receive() {
