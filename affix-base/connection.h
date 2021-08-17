@@ -70,25 +70,6 @@ namespace affix_base {
 				async_write_loop(l_full_data);
 
 			}
-			void async_write_loop(shared_ptr<vector<uint8_t>> a_full_data) {
-
-				m_socket.async_write_some(asio::buffer(a_full_data->data(), a_full_data->size()),
-					[&](error_code a_ec, size_t a_length) {
-						if (a_ec)
-							return;
-#if NET_COMMON_DEBUG
-						std::cout << "[ CONNECTION ] Sent data; size: " << a_length << std::endl;
-#endif
-						if (a_full_data->size() > 0) {
-							async_write_loop(a_full_data);
-						}
-						else if (m_on_data_sent != nullptr) {
-							m_on_data_sent(*this);
-						}
-
-					});
-
-			}
 			void async_receive() {
 				m_socket.async_read_some(asio::buffer(m_buffer_received.data(), m_buffer_received.size()),
 					[&](asio::error_code l_ec, size_t l_length) {
@@ -164,6 +145,25 @@ namespace affix_base {
 						m_building = false;
 					}
 				}
+			}
+			void async_write_loop(shared_ptr<vector<uint8_t>> a_full_data) {
+
+				m_socket.async_write_some(asio::buffer(a_full_data->data(), a_full_data->size()),
+					[&](error_code a_ec, size_t a_length) {
+						if (a_ec)
+							return;
+#if NET_COMMON_DEBUG
+						std::cout << "[ CONNECTION ] Sent data; size: " << a_length << std::endl;
+#endif
+						if (a_full_data->size() > 0) {
+							async_write_loop(a_full_data);
+						}
+						else if (m_on_data_sent != nullptr) {
+							m_on_data_sent(*this);
+						}
+
+					});
+
 			}
 
 		public:
