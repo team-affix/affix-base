@@ -40,7 +40,6 @@ namespace affix_base {
 			std::function<void(connection&, vector<uint8_t>&)> m_process_inbound_data;
 			std::function<void(connection&, vector<uint8_t>&)> m_process_outbound_data;
 			std::function<void(connection&)> m_on_data_sent;
-			std::function<void(connection&)> m_on_local_disconnect;
 			std::function<void(connection&)> m_on_remote_disconnect;
 
 		public:
@@ -93,8 +92,6 @@ namespace affix_base {
 	#if NET_COMMON_DEBUG
 							std::cout << "[ CONNECTION ] Local disconnect. " << std::endl;
 	#endif
-							if (m_on_local_disconnect != nullptr)
-								m_on_local_disconnect(*this);
 							return;
 						}
 						if (remote_disconnected(l_ec)) {
