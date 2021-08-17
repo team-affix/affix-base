@@ -47,6 +47,10 @@ namespace affix_base {
 				m_deque.pop_front();
 				return result;
 			}
+			void erase(size_t a_index) {
+				std::lock_guard<mutex> l_lock(m_mutex);
+				m_deque.erase(m_deque.begin() + a_index);
+			}
 
 		public:
 			void lock() {
