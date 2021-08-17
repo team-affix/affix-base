@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "cryptopp/files.h"
 #include "cryptopp/modes.h"
 #include "cryptopp/osrng.h"
 #include "cryptopp/rsa.h"
@@ -26,6 +27,46 @@ namespace affix_base {
             priKey.GenerateRandomWithKeySize(random, a_key_size);
             RSA::PublicKey pubKey(priKey);
             return { priKey, pubKey };
+        }
+
+        void rsa_export(const RSA::PrivateKey& a_private_key, const string& a_file_name) {
+            FileSink fs(a_file_name.c_str(), true);
+            a_private_key.Save(fs);
+        }
+
+        void rsa_export(const RSA::PublicKey& a_public_key, const string& a_file_name) {
+            FileSink fs(a_file_name.c_str(), true);
+            a_public_key.Save(fs);
+        }
+
+        void rsa_export(const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
+            VectorSink vs(a_output);
+            a_private_key.Save(vs);
+        }
+
+        void rsa_export(const RSA::PublicKey& a_public_key, vector<byte>& a_output) {
+            VectorSink vs(a_output);
+            a_public_key.Save(vs);
+        }
+
+        void rsa_import(RSA::PrivateKey& a_private_key, const string& a_file_name) {
+            FileSource fs(a_file_name.c_str(), true);
+            a_private_key.Load(fs);
+        }
+
+        void rsa_import(RSA::PublicKey& a_public_key, const string& a_file_name) {
+            FileSource fs(a_file_name.c_str(), true);
+            a_public_key.Load(fs);
+        }
+
+        void rsa_import(RSA::PrivateKey& a_private_key, const vector<byte>& a_input) {
+            VectorSource vs(a_input, true);
+            a_private_key.Load(vs);
+        }
+
+        void rsa_import(RSA::PublicKey& a_public_key, const vector<byte>& a_input) {
+            VectorSource vs(a_input, true);
+            a_public_key.Load(vs);
         }
 
         vector<byte> rsa_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key) {
