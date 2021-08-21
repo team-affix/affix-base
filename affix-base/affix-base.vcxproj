@@ -321,6 +321,7 @@
   <ItemGroup>
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="log_result.cpp" />
+    <ClCompile Include="nat.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Standalone Debug|Win32'">Create</PrecompiledHeader>
@@ -344,6 +345,7 @@
     <ClCompile Include="ptr.cpp" />
     <ClCompile Include="severity.cpp" />
     <ClCompile Include="severity.h" />
+    <ClCompile Include="transmission.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="affix_base.h" />
@@ -354,8 +356,9 @@
     <ClInclude Include="insertion_index.h" />
     <ClInclude Include="logging.h" />
     <ClInclude Include="log_result.h" />
+    <ClInclude Include="nat.h" />
     <ClInclude Include="networking.h" />
-    <ClInclude Include="connection.h" />
+    <ClInclude Include="transmission.h" />
     <ClInclude Include="message.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="persistent_thread.h" />
@@ -364,6 +367,7 @@
     <ClInclude Include="ref.h" />
     <ClInclude Include="rolling_buffer.h" />
     <ClInclude Include="rsa.h" />
+    <ClInclude Include="serialize.h" />
     <ClInclude Include="sorting.h" />
     <ClInclude Include="builder.h" />
     <ClInclude Include="threading.h" />

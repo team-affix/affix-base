@@ -58,6 +58,9 @@
     <Filter Include="Header Files\timing">
       <UniqueIdentifier>{4e3bc857-439a-4e37-bcc0-492a3d75597b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\networking">
+      <UniqueIdentifier>{574f3153-bc19-4c35-8bd9-14a1902b9e65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -83,6 +86,12 @@
     </ClCompile>
     <ClCompile Include="builder.cpp">
       <Filter>Source Files\data</Filter>
+    </ClCompile>
+    <ClCompile Include="nat.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="transmission.cpp">
+      <Filter>Source Files\networking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,7 +152,7 @@
     <ClInclude Include="networking.h">
       <Filter>Header Files\networking</Filter>
     </ClInclude>
-    <ClInclude Include="connection.h">
+    <ClInclude Include="transmission.h">
       <Filter>Header Files\networking</Filter>
     </ClInclude>
     <ClInclude Include="message.h">
@@ -160,6 +169,12 @@
     </ClInclude>
     <ClInclude Include="timing.h">
       <Filter>Header Files\timing</Filter>
+    </ClInclude>
+    <ClInclude Include="nat.h">
+      <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="serialize.h">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
