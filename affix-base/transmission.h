@@ -37,7 +37,7 @@ namespace affix_base {
 		bool socket_receive_data(tcp::socket& a_socket, vector<uint8_t>& a_data);
 
 		// ASYNCHRONOUS SEND
-		void socket_async_send(tcp::socket& a_socket, const vector<uint8_t>& a_data, std::function<void(bool)> a_callback = nullptr);
+		void socket_async_send(tcp::socket& a_socket, const vector<uint8_t>& a_data, std::function<void(bool)> a_callback);
 		void socket_async_send_size(tcp::socket& a_socket, const uint32_t& a_size, std::function<void(bool)> a_callback);
 		void socket_async_send_data(tcp::socket& a_socket, const vector<uint8_t>& a_data, std::function<void(bool)> a_callback, size_t a_offset = 0);
 
