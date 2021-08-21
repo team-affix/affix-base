@@ -89,14 +89,5 @@ namespace affix_base {
 
 		};
 
-		struct connection;
-
-		struct owned_message {
-			ptr<connection> m_remote = nullptr;
-			message& m_message;
-		};
-
 	}
-
-
 }
