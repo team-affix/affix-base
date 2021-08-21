@@ -10,7 +10,7 @@ using namespace CryptoPP;
 
 bool networking::get_external_ip(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, tcp::endpoint& a_output) {
 	
-
+	return true;
 
 }
 
