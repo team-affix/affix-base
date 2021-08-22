@@ -11,7 +11,7 @@ using affix_base::networking::nat_type;
 using namespace CryptoPP;
 using namespace affix_base::cryptography;
 
-bool networking::socket_external_ip(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, RSA::PublicKey a_returner_public_key, tcp::endpoint& a_output) {
+bool networking::socket_external_ip(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, const RSA::PublicKey& a_returner_public_key, tcp::endpoint& a_output) {
 
 	error_code l_ec;
 
@@ -48,11 +48,15 @@ bool networking::socket_external_ip(tcp::socket& a_socket, tcp::endpoint a_retur
 		return false;
 	}
 
-	vector<byte> l_message_range = range(l_inbound_data, 0, 25 + sizeof(uint32_t) + sizeof(uint16_t));
+	message l_temp_message;
+
+	l_temp_message << l_random_data << l_external_address << l_external_port;
 
 	bool l_signature_valid = false;
 
-	if (!rsa_try_verify(l_message_range, l_signature, a_returner_public_key, l_signature_valid)) {
+	vector<byte> l_temp_message_body = l_temp_message.serialize();
+
+	if (!rsa_try_verify(l_temp_message_body, l_signature, a_returner_public_key, l_signature_valid)) {
 		return false;
 	}
 

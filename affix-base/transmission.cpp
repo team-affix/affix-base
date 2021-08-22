@@ -74,26 +74,26 @@ bool networking::socket_receive_data(tcp::socket& a_socket, vector<uint8_t>& a_d
 }
 
 void networking::socket_async_send(tcp::socket& a_socket, const vector<uint8_t>& a_data, std::function<void(bool)> a_callback) {
-	socket_async_send_size(a_socket, a_data.size(), [&,a_callback](bool a_result) {
+	socket_async_send_size(a_socket, a_data.size(), [&, a_callback](bool a_result) {
 		if (!a_result) {
 			a_callback(false);
 			return;
 		}
-		socket_async_send_data(a_socket, a_data, [&,a_callback](bool a_result) {
+		socket_async_send_data(a_socket, a_data, [&, a_callback](bool a_result) {
 			a_callback(a_result);
+			});
 		});
-	});
 }
 void networking::socket_async_send_size(tcp::socket& a_socket, const uint32_t& a_size, std::function<void(bool)> a_callback) {
 	shared_ptr<vector<uint8_t>> l_size_vector = std::make_shared<vector<uint8_t>>(serialize(a_size));
-	socket_async_send_data(a_socket, *l_size_vector, [&,l_size_vector,a_callback](bool a_result) {
+	socket_async_send_data(a_socket, *l_size_vector, [&, l_size_vector, a_callback](bool a_result) {
 		a_callback(a_result);
-	});
+		});
 }
 void networking::socket_async_send_data(tcp::socket& a_socket, const vector<uint8_t>& a_data, std::function<void(bool)> a_callback, size_t a_offset) {
 	size_t l_remaining = a_data.size() - a_offset;
 	if (l_remaining > 0) {
-		a_socket.async_write_some(asio::buffer(a_data.data() + a_offset, std::min(l_remaining, MAX_BUFFER_SIZE)), [&,a_callback,a_offset](error_code a_ec, size_t a_bytes_sent) {
+		a_socket.async_write_some(asio::const_buffer(a_data.data() + a_offset, std::min(l_remaining, MAX_BUFFER_SIZE)), [&, a_callback, a_offset](error_code a_ec, size_t a_bytes_sent) {
 			size_t l_new_offset = a_offset + a_bytes_sent;
 			if (!a_ec) {
 				socket_async_send_data(a_socket, a_data, a_callback, l_new_offset);
