@@ -61,6 +61,9 @@
     <Filter Include="Source Files\networking">
       <UniqueIdentifier>{574f3153-bc19-4c35-8bd9-14a1902b9e65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\cryptography">
+      <UniqueIdentifier>{a6dfd3d7-a496-4d2b-8e5d-439cdf39c45e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="transmission.cpp">
       <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="rsa.cpp">
+      <Filter>Source Files\cryptography</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

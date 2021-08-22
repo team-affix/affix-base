@@ -63,6 +63,7 @@ bool networking::socket_receive_data(tcp::socket& a_socket, vector<uint8_t>& a_d
 		l_offset += a_socket.read_some(asio::mutable_buffer(a_data.data() + l_offset, std::min(l_remaining, MAX_BUFFER_SIZE)), l_ec);
 
 		if (l_ec) {
+			LOG("[ ERROR ] " << l_ec.message());
 			return false;
 		}
 
@@ -78,8 +79,7 @@ void networking::socket_async_send(tcp::socket& a_socket, const vector<uint8_t>&
 			a_callback(false);
 			return;
 		}
-		shared_ptr<vector<uint8_t>> l_data = std::make_shared<vector<uint8_t>>(a_data);
-		socket_async_send_data(a_socket, *l_data, [&,l_data,a_callback](bool a_result) {
+		socket_async_send_data(a_socket, a_data, [&,a_callback](bool a_result) {
 			a_callback(a_result);
 		});
 	});

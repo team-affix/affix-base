@@ -3,17 +3,69 @@
 #include "cryptopp/randpool.h"
 #include "cryptopp/osrng.h"
 #include "message.h"
+#include "transmission.h"
+#include "rsa.h"
 
 using namespace affix_base;
 using affix_base::networking::nat_type;
 using namespace CryptoPP;
+using namespace affix_base::cryptography;
 
-bool networking::get_external_ip(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, tcp::endpoint& a_output) {
+bool networking::socket_external_ip(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, RSA::PublicKey a_returner_public_key, tcp::endpoint& a_output) {
+
+	error_code l_ec;
+
+	if (a_socket.connect(a_returner_endpoint, l_ec))
+		return false;
+
+	vector<byte> l_outbound_data(25);
+
+	AutoSeededRandomPool random;
+	random.GenerateBlock(l_outbound_data.data(), l_outbound_data.size());
+
+	if (!socket_send_data(a_socket, l_outbound_data)) {
+		return false;
+	}
+
+	vector<byte> l_inbound_data;
+
+	if (!socket_receive(a_socket, l_inbound_data)) {
+		return false;
+	}
+
+	message response_msg(l_inbound_data);
+
+	vector<byte> l_random_data;
+	uint32_t l_external_address;
+	uint16_t l_external_port;
+	vector<byte> l_signature;
+
+	try {
+		response_msg >> l_random_data >> l_external_address >> l_external_port >> l_signature;
+	}
+	catch (std::exception ex) {
+		LOG("[ ERROR ]" << ex.what());
+		return false;
+	}
+
+	vector<byte> l_message_range = range(l_inbound_data, 0, 25 + sizeof(uint32_t) + sizeof(uint16_t));
+
+	bool l_signature_valid = false;
+
+	if (!rsa_try_verify(l_message_range, l_signature, a_returner_public_key, l_signature_valid)) {
+		return false;
+	}
+
+	if (!l_signature_valid) {
+		return false;
+	}
+
+	a_output.address(ip::address_v4(l_external_address));
+	a_output.port(l_external_port);
 	
 	return true;
-
 }
 
-bool networking::get_nat_type(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, nat_type& a_output) {
+bool networking::socket_nat_type(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, nat_type& a_output) {
 	return false;
 }
