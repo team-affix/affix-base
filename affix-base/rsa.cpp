@@ -65,6 +65,50 @@ namespace affix_base {
             a_public_key.Load(vs);
         }
 
+        bool cryptography::rsa_try_import(RSA::PrivateKey& a_private_key, const string& a_file_name) {
+            try {
+                rsa_import(a_private_key, a_file_name);
+                AutoSeededRandomPool random;
+                return a_private_key.Validate(random, 3);
+            }
+            catch (...) {
+                return false;
+            }
+        }
+        
+        bool cryptography::rsa_try_import(RSA::PublicKey& a_public_key, const string& a_file_name) {
+            try {
+                rsa_import(a_public_key, a_file_name);
+                AutoSeededRandomPool random;
+                return a_public_key.Validate(random, 3);
+            }
+            catch (...) {
+                return false;
+            }
+        }
+        
+        bool cryptography::rsa_try_import(RSA::PrivateKey& a_private_key, const vector<byte>& a_input) {
+            try {
+                rsa_import(a_private_key, a_input);
+                AutoSeededRandomPool random;
+                return a_private_key.Validate(random, 3);
+            }
+            catch (...) {
+                return false;
+            }
+        }
+        
+        bool cryptography::rsa_try_import(RSA::PublicKey& a_public_key, const vector<byte>& a_input) {
+            try {
+                rsa_import(a_public_key, a_input);
+                AutoSeededRandomPool random;
+                return a_public_key.Validate(random, 3);
+            }
+            catch (...) {
+                return false;
+            }
+        }
+
         vector<byte> cryptography::rsa_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key) {
             AutoSeededRandomPool random;
             RSAES<OAEP<SHA256>>::Encryptor encryptor(a_public_key);

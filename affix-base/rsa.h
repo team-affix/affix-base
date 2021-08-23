@@ -33,6 +33,11 @@ namespace affix_base {
         void rsa_import(RSA::PrivateKey& a_private_key, const vector<byte>& a_input);
         void rsa_import(RSA::PublicKey& a_public_key, const vector<byte>& a_input);
 
+        bool rsa_try_import(RSA::PrivateKey& a_private_key, const string& a_file_name);
+        bool rsa_try_import(RSA::PublicKey& a_public_key, const string& a_file_name);
+        bool rsa_try_import(RSA::PrivateKey& a_private_key, const vector<byte>& a_input);
+        bool rsa_try_import(RSA::PublicKey& a_public_key, const vector<byte>& a_input);
+
         vector<byte> rsa_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key);
         vector<byte> rsa_decrypt(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key);
 
