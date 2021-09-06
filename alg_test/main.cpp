@@ -120,7 +120,7 @@ int main() {
 
 	nat_type l_nat_type = nat_type::unknown;
 
-	bool result = socket_nat_type(l_socket, l_returner_endpoint_0, l_returner_public_key_0, l_returner_endpoint_1, l_returner_public_key_1, 1, l_nat_type, 100);
+	bool result = socket_nat_type(l_socket, l_returner_endpoint_0, l_returner_public_key_0, l_returner_endpoint_1, l_returner_public_key_1, 10, l_nat_type, 1);
 
 	return EXIT_SUCCESS;
 

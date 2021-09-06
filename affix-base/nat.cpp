@@ -19,13 +19,23 @@ using namespace CryptoPP;
 using namespace affix_base::cryptography;
 
 const size_t RETURNER_RESPONSE_SIZE = 551;
+const size_t RETURNER_SEND_SIZE = 25;
 const size_t RETURNER_RESPONSE_TIMEOUT = 5;
+
+void networking::socket_reopen_and_rebind(udp::socket& a_socket) {
+
+	udp::endpoint l_internal_endpoint = a_socket.local_endpoint();
+	a_socket.close();
+	a_socket.open(udp::v4());
+	a_socket.bind(l_internal_endpoint);
+
+}
 
 bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint, const RSA::PublicKey& a_returner_public_key, udp::endpoint& a_output) {
 
 	error_code l_ec;
 
-	vector<byte> l_outbound_data(25);
+	vector<byte> l_outbound_data(RETURNER_SEND_SIZE);
 
 	AutoSeededRandomPool random;
 	random.GenerateBlock(l_outbound_data.data(), l_outbound_data.size());
@@ -83,41 +93,41 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 	a_output.address(ip::address_v4(l_external_address));
 	a_output.port(l_external_port);
 
-	LOG("[ NAT ] Successfully retrieved IP (address, port) pair: " << a_output.address().to_string() << ":" << std::to_string(a_output.port()));
+	LOG("[ NAT ] Successfully retrieved IP (address, port) pair (from: " << a_returner_endpoint.address().to_string() << ":" << std::to_string(a_returner_endpoint.port()) << "): " << a_output.address().to_string() << ":" << std::to_string(a_output.port()));
 	
 	return true;
+}
+
+bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint, const RSA::PublicKey& a_returner_public_key, udp::endpoint& a_output, const size_t& a_max_attempts) {
+	
+	for (int l_attempt = 0; l_attempt < a_max_attempts; l_attempt++) {
+		if (socket_external_ip(a_socket, a_returner_endpoint, a_returner_public_key, a_output)) {
+			return true;
+		}
+	}
+
+	LOG("[ NAT ] Failed after max attempts at gathering external endpoint information from: " << a_returner_endpoint.address().to_string() << ":" << std::to_string(a_returner_endpoint.port()));
+	return false;
+
 }
 
 bool networking::socket_nat_type(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint_0, const RSA::PublicKey& a_returner_public_key_0, const udp::endpoint& a_returner_endpoint_1, const RSA::PublicKey& a_returner_public_key_1, const size_t& a_max_attempts, nat_type& a_output) {
 
 	// UPON CALLING THIS FUNCTION, IT IS EXPECTED THAT THE SOCKET IS ALREADY OPEN AND BOUND TO A LOCAL ENDPOINT
 
-	udp::endpoint l_internal_endpoint = a_socket.local_endpoint();
 	udp::endpoint l_external_endpoint_0;
 	udp::endpoint l_external_endpoint_1;
 
-	auto l_rebind = [&] {
-		// REBIND
-		a_socket.close();
-		a_socket.open(udp::v4());
-		a_socket.bind(l_internal_endpoint);
-	};
-
-	int l_attempt;
-
-	for (l_attempt = 0; l_attempt < a_max_attempts; l_attempt++) {
-		l_rebind();
-		if (!socket_external_ip(a_socket, a_returner_endpoint_0, a_returner_public_key_0, l_external_endpoint_0))
-			continue;
-		l_rebind();
-		if (!socket_external_ip(a_socket, a_returner_endpoint_1, a_returner_public_key_1, l_external_endpoint_1))
-			continue;
-		break;
-	}
-
-	// CHECK IF WE WENT OVER MAX ALLOWED ATTEMPTS
-	if (l_attempt >= a_max_attempts)
+	socket_reopen_and_rebind(a_socket);
+	if (!socket_external_ip(a_socket, a_returner_endpoint_0, a_returner_public_key_0, l_external_endpoint_0, a_max_attempts)) {
+		LOG("[ NAT ] Error receiving endpoint information from returner 0.");
 		return false;
+	}
+	socket_reopen_and_rebind(a_socket);
+	if (!socket_external_ip(a_socket, a_returner_endpoint_1, a_returner_public_key_1, l_external_endpoint_1, a_max_attempts)) {
+		LOG("[ NAT ] Error receiving endpoint information from returner 1.");
+		return false;
+	}
 
 	if (l_external_endpoint_0 == l_external_endpoint_1) {
 		a_output = nat_type::non_symmetric;
@@ -139,12 +149,11 @@ bool networking::socket_nat_type(udp::socket& a_socket, const udp::endpoint& a_r
 
 		nat_type l_nat_type = nat_type::unknown;
 
-		socket_nat_type(a_socket, a_returner_endpoint_0, a_returner_public_key_0, a_returner_endpoint_1, a_returner_public_key_1, a_max_attempts, l_nat_type);
+		if (!socket_nat_type(a_socket, a_returner_endpoint_0, a_returner_public_key_0, a_returner_endpoint_1, a_returner_public_key_1, a_max_attempts, l_nat_type)) {
+			return false;
+		}
 
 		switch (l_nat_type) {
-		case nat_type::unknown:
-			return false;
-			break;
 		case nat_type::symmetric:
 			l_nat_type_symmetric_counter++;
 			break;
