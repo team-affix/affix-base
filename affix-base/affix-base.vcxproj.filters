@@ -64,6 +64,9 @@
     <Filter Include="Source Files\cryptography">
       <UniqueIdentifier>{a6dfd3d7-a496-4d2b-8e5d-439cdf39c45e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\exceptions">
+      <UniqueIdentifier>{fe8caadd-0c06-4169-91a8-69087157181e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -98,6 +101,9 @@
     </ClCompile>
     <ClCompile Include="rsa.cpp">
       <Filter>Source Files\cryptography</Filter>
+    </ClCompile>
+    <ClCompile Include="sha.cpp">
+      <Filter>Source Files\data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +187,15 @@
     </ClInclude>
     <ClInclude Include="serialize.h">
       <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="sha.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="catch_friendly_assert.h">
+      <Filter>Header Files\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="exceptions.h">
+      <Filter>Header Files\exceptions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

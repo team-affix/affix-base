@@ -346,11 +346,15 @@
     <ClCompile Include="rsa.cpp" />
     <ClCompile Include="severity.cpp" />
     <ClCompile Include="severity.h" />
+    <ClCompile Include="sha.cpp" />
     <ClCompile Include="transmission.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="affix_base.h" />
     <ClInclude Include="callback.h" />
+    <ClInclude Include="catch_friendly_assert.h" />
+    <ClInclude Include="exceptions.h" />
+    <ClInclude Include="sha.h" />
     <ClInclude Include="cryptography.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="enums.h" />

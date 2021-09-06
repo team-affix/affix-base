@@ -3,6 +3,7 @@
 #include "ptr.h"
 #include "builder.h"
 #include <tuple>
+#include "catch_friendly_assert.h"
 
 namespace affix_base {
 	namespace networking {
@@ -59,7 +60,6 @@ namespace affix_base {
 			template<typename DATA_TYPE>
 			friend message& operator << (message& a_msg, const DATA_TYPE& a_data) {
 				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
-
 				// PUSH DATA TO BACK OF STACK
 				uint8_t* l_data_begin = (uint8_t*)&a_data;
 				uint8_t* l_data_end = l_data_begin + sizeof(DATA_TYPE);
@@ -69,7 +69,7 @@ namespace affix_base {
 			template<typename DATA_TYPE>
 			friend message& operator >> (message& a_msg, DATA_TYPE& a_data) {
 				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
-				assert(a_msg.m_body.size() >= sizeof(DATA_TYPE));
+				CATCH_FRIENDLY_ASSERT(a_msg.m_body.size() >= sizeof(DATA_TYPE), "Not enough bytes to form data structure.");
 
 				// POP DATA FROM FRONT OF STACK
 				std::copy(a_msg.m_body.begin(), a_msg.m_body.begin() + sizeof(DATA_TYPE), (uint8_t*)&a_data);

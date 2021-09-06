@@ -6,3 +6,4 @@
 #include "rolling_buffer.h"
 #include "vector_extensions.h"
 #include "serialize.h"
+#include "sha.h"

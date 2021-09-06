@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "transmission.h"
 #include "serialize.h"
+#include "sha.h"
+#include "vector_extensions.h"
+#include "utc_time.h"
 
 using namespace affix_base;
+using timing::utc_time;
 
 const size_t MAX_BUFFER_SIZE = 128;
 
@@ -146,4 +150,49 @@ void networking::socket_async_receive_data(tcp::socket& a_socket, vector<uint8_t
 	else {
 		a_callback(true);
 	}
+}
+
+bool networking::socket_send_data_to(udp::socket& a_socket, const udp::endpoint& a_remote_endpoint, const vector<uint8_t>& a_data) {
+
+	try {
+		size_t l_sent = 0;
+		size_t l_sent_remainder = a_data.size();
+
+		while (l_sent_remainder > 0) {
+			l_sent += a_socket.send_to(asio::buffer(a_data.data() + l_sent, l_sent_remainder), a_remote_endpoint);
+			l_sent_remainder = a_data.size() - l_sent;
+		}
+	}
+	catch (...) {
+		return false;
+	}
+
+	return true;
+
+}
+
+bool networking::socket_receive_data_for(udp::socket& a_socket, vector<uint8_t>& a_data, const size_t& a_seconds_to_receive) {
+
+	size_t l_received = 0;
+	size_t l_received_remainder = a_data.size();
+
+	uint64_t l_start_time = utc_time();
+
+	try {
+		while (l_received_remainder > 0) {
+			if (a_socket.available() > 0) {
+				l_received += a_socket.receive(asio::mutable_buffer(a_data.data() + l_received, l_received_remainder));
+				l_received_remainder = a_data.size() - l_received;
+			}
+			if (utc_time() - l_start_time > a_seconds_to_receive) {
+				return false;
+			}
+		}
+	}
+	catch (...) {
+		return false;
+	}
+
+	return true;
+
 }

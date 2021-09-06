@@ -13,12 +13,14 @@ namespace affix_base {
 		using CryptoPP::RSA;
 		
 		enum class nat_type {
+			unknown,
 			symmetric,
 			non_symmetric
 		};
 
-		bool socket_external_ip(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, const RSA::PublicKey& a_returner_public_key, tcp::endpoint& a_output);
-		bool socket_nat_type(tcp::socket& a_socket, tcp::endpoint a_returner_endpoint, nat_type& a_output);
+		bool socket_external_ip(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint, const RSA::PublicKey& a_returner_public_key, udp::endpoint& a_output);
+		bool socket_nat_type(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint_0, const RSA::PublicKey& a_returner_public_key_0, const udp::endpoint& a_returner_endpoint_1, const RSA::PublicKey& a_returner_public_key_1, const size_t& a_max_attempts, nat_type& a_output);
+		bool socket_nat_type(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint_0, const RSA::PublicKey& a_returner_public_key_0, const udp::endpoint& a_returner_endpoint_1, const RSA::PublicKey& a_returner_public_key_1, const size_t& a_max_attempts, nat_type& a_output, const size_t& a_trials);
 
 	}
 }
