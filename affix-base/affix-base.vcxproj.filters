@@ -105,6 +105,9 @@
     <ClCompile Include="sha.cpp">
       <Filter>Source Files\data</Filter>
     </ClCompile>
+    <ClCompile Include="watch.cpp">
+      <Filter>Source Files\callback</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="persistent_thread.h">
@@ -196,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="exceptions.h">
       <Filter>Header Files\exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="watch.h">
+      <Filter>Header Files\callback</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
