@@ -9,6 +9,8 @@ void write_to_console(vector<byte> v) {
 using namespace affix_base::networking;
 using namespace affix_base::cryptography;
 
+mutex g_cout_mutex;
+
 class server_test {
 public:
 	io_service l_service;
@@ -46,62 +48,7 @@ public:
 	}
 };
 
-int main() {
-
-	using namespace affix_base::networking;
-	using namespace affix_base::cryptography;
-
-	/*server_test s1(8090);
-	server_test s2(8091);
-	tcp_server_test s3(8092);
-
-	std::thread thd1([&] { s1.server_fn(); });
-	std::thread thd2([&] { s2.server_fn(); });
-	std::thread thd3([&] { s3.server_fn(); });
-
-	io_service l_service;
-	udp::socket l_socket(l_service);
-	udp::endpoint l_endpoint_1(ip::make_address("192.168.1.141"), 8090);
-	udp::endpoint l_endpoint_2(ip::make_address("192.168.1.141"), 8091);
-	udp::endpoint l_ep_2;
-	udp::endpoint l_internal_ep;
-	bool valid_ep = false;
-
-	vector<byte> v(12);
-
-	for (int i = 0; i < 12; i++) {
-		l_socket.open(udp::v4());
-		if (!valid_ep) {
-			l_socket.bind(udp::endpoint(udp::v4(), 0));
-			l_internal_ep = l_socket.local_endpoint();
-			valid_ep = true;
-		}
-		else {
-			l_socket.bind(l_internal_ep);
-		}
-		if (i % 2 == 0)
-			l_socket.send_to(asio::buffer(v.data(), v.size()), l_endpoint_1);
-		else
-			l_socket.send_to(asio::buffer(v.data(), v.size()), l_endpoint_2);
-		l_socket.receive(asio::mutable_buffer(v.data(), v.size()));
-		l_socket.close();
-	}
-
-	io_context l_context;
-	tcp::socket l_tcp_socket(l_context);
-	tcp::endpoint l_endpoint_3(ip::make_address("192.168.1.141"), 8092);
-	tcp::endpoint l_tcp_internal_ep = tcp::endpoint(l_internal_ep.address(), l_internal_ep.port());
-	l_tcp_socket.open(tcp::v4());
-	l_tcp_socket.bind(l_tcp_internal_ep);
-	l_tcp_socket.connect(l_endpoint_3);
-	l_tcp_socket.close();
-	
-	if (thd1.joinable())
-		thd1.join();
-	if (thd2.joinable())
-		thd2.join();
-	if (thd3.joinable())
-		thd3.join();*/
+void returner_test() {
 
 	RSA::PublicKey l_returner_public_key_0;
 	rsa_import(l_returner_public_key_0, "public0.bin");
@@ -121,6 +68,183 @@ int main() {
 	nat_type l_nat_type = nat_type::unknown;
 
 	bool result = socket_nat_type(l_socket, l_returner_endpoint_0, l_returner_public_key_0, l_returner_endpoint_1, l_returner_public_key_1, 10, l_nat_type, 1);
+
+}
+
+struct simple_tcp_server {
+	ptr<tcp::acceptor> m_acceptor;
+	ptr<tcp::socket> m_connection;
+	ptr<socket_io_guard> m_socket_io_guard;
+	vector<uint8_t> m_data_0;
+	vector<uint8_t> m_data_1;
+	vector<uint8_t> m_data_2;
+	vector<uint8_t> m_data_3;
+	vector<uint8_t> m_data_4;
+	vector<uint8_t> m_data_5;
+};
+
+ptr<simple_tcp_server> prime_tcp_server(io_context& a_context) {
+
+	ptr<simple_tcp_server> result = new simple_tcp_server();
+	
+	result->m_acceptor = new tcp::acceptor(tcp::acceptor(a_context, tcp::endpoint(tcp::v4(), 8091)));
+	result->m_acceptor->async_accept([&, result](error_code a_ec, tcp::socket a_socket) {
+		simple_tcp_server& l_result = *result;
+
+		l_result.m_connection = new tcp::socket(std::move(a_socket));
+		l_result.m_socket_io_guard = new socket_io_guard(l_result.m_connection.val());
+
+		l_result.m_socket_io_guard->async_receive(l_result.m_data_0, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_0);
+			std::cout << std::endl;
+		});
+		l_result.m_socket_io_guard->async_receive(l_result.m_data_1, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_1);
+			std::cout << std::endl;
+		});
+		l_result.m_socket_io_guard->async_receive(l_result.m_data_2, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_2);
+			std::cout << std::endl;
+		});
+		l_result.m_socket_io_guard->async_receive(l_result.m_data_3, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_3);
+			std::cout << std::endl;
+		});
+		l_result.m_socket_io_guard->async_receive(l_result.m_data_4, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_4);
+			std::cout << std::endl;
+		});
+		l_result.m_socket_io_guard->async_receive(l_result.m_data_5, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_5);
+			std::cout << std::endl;
+		});
+
+		/*socket_async_receive(l_result.m_connection.val(), l_result.m_data_0, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_0);
+			std::cout << std::endl;
+		});
+		socket_async_receive(l_result.m_connection.val(), l_result.m_data_1, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_1);
+			std::cout << std::endl;
+		});
+		socket_async_receive(l_result.m_connection.val(), l_result.m_data_2, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_2);
+			std::cout << std::endl;
+		});
+		socket_async_receive(l_result.m_connection.val(), l_result.m_data_3, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_3);
+			std::cout << std::endl;
+		});
+		socket_async_receive(l_result.m_connection.val(), l_result.m_data_4, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_4);
+			std::cout << std::endl;
+		});
+		socket_async_receive(l_result.m_connection.val(), l_result.m_data_5, [&, result](bool a_result) {
+			lock_guard<mutex> l_lock(g_cout_mutex);
+			write_to_console(l_result.m_data_5);
+			std::cout << std::endl;
+		});*/
+
+	});
+
+	return result;
+
+}
+
+int main() {
+
+	using namespace affix_base::networking;
+
+	io_context l_server_context;
+	ptr<simple_tcp_server> l_server(prime_tcp_server(l_server_context));
+	std::thread l_server_context_thread([&] { l_server_context.run(); });
+
+	io_context l_context;
+	tcp::socket l_socket(l_context);
+
+	l_socket.connect(tcp::endpoint(ip::make_address("192.168.1.141"), 8091));
+
+	socket_io_guard l_guard(l_socket);
+
+	vector<uint8_t> l_data_0({ 0 });
+	vector<uint8_t> l_data_1({ 1, 1 });
+	vector<uint8_t> l_data_2({ 2, 1, 2 });
+	vector<uint8_t> l_data_3({ 3, 1, 2, 3 });
+	vector<uint8_t> l_data_4({ 4, 1, 2, 3, 4 });
+	vector<uint8_t> l_data_5({ 5, 1, 2, 3, 4, 5 });
+
+	l_guard.async_send(l_data_0, [](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 0" << std::endl;
+	});
+	l_guard.async_send(l_data_1, [](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 1" << std::endl;
+	});
+	l_guard.async_send(l_data_2, [](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 2" << std::endl;
+	});
+	l_guard.async_send(l_data_3, [](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 3" << std::endl;
+	});
+	l_guard.async_send(l_data_4, [](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 4" << std::endl;
+	});
+	l_guard.async_send(l_data_5, [](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 5" << std::endl;
+	});
+
+
+	/*socket_async_send(l_socket, l_data_0, [&](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 0" << std::endl;
+	});
+	socket_async_send(l_socket, l_data_1, [&](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 1" << std::endl;
+	});
+	socket_async_send(l_socket, l_data_2, [&](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 2" << std::endl;
+	});
+	socket_async_send(l_socket, l_data_3, [&](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 3" << std::endl;
+	});
+	socket_async_send(l_socket, l_data_4, [&](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 4" << std::endl;
+	});
+	socket_async_send(l_socket, l_data_5, [&](bool a_result) {
+		lock_guard<mutex> l_lock(g_cout_mutex);
+		std::cout << "Sent data 5" << std::endl;
+	});*/
+
+	std::thread l_context_thread([&] { l_context.run(); });
+	Sleep(3000);
+
+	l_server_context.stop();
+	l_context.stop();
+
+	if (l_server_context_thread.joinable())
+		l_server_context_thread.join();
+	if (l_context_thread.joinable())
+		l_context_thread.join();
 
 	return EXIT_SUCCESS;
 

@@ -347,6 +347,7 @@
     <ClCompile Include="severity.cpp" />
     <ClCompile Include="severity.h" />
     <ClCompile Include="sha.cpp" />
+    <ClCompile Include="socket_io_guard.cpp" />
     <ClCompile Include="transmission.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -363,6 +364,7 @@
     <ClInclude Include="log_result.h" />
     <ClInclude Include="nat.h" />
     <ClInclude Include="networking.h" />
+    <ClInclude Include="socket_io_guard.h" />
     <ClInclude Include="transmission.h" />
     <ClInclude Include="message.h" />
     <ClInclude Include="pch.h" />
