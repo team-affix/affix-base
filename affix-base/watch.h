@@ -6,9 +6,6 @@ namespace affix_base {
 
 		using std::function;
 
-#define WATCH(predicate, callback) \
-watch([&]{ return (predicate); }, callback)
-
 		class watch {
 		protected:
 			function<bool()> m_predicate;
