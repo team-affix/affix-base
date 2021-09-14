@@ -349,6 +349,7 @@
     <ClCompile Include="sha.cpp" />
     <ClCompile Include="socket_io_guard.cpp" />
     <ClCompile Include="transmission.cpp" />
+    <ClCompile Include="watch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="affix_base.h" />
@@ -382,6 +383,7 @@
     <ClInclude Include="utc_time.h" />
     <ClInclude Include="ts_deque.h" />
     <ClInclude Include="vector_extensions.h" />
+    <ClInclude Include="watch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
