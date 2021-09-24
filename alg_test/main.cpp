@@ -174,91 +174,20 @@ struct sleeper {
 int main() {
 
 	using namespace affix_base::networking;
+	using namespace affix_base::cryptography;
 
-	//io_context l_server_context;
-	//ptr<simple_tcp_server> l_server(prime_tcp_server(l_server_context));
-	//std::thread l_server_context_thread([&] { l_server_context.run(); });
+	rsa_key_pair kp = rsa_generate_key_pair(2048);
 
-	//io_context l_context;
-	//tcp::socket l_socket(l_context);
+	vector<uint8_t> l_input(10000);
+	
+	for (int i = 0; i < l_input.size(); i++)
+		l_input[i] = i % 56;
 
-	//l_socket.connect(tcp::endpoint(ip::make_address("192.168.1.141"), 8091));
+	vector<uint8_t> l_encrypted = rsa_encrypt_in_chunks(l_input, kp.public_key);
 
-	//socket_io_guard l_guard(l_socket);
+	vector<uint8_t> l_decrypted = rsa_decrypt_in_chunks(l_encrypted, kp.private_key);
 
-	//vector<uint8_t> l_data_0({ 0 });
-	//vector<uint8_t> l_data_1({ 1, 1 });
-	//vector<uint8_t> l_data_2({ 2, 1, 2 });
-	//vector<uint8_t> l_data_3({ 3, 1, 2, 3 });
-	//vector<uint8_t> l_data_4({ 4, 1, 2, 3, 4 });
-	//vector<uint8_t> l_data_5({ 5, 1, 2, 3, 4, 5 });
-
-	//l_guard.async_send(l_data_0, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 0" << std::endl;
-	//});
-	//l_guard.async_send(l_data_1, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 1" << std::endl;
-	//});
-	//l_guard.async_send(l_data_2, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 2" << std::endl;
-	//});
-	//l_guard.async_send(l_data_3, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 3" << std::endl;
-	//});
-	//l_guard.async_send(l_data_4, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 4" << std::endl;
-	//});
-	//l_guard.async_send(l_data_5, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 5" << std::endl;
-	//});
-
-
-	///*socket_async_send(l_socket, l_data_0, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 0" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_1, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 1" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_2, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 2" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_3, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 3" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_4, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 4" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_5, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 5" << std::endl;
-	//});*/
-
-	//std::thread l_context_thread([&] { l_context.run(); });
-	//Sleep(3000);
-
-	//l_server_context.stop();
-	//l_context.stop();
-
-	//if (l_server_context_thread.joinable())
-	//	l_server_context_thread.join();
-	//if (l_context_thread.joinable())
-	//	l_context_thread.join();
-
-	using namespace affix_base::threading;
-	using namespace affix_base::callback;
-
-
+	bool b = std::equal(l_input.begin(), l_input.end(), l_decrypted.begin(), l_decrypted.end());
 
 	return EXIT_SUCCESS;
 

@@ -41,8 +41,8 @@ namespace affix_base {
         vector<byte> rsa_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key);
         vector<byte> rsa_decrypt(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key);
 
-        vector<vector<byte>> rsa_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key);
-        vector<byte> rsa_decrypt_in_chunks(const vector<vector<byte>>& a_input, const RSA::PrivateKey& a_private_key);
+        vector<byte> rsa_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key);
+        vector<byte> rsa_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key);
 
         vector<byte> rsa_sign(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key);
         bool rsa_verify(const vector<byte>& a_input, const vector<byte>& a_signature, const RSA::PublicKey& a_public_key);
@@ -50,8 +50,8 @@ namespace affix_base {
         bool rsa_try_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<byte>& a_output);
         bool rsa_try_decrypt(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output);
 
-        bool rsa_try_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<vector<byte>>& a_output);
-        bool rsa_try_decrypt_in_chunks(const vector<vector<byte>>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output);
+        bool rsa_try_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<byte>& a_output);
+        bool rsa_try_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output);
 
         bool rsa_try_sign(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output);
         bool rsa_try_verify(const vector<byte>& a_input, const vector<byte>& a_signature, const RSA::PublicKey& a_public_key, bool& a_output);

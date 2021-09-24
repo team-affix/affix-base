@@ -7,11 +7,13 @@
 #include "cryptopp/sha.h"
 #include "cryptopp/pssr.h"
 #include "vector_extensions.h"
+#include "byte_buffer.h"
 
 using namespace CryptoPP;
 using affix_base::data::range;
 using std::vector;
 using std::string;
+using affix_base::networking::byte_buffer;
 
 using namespace affix_base;
 namespace affix_base {
@@ -130,7 +132,7 @@ namespace affix_base {
             return result;
         }
 
-        vector<vector<byte>> cryptography::rsa_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key) {
+        vector<byte> cryptography::rsa_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key) {
             RSAES<OAEP<SHA256>>::Encryptor encryptor(a_public_key);
             vector<vector<byte>> result;
             for (int i = 0; i < a_input.size(); i += encryptor.FixedMaxPlaintextLength()) {
@@ -138,13 +140,18 @@ namespace affix_base {
                 vector<byte> chunk = range(a_input, i, std::min(encryptor.FixedMaxPlaintextLength(), bytes_remaining));
                 result.push_back(rsa_encrypt(chunk, a_public_key));
             }
-            return result;
+            byte_buffer l_buffer;
+            l_buffer << result;
+            return l_buffer.data();
         }
 
-        vector<byte> cryptography::rsa_decrypt_in_chunks(const vector<vector<byte>>& a_input, const RSA::PrivateKey& a_private_key) {
+        vector<byte> cryptography::rsa_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {
+            byte_buffer l_buffer(a_input);
+            vector<vector<byte>> l_input;
+            l_buffer >> l_input;
             vector<byte> result;
-            for (int i = 0; i < a_input.size(); i++) {
-                const vector<byte>& chunk = a_input[i];
+            for (int i = 0; i < l_input.size(); i++) {
+                const vector<byte>& chunk = l_input[i];
                 vector<byte> decrypted = rsa_decrypt(chunk, a_private_key);
                 result.insert(result.end(), decrypted.begin(), decrypted.end());
             }
@@ -188,7 +195,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_try_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<vector<byte>>& a_output) {
+        bool cryptography::rsa_try_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<byte>& a_output) {
             try {
                 a_output = rsa_encrypt_in_chunks(a_input, a_public_key);
                 return a_output.size() > 0;
@@ -198,7 +205,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_try_decrypt_in_chunks(const vector<vector<byte>>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
+        bool cryptography::rsa_try_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
             try {
                 a_output = rsa_decrypt_in_chunks(a_input, a_private_key);
                 return a_output.size() > 0;
