@@ -2,7 +2,7 @@
 #include "nat.h"
 #include "cryptopp/randpool.h"
 #include "cryptopp/osrng.h"
-#include "message.h"
+#include "byte_buffer.h"
 #include "transmission.h"
 #include "rsa.h"
 #include "utc_time.h"
@@ -52,7 +52,7 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 		return false;
 	}
 
-	message response_msg(l_inbound_data);
+	byte_buffer response_msg(l_inbound_data);
 
 	vector<byte> l_random_data;
 	uint32_t l_external_address;
@@ -74,9 +74,9 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 	}
 
 	// REPACK DATA INTO MESSAGE
-	message l_temp_message;
+	byte_buffer l_temp_message;
 	l_temp_message << l_random_data << l_external_address << l_external_port;
-	vector<byte> l_temp_message_body = l_temp_message.serialize();
+	vector<byte> l_temp_message_body = l_temp_message.data();
 
 	bool l_signature_valid = false;
 

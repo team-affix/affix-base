@@ -14,15 +14,15 @@ namespace affix_base {
 		using affix_base::data::builder;
 		using std::tuple;
 
-		class message {
+		class byte_buffer {
 		protected:
 			deque<uint8_t> m_body;
 
 		public:
-			message() {
+			byte_buffer() {
 
 			}
-			message(const vector<uint8_t>& a_body) {
+			byte_buffer(const vector<uint8_t>& a_body) {
 				m_body.insert(m_body.begin(), a_body.begin(), a_body.end());
 			}
 
@@ -30,15 +30,17 @@ namespace affix_base {
 			const size_t size() const {
 				return m_body.size();
 			}
+
+		public:
 			template<typename DATA_TYPE>
-			friend message& operator << (message& a_msg, const vector<DATA_TYPE>& a_vec) {
+			friend byte_buffer& operator << (byte_buffer& a_msg, const vector<DATA_TYPE>& a_vec) {
 				a_msg << uint32_t(a_vec.size());
 				for (int i = 0; i < a_vec.size(); i++)
 					a_msg << a_vec[i];
 				return a_msg;
 			}
 			template<typename DATA_TYPE>
-			friend message& operator >> (message& a_msg, vector<DATA_TYPE>& a_vec) {
+			friend byte_buffer& operator >> (byte_buffer& a_msg, vector<DATA_TYPE>& a_vec) {
 				uint32_t vec_size = 0;
 				a_msg >> vec_size;
 				a_vec.resize(vec_size);
@@ -48,17 +50,17 @@ namespace affix_base {
 				return a_msg;
 			}
 			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
-			friend message& operator << (message& a_msg, const tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+			friend byte_buffer& operator << (byte_buffer& a_msg, const tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
 				a_msg << std::get<0>(a_tuple) << std::get<1>(a_tuple);
 				return a_msg;
 			}
 			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
-			friend message& operator >> (message& a_msg, tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+			friend byte_buffer& operator >> (byte_buffer& a_msg, tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
 				a_msg >> std::get<0>(a_tuple) >> std::get<1>(a_tuple);
 				return a_msg;
 			}
 			template<typename DATA_TYPE>
-			friend message& operator << (message& a_msg, const DATA_TYPE& a_data) {
+			friend byte_buffer& operator << (byte_buffer& a_msg, const DATA_TYPE& a_data) {
 				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
 				// PUSH DATA TO BACK OF STACK
 				uint8_t* l_data_begin = (uint8_t*)&a_data;
@@ -67,7 +69,7 @@ namespace affix_base {
 				return a_msg;
 			}
 			template<typename DATA_TYPE>
-			friend message& operator >> (message& a_msg, DATA_TYPE& a_data) {
+			friend byte_buffer& operator >> (byte_buffer& a_msg, DATA_TYPE& a_data) {
 				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
 				CATCH_FRIENDLY_ASSERT(a_msg.m_body.size() >= sizeof(DATA_TYPE), "Not enough bytes to form data structure.");
 
@@ -78,10 +80,7 @@ namespace affix_base {
 			}
 
 		public:
-			deque<uint8_t>& body() {
-				return m_body;
-			}
-			vector<uint8_t> serialize() const {
+			vector<uint8_t> data() const {
 				vector<uint8_t> result;
 				result.insert(result.end(), m_body.begin(), m_body.end());
 				return result;

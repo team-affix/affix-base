@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "message.h"
+#include "byte_buffer.h"
 #include "asio.hpp"
 #include "cryptopp/rsa.h"
 

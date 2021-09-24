@@ -367,7 +367,7 @@
     <ClInclude Include="networking.h" />
     <ClInclude Include="socket_io_guard.h" />
     <ClInclude Include="transmission.h" />
-    <ClInclude Include="message.h" />
+    <ClInclude Include="byte_buffer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="persistent_thread.h" />
     <ClInclude Include="persistent_thread_group.h" />

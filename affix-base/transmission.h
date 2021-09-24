@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "asio.hpp"
-#include "message.h"
+#include "byte_buffer.h"
 #include "rolling_buffer.h"
 #include "ts_deque.h"
 #include "ptr.h"

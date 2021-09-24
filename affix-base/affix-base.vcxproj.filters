@@ -173,7 +173,7 @@
     <ClInclude Include="transmission.h">
       <Filter>Header Files\networking</Filter>
     </ClInclude>
-    <ClInclude Include="message.h">
+    <ClInclude Include="byte_buffer.h">
       <Filter>Header Files\networking</Filter>
     </ClInclude>
     <ClInclude Include="cryptography.h">
