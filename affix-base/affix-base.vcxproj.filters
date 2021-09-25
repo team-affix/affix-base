@@ -111,6 +111,9 @@
     <ClCompile Include="watch.cpp">
       <Filter>Source Files\callback</Filter>
     </ClCompile>
+    <ClCompile Include="aes.cpp">
+      <Filter>Source Files\cryptography</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="persistent_thread.h">
@@ -208,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="watch.h">
       <Filter>Header Files\callback</Filter>
+    </ClInclude>
+    <ClInclude Include="aes.h">
+      <Filter>Header Files\cryptography</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

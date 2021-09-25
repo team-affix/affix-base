@@ -176,18 +176,45 @@ int main() {
 	using namespace affix_base::networking;
 	using namespace affix_base::cryptography;
 
-	rsa_key_pair kp = rsa_generate_key_pair(2048);
+	vector<byte> v(16);
 
-	vector<uint8_t> l_input(10000);
-	
-	for (int i = 0; i < l_input.size(); i++)
-		l_input[i] = i % 56;
+	Integer modulus("0x100000000000000000000000000000000");
+	ModularArithmetic ma(modulus);
 
-	vector<uint8_t> l_encrypted = rsa_encrypt_in_chunks(l_input, kp.public_key);
+	Integer i1;
+	i1.Decode(v.data(), v.size());
+	int i1_byte_count_1 = i1.ByteCount();
+	i1 = ma.Add(i1, Integer("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
+	i1 = ma.Add(i1, 2);
+	int i1_byte_count_2 = i1.ByteCount();
+	i1.Encode(v.data(), v.size());
 
-	vector<uint8_t> l_decrypted = rsa_decrypt_in_chunks(l_encrypted, kp.private_key);
+	Integer i2;
+	i2.Decode(v.data(), v.size());
+	int i2_byte_count_1 = i2.ByteCount();
+	i2 = ma.Subtract(i2, 2);
+	int i2_byte_count_2 = i2.ByteCount();
+	i2.Encode(v.data(), v.size());
 
-	bool b = std::equal(l_input.begin(), l_input.end(), l_decrypted.begin(), l_decrypted.end());
+	/*vector<byte> l_aes_key = aes_generate_key();
+	vector<byte> l_iv = aes_generate_iv_zeroed();
+
+	vector<byte> l_data(10000);
+	for (int i = 0; i < l_data.size(); i++)
+		l_data[i] = i;
+
+	vector<byte> l_encrypted = aes_encrypt(l_data, l_aes_key, l_iv);
+	vector<byte> l_decrypted = aes_decrypt(l_encrypted, l_aes_key, l_iv);
+
+	aes_increment_iv(l_iv);
+
+	l_encrypted = aes_encrypt(l_data, l_aes_key, l_iv);
+	l_decrypted = aes_decrypt(l_encrypted, l_aes_key, l_iv);
+
+	aes_increment_iv(l_iv);
+
+	l_encrypted = aes_encrypt(l_data, l_aes_key, l_iv);
+	l_decrypted = aes_decrypt(l_encrypted, l_aes_key, l_iv);*/
 
 	return EXIT_SUCCESS;
 

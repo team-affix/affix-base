@@ -319,6 +319,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aes.cpp" />
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="log_result.cpp" />
     <ClCompile Include="nat.cpp" />
@@ -352,6 +353,7 @@
     <ClCompile Include="watch.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="aes.h" />
     <ClInclude Include="affix_base.h" />
     <ClInclude Include="callback.h" />
     <ClInclude Include="catch_friendly_assert.h" />
