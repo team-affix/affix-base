@@ -67,6 +67,9 @@
     <Filter Include="Header Files\exceptions">
       <UniqueIdentifier>{fe8caadd-0c06-4169-91a8-69087157181e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\details">
+      <UniqueIdentifier>{9f25385d-c105-4c38-8211-474608348b19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -220,6 +223,12 @@
     </ClInclude>
     <ClInclude Include="diff.h">
       <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="details.h">
+      <Filter>Header Files\details</Filter>
+    </ClInclude>
+    <ClInclude Include="semantic_version_number.h">
+      <Filter>Header Files\details</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -357,9 +357,11 @@
     <ClInclude Include="affix_base.h" />
     <ClInclude Include="callback.h" />
     <ClInclude Include="catch_friendly_assert.h" />
+    <ClInclude Include="details.h" />
     <ClInclude Include="diff.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="semantic_version_number.h" />
     <ClInclude Include="sha.h" />
     <ClInclude Include="cryptography.h" />
     <ClInclude Include="data.h" />
