@@ -7,3 +7,4 @@
 #include "vector_extensions.h"
 #include "serialize.h"
 #include "sha.h"
+#include "object.h"

@@ -171,50 +171,30 @@ struct sleeper {
 	}
 };
 
+class test_class {
+public:
+	virtual ~test_class() {
+		std::cout << "deconstructed" << std::endl;
+	}
+
+public:
+	test_class() {
+
+	}
+
+};
+
+
+
 int main() {
 
 	using namespace affix_base::networking;
 	using namespace affix_base::cryptography;
 
-	vector<byte> v(16);
+	object o = new vector<int>();
 
-	Integer modulus("0x100000000000000000000000000000000");
-	ModularArithmetic ma(modulus);
-
-	Integer i1;
-	i1.Decode(v.data(), v.size());
-	int i1_byte_count_1 = i1.ByteCount();
-	i1 = ma.Add(i1, Integer("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
-	i1 = ma.Add(i1, 2);
-	int i1_byte_count_2 = i1.ByteCount();
-	i1.Encode(v.data(), v.size());
-
-	Integer i2;
-	i2.Decode(v.data(), v.size());
-	int i2_byte_count_1 = i2.ByteCount();
-	i2 = ma.Subtract(i2, 2);
-	int i2_byte_count_2 = i2.ByteCount();
-	i2.Encode(v.data(), v.size());
-
-	/*vector<byte> l_aes_key = aes_generate_key();
-	vector<byte> l_iv = aes_generate_iv_zeroed();
-
-	vector<byte> l_data(10000);
-	for (int i = 0; i < l_data.size(); i++)
-		l_data[i] = i;
-
-	vector<byte> l_encrypted = aes_encrypt(l_data, l_aes_key, l_iv);
-	vector<byte> l_decrypted = aes_decrypt(l_encrypted, l_aes_key, l_iv);
-
-	aes_increment_iv(l_iv);
-
-	l_encrypted = aes_encrypt(l_data, l_aes_key, l_iv);
-	l_decrypted = aes_decrypt(l_encrypted, l_aes_key, l_iv);
-
-	aes_increment_iv(l_iv);
-
-	l_encrypted = aes_encrypt(l_data, l_aes_key, l_iv);
-	l_decrypted = aes_decrypt(l_encrypted, l_aes_key, l_iv);*/
+	vector<int>& v = o;
+	v.push_back(10);
 
 	return EXIT_SUCCESS;
 

@@ -215,5 +215,8 @@
     <ClInclude Include="aes.h">
       <Filter>Header Files\cryptography</Filter>
     </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
