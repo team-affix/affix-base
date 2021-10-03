@@ -184,17 +184,20 @@ public:
 
 };
 
+struct identity_test {
+	string name;
 
+	const string& str() const {
+		return name;
+	}
+};
 
 int main() {
 
 	using namespace affix_base::networking;
 	using namespace affix_base::cryptography;
 
-	object o = new vector<int>();
 
-	vector<int>& v = o;
-	v.push_back(10);
 
 	return EXIT_SUCCESS;
 

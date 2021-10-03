@@ -218,5 +218,8 @@
     <ClInclude Include="object.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
+    <ClInclude Include="diff.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
