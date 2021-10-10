@@ -197,7 +197,10 @@ int main() {
 	using namespace affix_base::networking;
 	using namespace affix_base::cryptography;
 
-
+	object o = new int();
+	bool b1 = o.type_equals<int>();
+	bool b2 = o.type_equals<test_class>();
+	const string& l_type = o.type();
 
 	return EXIT_SUCCESS;
 
