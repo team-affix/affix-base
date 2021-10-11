@@ -70,6 +70,9 @@
     <Filter Include="Header Files\details">
       <UniqueIdentifier>{9f25385d-c105-4c38-8211-474608348b19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\timing">
+      <UniqueIdentifier>{172d30cd-e9b6-4ed3-8e33-40990138b8ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -116,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="aes.cpp">
       <Filter>Source Files\cryptography</Filter>
+    </ClCompile>
+    <ClCompile Include="stopwatch.cpp">
+      <Filter>Source Files\timing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="semantic_version_number.h">
       <Filter>Header Files\details</Filter>
+    </ClInclude>
+    <ClInclude Include="stopwatch.h">
+      <Filter>Header Files\timing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
