@@ -236,7 +236,7 @@ int main() {
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 
-	watch w([] { return true; }, [] {});
+
 
 	return EXIT_SUCCESS;
 
