@@ -13,7 +13,7 @@ namespace affix_base {
 			thread m_thread;
 
 		public:
-			~persistent_thread();
+			virtual ~persistent_thread();
 			persistent_thread();
 			persistent_thread(function<void()> a_func);
 			persistent_thread(const persistent_thread& a_other);

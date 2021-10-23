@@ -2,13 +2,17 @@
 #include "cross_thread_mutex.h"
 #include <iostream>
 
-#if 1
+#if 0
 #define LOG(x) std::cout << x << std::endl
 #else
 #define LOG(x)
 #endif
 
 using affix_base::threading::cross_thread_mutex;
+
+cross_thread_mutex::~cross_thread_mutex() {
+
+}
 
 void cross_thread_mutex::lock() {
 

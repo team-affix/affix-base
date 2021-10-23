@@ -321,6 +321,7 @@
   <ItemGroup>
     <ClCompile Include="aes.cpp" />
     <ClCompile Include="builder.cpp" />
+    <ClCompile Include="cross_thread_mutex.cpp" />
     <ClCompile Include="log_result.cpp" />
     <ClCompile Include="nat.cpp" />
     <ClCompile Include="pch.cpp">
@@ -358,6 +359,7 @@
     <ClInclude Include="affix_base.h" />
     <ClInclude Include="callback.h" />
     <ClInclude Include="catch_friendly_assert.h" />
+    <ClInclude Include="cross_thread_mutex.h" />
     <ClInclude Include="details.h" />
     <ClInclude Include="diff.h" />
     <ClInclude Include="exceptions.h" />

@@ -31,12 +31,22 @@ void persistent_thread::init() {
 	m_thread = thread([&]() {
 		while (m_persist.val())
 			if (m_call.val()) {
+				
+				// ENABLE EXECUTION IN PROGRESS
 				m_executing.val() = true;
+				
+				// DISABLE THE TRIGGER
 				m_call.val() = false;
+				
+				// RUN FUNCTION
 				m_function();
+
+				// DISABLE EXECUTION IN PROGRESS
 				m_executing.val() = false;
+
 				if (m_loop.val())
 					call();
+
 			}
 	});
 }

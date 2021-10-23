@@ -192,12 +192,51 @@ struct identity_test {
 	}
 };
 
+int my_test_integer = 15;
+
+template<typename T>
+class node {
+protected:
+	vector<ptr<node>> m_connections;
+	T m_val;
+
+protected:
+	node() : m_val(T()) {
+
+	}
+	node(const T& a_val) : m_val(a_val) {
+
+	}
+
+public:
+	static ptr<node> create() {
+		return new node();
+	}
+	static ptr<node> create(const T& a_val) {
+		return new node(a_val);
+	}
+
+public:
+	vector<ptr<node>>& connections() {
+		return m_connections;
+	}
+	T& val() {
+		return m_val;
+	}
+
+};
+
+struct quality {
+	string name;
+	string requirements;
+};
+
 int main() {
 
-	using namespace affix_base::networking;
-	using namespace affix_base::cryptography;
+	using namespace affix_base::callback;
+	using namespace affix_base::threading;
 
-	
+	watch w([] { return true; }, [] {});
 
 	return EXIT_SUCCESS;
 

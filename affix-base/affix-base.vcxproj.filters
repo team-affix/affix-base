@@ -123,6 +123,9 @@
     <ClCompile Include="stopwatch.cpp">
       <Filter>Source Files\timing</Filter>
     </ClCompile>
+    <ClCompile Include="cross_thread_mutex.cpp">
+      <Filter>Source Files\threading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="persistent_thread.h">
@@ -238,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="stopwatch.h">
       <Filter>Header Files\timing</Filter>
+    </ClInclude>
+    <ClInclude Include="cross_thread_mutex.h">
+      <Filter>Header Files\threading</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

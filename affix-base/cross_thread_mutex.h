@@ -16,6 +16,9 @@ namespace affix_base {
 			uint16_t m_lock_index = 0;
 
 		public:
+			virtual ~cross_thread_mutex();
+
+		public:
 			void lock();
 			void unlock();
 
