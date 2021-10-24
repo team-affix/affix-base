@@ -236,7 +236,7 @@ int main() {
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 
-
+	rsa_key_pair kp = rsa_generate_key_pair(2048);
 
 	return EXIT_SUCCESS;
 
