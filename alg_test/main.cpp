@@ -246,16 +246,13 @@ int main() {
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 
-	rsa_key_pair kp = rsa_generate_key_pair(2048);
+	vector<int> v1 = { 1, 2, 3, 4 };
 
-	vector<uint8_t> l_data(10000);
+	byte_buffer b;
+	b.push_back(v1);
 
-	for (int i = 0; i < 10000; i++)
-		l_data[i] = i;
-
-	vector<uint8_t> l_encrypted = rsa_encrypt_in_chunks(l_data, kp.public_key);
-
-	vector<uint8_t> l_recovered = rsa_decrypt_in_chunks(l_encrypted, kp.private_key);
+	vector<int> v2;
+	bool success = b.pop_front(v2);
 
 	return EXIT_SUCCESS;
 
