@@ -60,7 +60,7 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 	vector<byte> l_signature;
 
 	try {
-		response_msg >> l_random_data >> l_external_address >> l_external_port >> l_signature;
+		response_msg.pop_front(l_random_data).pop_front(l_external_address).pop_front(l_external_port).pop_front(l_signature);
 	}
 	catch (...) {
 		LOG("[ NAT ] Error unpacking message from returner.");
@@ -75,7 +75,7 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 
 	// REPACK DATA INTO MESSAGE
 	byte_buffer l_temp_message;
-	l_temp_message << l_random_data << l_external_address << l_external_port;
+	l_temp_message.push_back(l_random_data).push_back(l_external_address).push_back(l_external_port);
 	vector<byte> l_temp_message_body = l_temp_message.data();
 
 	bool l_signature_valid = false;

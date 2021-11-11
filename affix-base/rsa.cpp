@@ -13,7 +13,7 @@ using namespace CryptoPP;
 using affix_base::data::range;
 using std::vector;
 using std::string;
-using affix_base::networking::byte_buffer;
+using affix_base::data::byte_buffer;
 
 using namespace affix_base;
 namespace affix_base {
@@ -141,14 +141,14 @@ namespace affix_base {
                 result.push_back(rsa_encrypt(chunk, a_public_key));
             }
             byte_buffer l_buffer;
-            l_buffer << result;
+            l_buffer.push_back(result);
             return l_buffer.data();
         }
 
         vector<byte> cryptography::rsa_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {
             byte_buffer l_buffer(a_input);
             vector<vector<byte>> l_input;
-            l_buffer >> l_input;
+            l_buffer.pop_front(l_input);
             vector<byte> result;
             for (int i = 0; i < l_input.size(); i++) {
                 const vector<byte>& chunk = l_input[i];

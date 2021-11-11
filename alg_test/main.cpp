@@ -124,38 +124,6 @@ ptr<simple_tcp_server> prime_tcp_server(io_context& a_context) {
 			write_to_console(l_result.m_data_5);
 			std::cout << std::endl;
 		});
-
-		/*socket_async_receive(l_result.m_connection.val(), l_result.m_data_0, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_0);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_1, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_1);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_2, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_2);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_3, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_3);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_4, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_4);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_5, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_5);
-			std::cout << std::endl;
-		});*/
-
 	});
 
 	return result;
@@ -197,7 +165,8 @@ int my_test_integer = 15;
 template<typename T>
 class node {
 protected:
-	vector<ptr<node>> m_connections;
+	vector<ptr<node>> m_inbound_connections;
+	vector<ptr<node>> m_outbound_connections;
 	T m_val;
 
 protected:
@@ -217,9 +186,50 @@ public:
 	}
 
 public:
-	vector<ptr<node>>& connections() {
-		return m_connections;
+	vector<ptr<node>>& inbound() {
+		return m_inbound_connections;
 	}
+	vector<ptr<node>>& outbound() {
+		return m_outbound_connections;
+	}
+	vector<ptr<node>> startpoints() {
+		if (m_inbound_connections.size() == 0) {
+			return { this };
+		}
+		else {
+			vector<ptr<node>> result;
+			for (int i = 0; i < m_inbound_connections.size(); i++) {
+				vector<ptr<node>> l_startpoints = m_inbound_connections[i]->startpoints();
+				result.insert(result.end(), l_startpoints.begin(), l_startpoints.end());
+			}
+			return result;
+		}
+	}
+	vector<ptr<node>> endpoints() {
+		if (m_outbound_connections.size() == 0) {
+			return { this };
+		}
+		else {
+			vector<ptr<node>> result;
+			for (int i = 0; i < m_outbound_connections.size(); i++) {
+				vector<ptr<node>> l_endpoints = m_outbound_connections[i]->endpoints();
+				result.insert(result.end(), l_endpoints.begin(), l_endpoints.end());
+			}
+			return result;
+		}
+	}
+
+public:
+	void prepend(ptr<node<T>>& a_other) {
+		a_other->m_outbound_connections.push_back(this);
+		m_inbound_connections.push_back(a_other);
+	}
+	void append(ptr<node<T>>& a_other) {
+		a_other->m_inbound_connections.push_back(this);
+		m_outbound_connections.push_back(a_other);
+	}
+
+public:
 	T& val() {
 		return m_val;
 	}
@@ -237,6 +247,15 @@ int main() {
 	using namespace affix_base::threading;
 
 	rsa_key_pair kp = rsa_generate_key_pair(2048);
+
+	vector<uint8_t> l_data(10000);
+
+	for (int i = 0; i < 10000; i++)
+		l_data[i] = i;
+
+	vector<uint8_t> l_encrypted = rsa_encrypt_in_chunks(l_data, kp.public_key);
+
+	vector<uint8_t> l_recovered = rsa_decrypt_in_chunks(l_encrypted, kp.private_key);
 
 	return EXIT_SUCCESS;
 

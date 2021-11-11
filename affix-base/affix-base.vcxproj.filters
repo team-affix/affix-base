@@ -188,9 +188,6 @@
     <ClInclude Include="transmission.h">
       <Filter>Header Files\networking</Filter>
     </ClInclude>
-    <ClInclude Include="byte_buffer.h">
-      <Filter>Header Files\networking</Filter>
-    </ClInclude>
     <ClInclude Include="cryptography.h">
       <Filter>Header Files\cryptography</Filter>
     </ClInclude>
@@ -244,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="cross_thread_mutex.h">
       <Filter>Header Files\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="byte_buffer.h">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

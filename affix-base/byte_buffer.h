@@ -6,7 +6,7 @@
 #include "catch_friendly_assert.h"
 
 namespace affix_base {
-	namespace networking {
+	namespace data {
 
 		using std::deque;
 		using std::vector;
@@ -33,50 +33,146 @@ namespace affix_base {
 
 		public:
 			template<typename DATA_TYPE>
-			friend byte_buffer& operator << (byte_buffer& a_msg, const vector<DATA_TYPE>& a_vec) {
-				a_msg << uint32_t(a_vec.size());
-				for (int i = 0; i < a_vec.size(); i++)
-					a_msg << a_vec[i];
-				return a_msg;
-			}
-			template<typename DATA_TYPE>
-			friend byte_buffer& operator >> (byte_buffer& a_msg, vector<DATA_TYPE>& a_vec) {
-				uint32_t vec_size = 0;
-				a_msg >> vec_size;
-				a_vec.resize(vec_size);
-				for (int i = 0; i < vec_size; i++) {
-					a_msg >> a_vec[i];
-				}
-				return a_msg;
-			}
-			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
-			friend byte_buffer& operator << (byte_buffer& a_msg, const tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
-				a_msg << std::get<0>(a_tuple) << std::get<1>(a_tuple);
-				return a_msg;
-			}
-			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
-			friend byte_buffer& operator >> (byte_buffer& a_msg, tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
-				a_msg >> std::get<0>(a_tuple) >> std::get<1>(a_tuple);
-				return a_msg;
-			}
-			template<typename DATA_TYPE>
-			friend byte_buffer& operator << (byte_buffer& a_msg, const DATA_TYPE& a_data) {
+			byte_buffer& push_back(const DATA_TYPE& a_data) {
 				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
 				// PUSH DATA TO BACK OF STACK
 				uint8_t* l_data_begin = (uint8_t*)&a_data;
 				uint8_t* l_data_end = l_data_begin + sizeof(DATA_TYPE);
-				a_msg.m_body.insert(a_msg.m_body.end(), l_data_begin, l_data_end);
-				return a_msg;
+				m_body.insert(m_body.end(), l_data_begin, l_data_end);
+				return *this;
 			}
 			template<typename DATA_TYPE>
-			friend byte_buffer& operator >> (byte_buffer& a_msg, DATA_TYPE& a_data) {
+			byte_buffer& push_front(const DATA_TYPE& a_data) {
 				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
-				CATCH_FRIENDLY_ASSERT(a_msg.m_body.size() >= sizeof(DATA_TYPE), "Not enough bytes to form data structure.");
+				// PUSH DATA TO FRONT OF STACK
+				uint8_t* l_data_begin = (uint8_t*)&a_data;
+				uint8_t* l_data_end = l_data_begin + sizeof(DATA_TYPE);
+				m_body.insert(m_body.begin(), l_data_begin, l_data_end);
+				return *this;
+			}
+			template<typename DATA_TYPE>
+			byte_buffer& pop_back(DATA_TYPE& a_data) {
+				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
+				CATCH_FRIENDLY_ASSERT(m_body.size() >= sizeof(DATA_TYPE), "Not enough bytes to form data structure.");
+
+				// POP DATA FROM BACK OF STACK
+				std::copy(m_body.end() - sizeof(DATA_TYPE), m_body.end(), (uint8_t*)&a_data);
+				m_body.erase(m_body.end() - sizeof(DATA_TYPE), m_body.end());
+
+				return *this;
+			}
+			template<typename DATA_TYPE>
+			byte_buffer& pop_front(DATA_TYPE& a_data) {
+				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
+				CATCH_FRIENDLY_ASSERT(m_body.size() >= sizeof(DATA_TYPE), "Not enough bytes to form data structure.");
 
 				// POP DATA FROM FRONT OF STACK
-				std::copy(a_msg.m_body.begin(), a_msg.m_body.begin() + sizeof(DATA_TYPE), (uint8_t*)&a_data);
-				a_msg.m_body.erase(a_msg.m_body.begin(), a_msg.m_body.begin() + sizeof(DATA_TYPE));
-				return a_msg;
+				std::copy(m_body.begin(), m_body.begin() + sizeof(DATA_TYPE), (uint8_t*)&a_data);
+				m_body.erase(m_body.begin(), m_body.begin() + sizeof(DATA_TYPE));
+
+				return *this;
+			}
+			template<typename DATA_TYPE>
+			byte_buffer& push_back(const vector<DATA_TYPE>& a_vec) {
+				
+				// STORE SIZE OF VECTOR AT FRONT IN CASE OF POP_FRONT CALL
+				push_back(uint32_t(a_vec.size()));
+
+				// STORE DATA IN FRONT-FACING ORDER ALWAYS
+				for (int i = 0; i < a_vec.size(); i++)
+					push_back(a_vec[i]);
+
+				// STORE SIZE OF VECTOR AT END (AS WELL) IN CASE OF POP_BACK CALL
+				push_back(uint32_t(a_vec.size()));
+
+				return *this;
+			}
+			template<typename DATA_TYPE>
+			byte_buffer& push_front(const vector<DATA_TYPE>& a_vec) {
+
+				// STORE SIZE OF VECTOR AT END IN CASE OF POP_FRONT CALL
+				push_front(uint32_t(a_vec.size()));
+
+				// STORE DATA IN FRONT-FACING ORDER ALWAYS
+				for (int i = a_vec.size() - 1; i >= 0; i--)
+					push_front(a_vec[i]);
+
+				// STORE SIZE OF VECTOR AT FRONT (AS WELL) IN CASE OF POP_BACK CALL
+				push_front(uint32_t(a_vec.size()));
+
+				return *this;
+			}
+			template<typename DATA_TYPE>
+			byte_buffer& pop_back(vector<DATA_TYPE>& a_vec) {
+
+				// POP SIZE OF VECTOR FROM BACK
+				uint32_t vec_size = 0;
+				pop_back(vec_size);
+				a_vec.resize(vec_size);
+
+				// POP ELEMENTS IN FRONT-FACING ORDER
+				for (int i = vec_size - 1; i >= 0; i--) {
+					pop_back(a_vec[i]);
+				}
+
+				// REMOVE THE POP_FRONT SIZE
+				pop_back(vec_size);
+
+				return *this;
+			}
+			template<typename DATA_TYPE>
+			byte_buffer& pop_front(vector<DATA_TYPE>& a_vec) {
+
+				// POP SIZE OF VECTOR FROM FRONT
+				uint32_t vec_size = 0;
+				pop_front(vec_size);
+				a_vec.resize(vec_size);
+
+				// POP ELEMENTS IN FRONT-FACING ORDER
+				for (int i = 0; i < vec_size; i++) {
+					pop_front(a_vec[i]);
+				}
+
+				// REMOVE THE POP_BACK SIZE
+				pop_front(vec_size);
+
+				return *this;
+			}
+			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
+			byte_buffer& push_back(const tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+
+				// ALWAYS PUSH TUPLE IN FRONT-FACING ORDER
+				push_back(std::get<0>(a_tuple));
+				push_back(std::get<1>(a_tuple));
+
+				return *this;
+			}
+			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
+			byte_buffer& push_front(const tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+
+				// ALWAYS PUSH TUPLE IN FRONT-FACING ORDER
+				push_back(std::get<1>(a_tuple));
+				push_back(std::get<0>(a_tuple));
+
+				return *this;
+			}
+			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
+			byte_buffer& pop_back(tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+
+				// ALWAYS POP TUPLE IN FRONT-FACING ORDER
+				pop_back(std::get<1>(a_tuple));
+				pop_back(std::get<0>(a_tuple));
+
+				return *this;
+			}
+			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
+			byte_buffer& pop_front(tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+
+				// ALWAYS POP TUPLE IN FRONT-FACING ORDER
+				pop_front(std::get<0>(a_tuple));
+				pop_front(std::get<1>(a_tuple));
+
+				return *this;
 			}
 
 		public:
