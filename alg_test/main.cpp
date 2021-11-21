@@ -139,10 +139,17 @@ struct sleeper {
 	}
 };
 
-class test_class {
+class test_base_class {
+public:
+	virtual ~test_base_class() {
+		std::cout << "deconstructed base" << std::endl;
+	}
+};
+
+class test_class : public test_base_class {
 public:
 	virtual ~test_class() {
-		std::cout << "deconstructed" << std::endl;
+		std::cout << "deconstructed derived" << std::endl;
 	}
 
 public:
@@ -246,13 +253,7 @@ int main() {
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 
-	vector<int> v1 = { 1, 2, 3, 4 };
-
-	byte_buffer b;
-	b.push_back(v1);
-
-	vector<int> v2;
-	bool success = b.pop_front(v2);
+	ptr<test_base_class> p = new test_class();
 
 	return EXIT_SUCCESS;
 
