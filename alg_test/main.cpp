@@ -255,8 +255,6 @@ int main() {
 
 
 
-	async_handshake ash(l_socket_io_guard, l_local_key_pair, l_remote_seed, l_callback);
-
 	return EXIT_SUCCESS;
 
 }
