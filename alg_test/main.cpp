@@ -139,10 +139,17 @@ struct sleeper {
 	}
 };
 
-class test_class {
+class test_base_class {
+public:
+	virtual ~test_base_class() {
+		std::cout << "deconstructed base" << std::endl;
+	}
+};
+
+class test_class : public test_base_class {
 public:
 	virtual ~test_class() {
-		std::cout << "deconstructed" << std::endl;
+		std::cout << "deconstructed derived" << std::endl;
 	}
 
 public:

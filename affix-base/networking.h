@@ -5,4 +5,3 @@
 #include "nat.h"
 #include "socket_io_guard.h"
 #include "handshake.h"
-#include "handshake.h"
