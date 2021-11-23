@@ -246,13 +246,9 @@ int main() {
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 
-	vector<int> v1 = { 1, 2, 3, 4 };
 
-	byte_buffer b;
-	b.push_back(v1);
 
-	vector<int> v2;
-	bool success = b.pop_front(v2);
+	async_handshake ash(l_socket_io_guard, l_local_key_pair, l_remote_seed, l_callback);
 
 	return EXIT_SUCCESS;
 
