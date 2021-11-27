@@ -244,8 +244,8 @@ public:
 };
 
 struct quality {
-	std::string name;
-	std::string requirements;
+	string name;
+	string requirements;
 };
 
 int main() {

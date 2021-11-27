@@ -6,6 +6,11 @@
 namespace affix_base {
 	namespace cryptography {
 
+		using namespace CryptoPP;
+		using std::vector;
+		using std::string;
+		using affix_base::data::range;
+
 		vector<byte> aes_generate_key();
 		vector<byte> aes_generate_iv();
 

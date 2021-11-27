@@ -4,6 +4,8 @@
 namespace affix_base {
 	namespace threading {
 
+		using std::mutex;
+
 		class cross_thread_mutex {
 		protected:
 			mutex m_state_mutex;

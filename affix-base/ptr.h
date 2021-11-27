@@ -6,12 +6,16 @@
 #include <iostream>
 #endif
 
+using std::shared_ptr;
+using std::map;
+using std::vector;
+
 namespace affix_base {
 	namespace data {
 
 		class ptr_base {
 		protected:
-			static ::std::map<void*, size_t> res_map;
+			static map<void*, size_t> res_map;
 
 		};
 

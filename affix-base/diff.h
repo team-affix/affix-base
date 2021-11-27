@@ -4,6 +4,8 @@
 namespace affix_base {
 	namespace data {
 
+		using std::vector;
+
 		template<typename T>
 		struct diff {
 		public:

@@ -2,9 +2,12 @@
 #include "pch.h"
 #include "ptr.h"
 
+using affix_base::data::ptr;
+using std::thread;
+using std::function;
+
 namespace affix_base {
 	namespace threading {
-
 		class persistent_thread {
 		protected:
 			thread m_thread;
@@ -36,6 +39,5 @@ namespace affix_base {
 			function<void()> m_function;
 
 		};
-
 	}
 }

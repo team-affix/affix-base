@@ -5,6 +5,8 @@
 namespace affix_base {
 	namespace data {
 
+		using std::deque;
+
 		template<typename T>
 		class rolling_buffer {
 		protected:

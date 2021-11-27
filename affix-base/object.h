@@ -10,7 +10,7 @@ namespace affix_base {
 		protected:
 			void* m_ptr = nullptr;
 			std::function<void()> m_delete = nullptr;
-			std::string m_type_name;
+			string m_type_name;
 
 		public:
 			virtual ~object_base() {
@@ -31,7 +31,7 @@ namespace affix_base {
 			void* get() const {
 				return m_ptr;
 			}
-			const std::string& type() const {
+			const string& type() const {
 				return m_type_name;
 			}
 
@@ -51,7 +51,7 @@ namespace affix_base {
 			}
 
 		public:
-			const std::string& type() {
+			const string& type() {
 				return m_ptr->type();
 			}
 

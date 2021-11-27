@@ -11,6 +11,11 @@
 namespace affix_base {
     namespace cryptography {
 
+        using namespace CryptoPP;
+        using affix_base::data::range;
+        using std::vector;
+        using std::string;
+
         struct rsa_key_pair {
             RSA::PrivateKey private_key;
             RSA::PublicKey public_key;

@@ -7,6 +7,11 @@
 namespace affix_base {
 	namespace networking {
 
+		using namespace asio;
+		using namespace asio::ip;
+		using asio::io_context;
+		using CryptoPP::RSA;
+		
 		enum class nat_type {
 			unknown,
 			symmetric,

@@ -6,7 +6,7 @@
 
 namespace affix_base {
 	namespace networking {
-		
+
 		class async_handshake {
 		protected:
 			std::mutex m_progress_mutex;

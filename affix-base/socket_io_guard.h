@@ -6,6 +6,11 @@
 namespace affix_base {
 	namespace networking {
 
+        using std::vector;
+        using std::function;
+        using std::mutex;
+        using std::lock_guard;
+
         struct socket_send_request {
             vector<uint8_t> m_data;
             function<void(bool)> m_callback;
