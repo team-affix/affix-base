@@ -10,5 +10,6 @@ namespace affix_base {
 #else
 #define CATCH_FRIENDLY_ASSERT(expression, message)
 #endif
+
 	}
 }

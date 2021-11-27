@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "watch.h"
 
+using std::function;
 using affix_base::callback::watch;
 
 watch::watch(const function<bool()>& a_predicate, const function<void()>& a_callback) : m_predicate(a_predicate), m_callback(a_callback) {

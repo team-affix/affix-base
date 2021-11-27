@@ -4,8 +4,6 @@
 namespace affix_base {
 	namespace data {
 
-		using std::vector;
-
 		template<typename T>
 		vector<uint8_t> serialize(const T& a_data) {
 			vector<uint8_t> result(sizeof(T));

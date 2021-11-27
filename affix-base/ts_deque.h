@@ -6,10 +6,6 @@
 namespace affix_base {
 	namespace data {
 
-		using std::deque;
-		using std::mutex;
-		using std::vector;
-
 		template<typename T>
 		class ts_deque {
 		protected:

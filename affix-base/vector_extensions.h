@@ -5,9 +5,6 @@
 namespace affix_base {
 	namespace data {
 
-        using std::vector;
-        using std::function;
-
 		template<typename T>
 		bool exists(const vector<T>& a_vec, function<bool(const T&)> a_predicate) {
 			return std::find_if(a_vec.begin(), a_vec.end(), a_predicate) != a_vec.end();
