@@ -10,7 +10,7 @@ namespace affix_base {
 		protected:
 			void* m_ptr = nullptr;
 			std::function<void()> m_delete = nullptr;
-			string m_type_name;
+			std::string m_type_name;
 
 		public:
 			virtual ~object_base() {
@@ -31,7 +31,7 @@ namespace affix_base {
 			void* get() const {
 				return m_ptr;
 			}
-			const string& type() const {
+			const std::string& type() const {
 				return m_type_name;
 			}
 
@@ -51,7 +51,7 @@ namespace affix_base {
 			}
 
 		public:
-			const string& type() {
+			const std::string& type() {
 				return m_ptr->type();
 			}
 
@@ -72,7 +72,6 @@ namespace affix_base {
 				CATCH_FRIENDLY_ASSERT(type_equals<T>(), "Types do not match: " + m_ptr->type() + ", and " + typeid(T).name());
 				return *(T*)m_ptr->get();
 			}
-
 
 		};
 

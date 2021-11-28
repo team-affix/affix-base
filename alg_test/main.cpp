@@ -1,13 +1,25 @@
 #include "affix_base.h"
 
+
+using namespace affix_base::networking;
+using namespace affix_base::cryptography;
+using std::mutex;
+using asio::ip::tcp;
+using asio::ip::udp;
+using asio::io_service;
+using asio::io_context;
+using affix_base::data::ptr;
+using std::lock_guard;
+using std::string;
+namespace ip = asio::ip;
+using asio::error_code;
+
+
 using namespace CryptoPP;
 void write_to_console(vector<byte> v) {
 	for (int i = 0; i < v.size(); i++)
 		std::cout << std::to_string((uint8_t)v[i]) << ", ";
 }
-
-using namespace affix_base::networking;
-using namespace affix_base::cryptography;
 
 mutex g_cout_mutex;
 

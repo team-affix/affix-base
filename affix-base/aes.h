@@ -6,21 +6,28 @@
 namespace affix_base {
 	namespace cryptography {
 
-		using namespace CryptoPP;
-		using std::vector;
-		using std::string;
-		using affix_base::data::range;
+		std::vector<CryptoPP::byte> aes_generate_key();
 
-		vector<byte> aes_generate_key();
-		vector<byte> aes_generate_iv();
+		std::vector<CryptoPP::byte> aes_generate_iv();
 
-		vector<byte> aes_generate_iv_zeroed();
+		std::vector<CryptoPP::byte> aes_generate_iv_zeroed();
 
-		vector<byte> aes_encrypt(const vector<byte>& a_data, const vector<byte>& a_key, vector<byte> a_iv = {});
-		vector<byte> aes_decrypt(const vector<byte>& a_data, const vector<byte>& a_key, vector<byte> a_iv = {});
+		std::vector<CryptoPP::byte> aes_encrypt(
+			const std::vector<CryptoPP::byte>& a_data,
+			const std::vector<CryptoPP::byte>& a_key,
+			std::vector<CryptoPP::byte> a_iv = {});
 
-		void aes_increment_iv(vector<byte>& a_iv);
-		void aes_set_iv(vector<byte>& a_iv, const Integer& a_int);
+		std::vector<CryptoPP::byte> aes_decrypt(
+			const std::vector<CryptoPP::byte>& a_data,
+			const std::vector<CryptoPP::byte>& a_key,
+			std::vector<CryptoPP::byte> a_iv = {});
+
+		void aes_increment_iv(
+			std::vector<CryptoPP::byte>& a_iv);
+
+		void aes_set_iv(
+			std::vector<CryptoPP::byte>& a_iv,
+			const CryptoPP::Integer& a_int);
 
 	}
 }

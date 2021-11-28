@@ -2,6 +2,8 @@
 #include "persistent_thread.h"
 
 using affix_base::threading::persistent_thread;
+using std::function;
+using std::thread;
 
 persistent_thread::~persistent_thread() {
 	m_persist.val() = false;

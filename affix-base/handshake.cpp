@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "handshake.h"
+#include "byte_buffer.h"
 
 using namespace affix_base;
 using networking::async_handshake;
+using affix_base::data::byte_buffer;
+using affix_base::data::ptr;
+using std::vector;
 
 async_handshake::async_handshake(
 	socket_io_guard& a_socket_io_guard,
