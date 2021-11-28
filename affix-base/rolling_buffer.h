@@ -5,13 +5,11 @@
 namespace affix_base {
 	namespace data {
 
-		using std::deque;
-
 		template<typename T>
 		class rolling_buffer {
 		protected:
 			size_t m_capacity = 0;
-			deque<T> m_buffer;
+			std::deque<T> m_buffer;
 
 		public:
 			rolling_buffer(size_t a_capacity) : m_capacity(a_capacity), m_buffer(a_capacity) {
@@ -26,7 +24,7 @@ namespace affix_base {
 			}
 
 		public:
-			const deque<T>& buffer() {
+			const std::deque<T>& buffer() {
 				return m_buffer;
 			}
 

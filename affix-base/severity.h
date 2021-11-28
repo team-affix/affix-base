@@ -7,8 +7,6 @@
 #define SEVERITY_WARNING_STR "WANRING"
 #define SEVERITY_ERROR_STR "ERROR"
 
-using std::string;
-
 namespace affix_base {
 	namespace enums {
 		enum severity {
@@ -18,6 +16,6 @@ namespace affix_base {
 			error
 		};
 
-		string to_string(severity a_severity);
+		std::string to_string(severity a_severity);
 	}
 }

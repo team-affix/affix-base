@@ -6,16 +6,12 @@
 #include <iostream>
 #endif
 
-using std::shared_ptr;
-using std::map;
-using std::vector;
-
 namespace affix_base {
 	namespace data {
 
 		class ptr_base {
 		protected:
-			static map<void*, size_t> res_map;
+			static std::map<void*, size_t> res_map;
 
 		};
 
@@ -89,7 +85,7 @@ namespace affix_base {
 					return;
 
 				// CHECK MAP FOR PRE-OWNED MEMORY ADDRESS
-				map<void*, size_t>::iterator res_pair = res_map.find(a_raw);
+				std::map<void*, size_t>::iterator res_pair = res_map.find(a_raw);
 
 				if (res_pair != res_map.end()) {
 					size_t& group_size = res_pair->second;
@@ -116,7 +112,7 @@ namespace affix_base {
 					return;
 
 				// CHECK MAP FOR OWNERSHIP OVER A RESOURCE
-				map<void*, size_t>::iterator res_pair = res_map.find(m_raw);
+				std::map<void*, size_t>::iterator res_pair = res_map.find(m_raw);
 
 				if (res_pair != res_map.end()) {
 					size_t& group_size = res_pair->second;

@@ -52,20 +52,26 @@
     <Filter Include="Header Files\networking">
       <UniqueIdentifier>{ff56e433-c588-41c8-8eb6-e3fc4401ce38}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\cryptography">
-      <UniqueIdentifier>{37fee7c2-c4bd-47f6-9318-09a99e081664}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\timing">
       <UniqueIdentifier>{4e3bc857-439a-4e37-bcc0-492a3d75597b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\networking">
       <UniqueIdentifier>{574f3153-bc19-4c35-8bd9-14a1902b9e65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\cryptography">
-      <UniqueIdentifier>{a6dfd3d7-a496-4d2b-8e5d-439cdf39c45e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\exceptions">
       <UniqueIdentifier>{fe8caadd-0c06-4169-91a8-69087157181e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\details">
+      <UniqueIdentifier>{9f25385d-c105-4c38-8211-474608348b19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\timing">
+      <UniqueIdentifier>{172d30cd-e9b6-4ed3-8e33-40990138b8ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\security">
+      <UniqueIdentifier>{37fee7c2-c4bd-47f6-9318-09a99e081664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\security">
+      <UniqueIdentifier>{a6dfd3d7-a496-4d2b-8e5d-439cdf39c45e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +106,7 @@
       <Filter>Source Files\networking</Filter>
     </ClCompile>
     <ClCompile Include="rsa.cpp">
-      <Filter>Source Files\cryptography</Filter>
+      <Filter>Source Files\security</Filter>
     </ClCompile>
     <ClCompile Include="sha.cpp">
       <Filter>Source Files\data</Filter>
@@ -110,6 +116,18 @@
     </ClCompile>
     <ClCompile Include="watch.cpp">
       <Filter>Source Files\callback</Filter>
+    </ClCompile>
+    <ClCompile Include="aes.cpp">
+      <Filter>Source Files\security</Filter>
+    </ClCompile>
+    <ClCompile Include="stopwatch.cpp">
+      <Filter>Source Files\timing</Filter>
+    </ClCompile>
+    <ClCompile Include="cross_thread_mutex.cpp">
+      <Filter>Source Files\threading</Filter>
+    </ClCompile>
+    <ClCompile Include="handshake.cpp">
+      <Filter>Source Files\networking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -173,14 +191,11 @@
     <ClInclude Include="transmission.h">
       <Filter>Header Files\networking</Filter>
     </ClInclude>
-    <ClInclude Include="message.h">
-      <Filter>Header Files\networking</Filter>
-    </ClInclude>
     <ClInclude Include="cryptography.h">
-      <Filter>Header Files\cryptography</Filter>
+      <Filter>Header Files\security</Filter>
     </ClInclude>
     <ClInclude Include="rsa.h">
-      <Filter>Header Files\cryptography</Filter>
+      <Filter>Header Files\security</Filter>
     </ClInclude>
     <ClInclude Include="utc_time.h">
       <Filter>Header Files\timing</Filter>
@@ -208,6 +223,33 @@
     </ClInclude>
     <ClInclude Include="watch.h">
       <Filter>Header Files\callback</Filter>
+    </ClInclude>
+    <ClInclude Include="aes.h">
+      <Filter>Header Files\security</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="diff.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="details.h">
+      <Filter>Header Files\details</Filter>
+    </ClInclude>
+    <ClInclude Include="semantic_version_number.h">
+      <Filter>Header Files\details</Filter>
+    </ClInclude>
+    <ClInclude Include="stopwatch.h">
+      <Filter>Header Files\timing</Filter>
+    </ClInclude>
+    <ClInclude Include="cross_thread_mutex.h">
+      <Filter>Header Files\threading</Filter>
+    </ClInclude>
+    <ClInclude Include="byte_buffer.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="handshake.h">
+      <Filter>Header Files\networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

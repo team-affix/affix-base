@@ -7,10 +7,16 @@
 
 using namespace affix_base;
 using timing::utc_time;
+using namespace asio;
+using namespace asio::ip;
+using data::serialize;
+using data::deserialize;
+using std::vector;
+using std::shared_ptr;
 
 const size_t MAX_BUFFER_SIZE = 128;
 
-bool networking::socket_send(tcp::socket& a_socket, const vector<uint8_t>& a_data) {
+bool networking::socket_send(tcp::socket& a_socket, const std::vector<uint8_t>& a_data) {
 	if (!socket_send_size(a_socket, a_data.size()))
 		return false;
 	if (!socket_send_data(a_socket, a_data))
@@ -20,7 +26,7 @@ bool networking::socket_send(tcp::socket& a_socket, const vector<uint8_t>& a_dat
 bool networking::socket_send_size(tcp::socket& a_socket, const uint32_t& a_size) {
 	return socket_send_data(a_socket, serialize(a_size));
 }
-bool networking::socket_send_data(tcp::socket& a_socket, const vector<uint8_t>& a_data) {
+bool networking::socket_send_data(tcp::socket& a_socket, const std::vector<uint8_t>& a_data) {
 	
 	asio::error_code l_ec;
 	size_t l_offset = 0;
@@ -40,7 +46,7 @@ bool networking::socket_send_data(tcp::socket& a_socket, const vector<uint8_t>& 
 
 }
 
-bool networking::socket_receive(tcp::socket& a_socket, vector<uint8_t>& a_data) {
+bool networking::socket_receive(tcp::socket& a_socket, std::vector<uint8_t>& a_data) {
 	uint32_t l_size = 0;
 	if (!socket_receive_size(a_socket, l_size))
 		return false;
@@ -56,7 +62,7 @@ bool networking::socket_receive_size(tcp::socket& a_socket, uint32_t& a_size) {
 	a_size = deserialize<uint32_t>(l_size_vector);
 	return true;
 }
-bool networking::socket_receive_data(tcp::socket& a_socket, vector<uint8_t>& a_data) {
+bool networking::socket_receive_data(tcp::socket& a_socket, std::vector<uint8_t>& a_data) {
 
 	asio::error_code l_ec;
 	size_t l_offset = 0;
@@ -77,7 +83,7 @@ bool networking::socket_receive_data(tcp::socket& a_socket, vector<uint8_t>& a_d
 
 }
 
-void networking::socket_async_send(tcp::socket& a_socket, const vector<uint8_t>& a_data, std::function<void(bool)> a_callback) {
+void networking::socket_async_send(tcp::socket& a_socket, const std::vector<uint8_t>& a_data, std::function<void(bool)> a_callback) {
 	socket_async_send_size(a_socket, a_data.size(), [&, a_callback](bool a_result) {
 		if (!a_result) {
 			a_callback(false);
@@ -94,7 +100,7 @@ void networking::socket_async_send_size(tcp::socket& a_socket, const uint32_t& a
 		a_callback(a_result);
 		});
 }
-void networking::socket_async_send_data(tcp::socket& a_socket, const vector<uint8_t>& a_data, std::function<void(bool)> a_callback, size_t a_offset) {
+void networking::socket_async_send_data(tcp::socket& a_socket, const std::vector<uint8_t>& a_data, std::function<void(bool)> a_callback, size_t a_offset) {
 	size_t l_remaining = a_data.size() - a_offset;
 	if (l_remaining > 0) {
 		a_socket.async_write_some(asio::const_buffer(a_data.data() + a_offset, std::min(l_remaining, MAX_BUFFER_SIZE)), [&, a_callback, a_offset] (error_code a_ec, size_t a_bytes_sent) {
@@ -112,7 +118,7 @@ void networking::socket_async_send_data(tcp::socket& a_socket, const vector<uint
 	}
 }
 
-void networking::socket_async_receive(tcp::socket& a_socket, vector<uint8_t>& a_data, std::function<void(bool)> a_callback) {
+void networking::socket_async_receive(tcp::socket& a_socket, std::vector<uint8_t>& a_data, std::function<void(bool)> a_callback) {
 	shared_ptr<uint32_t> l_size = std::make_shared<uint32_t>(0);
 	socket_async_receive_size(a_socket, *l_size, [&,a_callback,l_size](bool a_result) {
 		if (!a_result) {
@@ -134,7 +140,7 @@ void networking::socket_async_receive_size(tcp::socket& a_socket, uint32_t& a_si
 		a_callback(true);
 	});
 }
-void networking::socket_async_receive_data(tcp::socket& a_socket, vector<uint8_t>& a_data, std::function<void(bool)> a_callback, size_t a_offset) {
+void networking::socket_async_receive_data(tcp::socket& a_socket, std::vector<uint8_t>& a_data, std::function<void(bool)> a_callback, size_t a_offset) {
 	size_t l_remaining = a_data.size() - a_offset;
 	if (l_remaining > 0) {
 		a_socket.async_read_some(asio::buffer(a_data.data() + a_offset, std::min(l_remaining, MAX_BUFFER_SIZE)), [&,a_callback,a_offset] (error_code a_ec, size_t a_bytes_received) {
@@ -152,7 +158,7 @@ void networking::socket_async_receive_data(tcp::socket& a_socket, vector<uint8_t
 	}
 }
 
-bool networking::socket_send_data_to(udp::socket& a_socket, const udp::endpoint& a_remote_endpoint, const vector<uint8_t>& a_data) {
+bool networking::socket_send_data_to(udp::socket& a_socket, const udp::endpoint& a_remote_endpoint, const std::vector<uint8_t>& a_data) {
 
 	try {
 		size_t l_sent = 0;
@@ -171,7 +177,7 @@ bool networking::socket_send_data_to(udp::socket& a_socket, const udp::endpoint&
 
 }
 
-bool networking::socket_receive_data_for(udp::socket& a_socket, vector<uint8_t>& a_data, const size_t& a_seconds_to_receive) {
+bool networking::socket_receive_data_for(udp::socket& a_socket, std::vector<uint8_t>& a_data, const size_t& a_seconds_to_receive) {
 
 	size_t l_received = 0;
 	size_t l_received_remainder = a_data.size();

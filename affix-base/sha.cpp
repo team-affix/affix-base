@@ -3,6 +3,7 @@
 
 using namespace affix_base;
 using namespace CryptoPP;
+using std::vector;
 
 void data::sha256_digest(const vector<uint8_t>& a_input, vector<uint8_t>& a_output, size_t a_truncated_digest_size) {
 	assert(a_truncated_digest_size <= 32);

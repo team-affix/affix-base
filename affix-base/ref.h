@@ -3,6 +3,7 @@
 
 namespace affix_base {
 	namespace data {
+
 		template<class T>
 		class ref {
 		public:
@@ -31,5 +32,6 @@ namespace affix_base {
 			}
 
 		};
+
 	}
 }

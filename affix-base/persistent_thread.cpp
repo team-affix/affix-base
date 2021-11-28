@@ -2,6 +2,8 @@
 #include "persistent_thread.h"
 
 using affix_base::threading::persistent_thread;
+using std::function;
+using std::thread;
 
 persistent_thread::~persistent_thread() {
 	m_persist.val() = false;
@@ -31,12 +33,22 @@ void persistent_thread::init() {
 	m_thread = thread([&]() {
 		while (m_persist.val())
 			if (m_call.val()) {
+				
+				// ENABLE EXECUTION IN PROGRESS
 				m_executing.val() = true;
+				
+				// DISABLE THE TRIGGER
 				m_call.val() = false;
+				
+				// RUN FUNCTION
 				m_function();
+
+				// DISABLE EXECUTION IN PROGRESS
 				m_executing.val() = false;
+
 				if (m_loop.val())
 					call();
+
 			}
 	});
 }

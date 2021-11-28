@@ -1,13 +1,25 @@
 #include "affix_base.h"
 
+
+using namespace affix_base::networking;
+using namespace affix_base::cryptography;
+using std::mutex;
+using asio::ip::tcp;
+using asio::ip::udp;
+using asio::io_service;
+using asio::io_context;
+using affix_base::data::ptr;
+using std::lock_guard;
+using std::string;
+namespace ip = asio::ip;
+using asio::error_code;
+
+
 using namespace CryptoPP;
 void write_to_console(vector<byte> v) {
 	for (int i = 0; i < v.size(); i++)
 		std::cout << std::to_string((uint8_t)v[i]) << ", ";
 }
-
-using namespace affix_base::networking;
-using namespace affix_base::cryptography;
 
 mutex g_cout_mutex;
 
@@ -124,38 +136,6 @@ ptr<simple_tcp_server> prime_tcp_server(io_context& a_context) {
 			write_to_console(l_result.m_data_5);
 			std::cout << std::endl;
 		});
-
-		/*socket_async_receive(l_result.m_connection.val(), l_result.m_data_0, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_0);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_1, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_1);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_2, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_2);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_3, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_3);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_4, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_4);
-			std::cout << std::endl;
-		});
-		socket_async_receive(l_result.m_connection.val(), l_result.m_data_5, [&, result](bool a_result) {
-			lock_guard<mutex> l_lock(g_cout_mutex);
-			write_to_console(l_result.m_data_5);
-			std::cout << std::endl;
-		});*/
-
 	});
 
 	return result;
@@ -171,92 +151,119 @@ struct sleeper {
 	}
 };
 
+class test_base_class {
+public:
+	virtual ~test_base_class() {
+		std::cout << "deconstructed base" << std::endl;
+	}
+};
+
+class test_class : public test_base_class {
+public:
+	virtual ~test_class() {
+		std::cout << "deconstructed derived" << std::endl;
+	}
+
+public:
+	test_class() {
+
+	}
+
+};
+
+struct identity_test {
+	string name;
+
+	const string& str() const {
+		return name;
+	}
+};
+
+int my_test_integer = 15;
+
+template<typename T>
+class node {
+protected:
+	vector<ptr<node>> m_inbound_connections;
+	vector<ptr<node>> m_outbound_connections;
+	T m_val;
+
+protected:
+	node() : m_val(T()) {
+
+	}
+	node(const T& a_val) : m_val(a_val) {
+
+	}
+
+public:
+	static ptr<node> create() {
+		return new node();
+	}
+	static ptr<node> create(const T& a_val) {
+		return new node(a_val);
+	}
+
+public:
+	vector<ptr<node>>& inbound() {
+		return m_inbound_connections;
+	}
+	vector<ptr<node>>& outbound() {
+		return m_outbound_connections;
+	}
+	vector<ptr<node>> startpoints() {
+		if (m_inbound_connections.size() == 0) {
+			return { this };
+		}
+		else {
+			vector<ptr<node>> result;
+			for (int i = 0; i < m_inbound_connections.size(); i++) {
+				vector<ptr<node>> l_startpoints = m_inbound_connections[i]->startpoints();
+				result.insert(result.end(), l_startpoints.begin(), l_startpoints.end());
+			}
+			return result;
+		}
+	}
+	vector<ptr<node>> endpoints() {
+		if (m_outbound_connections.size() == 0) {
+			return { this };
+		}
+		else {
+			vector<ptr<node>> result;
+			for (int i = 0; i < m_outbound_connections.size(); i++) {
+				vector<ptr<node>> l_endpoints = m_outbound_connections[i]->endpoints();
+				result.insert(result.end(), l_endpoints.begin(), l_endpoints.end());
+			}
+			return result;
+		}
+	}
+
+public:
+	void prepend(ptr<node<T>>& a_other) {
+		a_other->m_outbound_connections.push_back(this);
+		m_inbound_connections.push_back(a_other);
+	}
+	void append(ptr<node<T>>& a_other) {
+		a_other->m_inbound_connections.push_back(this);
+		m_outbound_connections.push_back(a_other);
+	}
+
+public:
+	T& val() {
+		return m_val;
+	}
+
+};
+
+struct quality {
+	string name;
+	string requirements;
+};
+
 int main() {
 
-	using namespace affix_base::networking;
-
-	//io_context l_server_context;
-	//ptr<simple_tcp_server> l_server(prime_tcp_server(l_server_context));
-	//std::thread l_server_context_thread([&] { l_server_context.run(); });
-
-	//io_context l_context;
-	//tcp::socket l_socket(l_context);
-
-	//l_socket.connect(tcp::endpoint(ip::make_address("192.168.1.141"), 8091));
-
-	//socket_io_guard l_guard(l_socket);
-
-	//vector<uint8_t> l_data_0({ 0 });
-	//vector<uint8_t> l_data_1({ 1, 1 });
-	//vector<uint8_t> l_data_2({ 2, 1, 2 });
-	//vector<uint8_t> l_data_3({ 3, 1, 2, 3 });
-	//vector<uint8_t> l_data_4({ 4, 1, 2, 3, 4 });
-	//vector<uint8_t> l_data_5({ 5, 1, 2, 3, 4, 5 });
-
-	//l_guard.async_send(l_data_0, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 0" << std::endl;
-	//});
-	//l_guard.async_send(l_data_1, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 1" << std::endl;
-	//});
-	//l_guard.async_send(l_data_2, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 2" << std::endl;
-	//});
-	//l_guard.async_send(l_data_3, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 3" << std::endl;
-	//});
-	//l_guard.async_send(l_data_4, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 4" << std::endl;
-	//});
-	//l_guard.async_send(l_data_5, [](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 5" << std::endl;
-	//});
-
-
-	///*socket_async_send(l_socket, l_data_0, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 0" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_1, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 1" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_2, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 2" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_3, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 3" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_4, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 4" << std::endl;
-	//});
-	//socket_async_send(l_socket, l_data_5, [&](bool a_result) {
-	//	lock_guard<mutex> l_lock(g_cout_mutex);
-	//	std::cout << "Sent data 5" << std::endl;
-	//});*/
-
-	//std::thread l_context_thread([&] { l_context.run(); });
-	//Sleep(3000);
-
-	//l_server_context.stop();
-	//l_context.stop();
-
-	//if (l_server_context_thread.joinable())
-	//	l_server_context_thread.join();
-	//if (l_context_thread.joinable())
-	//	l_context_thread.join();
-
-	using namespace affix_base::threading;
 	using namespace affix_base::callback;
+	using namespace affix_base::threading;
 
 
 

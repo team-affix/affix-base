@@ -2,6 +2,7 @@
 #include "severity.h"
 
 using namespace affix_base;
+using std::string;
 
 string enums::to_string(severity a_severity) {
 	switch (a_severity) {

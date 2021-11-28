@@ -2,7 +2,7 @@
 #include "nat.h"
 #include "cryptopp/randpool.h"
 #include "cryptopp/osrng.h"
-#include "message.h"
+#include "byte_buffer.h"
 #include "transmission.h"
 #include "rsa.h"
 #include "utc_time.h"
@@ -17,12 +17,18 @@ using namespace affix_base;
 using affix_base::networking::nat_type;
 using namespace CryptoPP;
 using namespace affix_base::cryptography;
+using namespace asio::ip;
+using asio::error_code;
+using std::vector;
+using affix_base::data::byte_buffer;
+using namespace asio;
 
 const size_t RETURNER_RESPONSE_SIZE = 551;
 const size_t RETURNER_SEND_SIZE = 25;
 const size_t RETURNER_RESPONSE_TIMEOUT = 5;
 
-void networking::socket_reopen_and_rebind(udp::socket& a_socket) {
+void networking::socket_reopen_and_rebind(
+	udp::socket& a_socket) {
 
 	udp::endpoint l_internal_endpoint = a_socket.local_endpoint();
 	a_socket.close();
@@ -31,7 +37,11 @@ void networking::socket_reopen_and_rebind(udp::socket& a_socket) {
 
 }
 
-bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint, const RSA::PublicKey& a_returner_public_key, udp::endpoint& a_output) {
+bool networking::socket_external_ip(
+	udp::socket& a_socket,
+	const udp::endpoint& a_returner_endpoint,
+	const RSA::PublicKey& a_returner_public_key,
+	udp::endpoint& a_output) {
 
 	error_code l_ec;
 
@@ -52,7 +62,7 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 		return false;
 	}
 
-	message response_msg(l_inbound_data);
+	byte_buffer response_msg(l_inbound_data);
 
 	vector<byte> l_random_data;
 	uint32_t l_external_address;
@@ -60,7 +70,10 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 	vector<byte> l_signature;
 
 	try {
-		response_msg >> l_random_data >> l_external_address >> l_external_port >> l_signature;
+		response_msg.pop_front(l_random_data);
+		response_msg.pop_front(l_external_address);
+		response_msg.pop_front(l_external_port);
+		response_msg.pop_front(l_signature);
 	}
 	catch (...) {
 		LOG("[ NAT ] Error unpacking message from returner.");
@@ -74,9 +87,11 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 	}
 
 	// REPACK DATA INTO MESSAGE
-	message l_temp_message;
-	l_temp_message << l_random_data << l_external_address << l_external_port;
-	vector<byte> l_temp_message_body = l_temp_message.serialize();
+	byte_buffer l_temp_message;
+	l_temp_message.push_back(l_random_data);
+	l_temp_message.push_back(l_external_address);
+	l_temp_message.push_back(l_external_port);
+	vector<byte> l_temp_message_body = l_temp_message.data();
 
 	bool l_signature_valid = false;
 
@@ -98,7 +113,12 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 	return true;
 }
 
-bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint, const RSA::PublicKey& a_returner_public_key, udp::endpoint& a_output, const size_t& a_max_attempts) {
+bool networking::socket_external_ip(
+	udp::socket& a_socket,
+	const udp::endpoint& a_returner_endpoint,
+	const RSA::PublicKey& a_returner_public_key,
+	udp::endpoint& a_output,
+	const size_t& a_max_attempts) {
 	
 	for (int l_attempt = 0; l_attempt < a_max_attempts; l_attempt++) {
 		if (socket_external_ip(a_socket, a_returner_endpoint, a_returner_public_key, a_output)) {
@@ -111,7 +131,14 @@ bool networking::socket_external_ip(udp::socket& a_socket, const udp::endpoint& 
 
 }
 
-bool networking::socket_nat_type(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint_0, const RSA::PublicKey& a_returner_public_key_0, const udp::endpoint& a_returner_endpoint_1, const RSA::PublicKey& a_returner_public_key_1, const size_t& a_max_attempts, nat_type& a_output) {
+bool networking::socket_nat_type(
+	udp::socket& a_socket,
+	const udp::endpoint& a_returner_endpoint_0,
+	const RSA::PublicKey& a_returner_public_key_0,
+	const udp::endpoint& a_returner_endpoint_1,
+	const RSA::PublicKey& a_returner_public_key_1,
+	const size_t& a_max_attempts,
+	nat_type& a_output) {
 
 	// UPON CALLING THIS FUNCTION, IT IS EXPECTED THAT THE SOCKET IS ALREADY OPEN AND BOUND TO A LOCAL ENDPOINT
 
@@ -140,7 +167,15 @@ bool networking::socket_nat_type(udp::socket& a_socket, const udp::endpoint& a_r
 
 }
 
-bool networking::socket_nat_type(udp::socket& a_socket, const udp::endpoint& a_returner_endpoint_0, const RSA::PublicKey& a_returner_public_key_0, const udp::endpoint& a_returner_endpoint_1, const RSA::PublicKey& a_returner_public_key_1, const size_t& a_max_attempts, nat_type& a_output, const size_t& a_trials) {
+bool networking::socket_nat_type(
+	udp::socket& a_socket, 
+	const udp::endpoint& a_returner_endpoint_0, 
+	const RSA::PublicKey& a_returner_public_key_0, 
+	const udp::endpoint& a_returner_endpoint_1, 
+	const RSA::PublicKey& a_returner_public_key_1, 
+	const size_t& a_max_attempts, 
+	nat_type& a_output, 
+	const size_t& a_trials) {
 	
 	size_t l_nat_type_symmetric_counter = 0;
 	size_t l_nat_type_non_symmetric_counter = 0;

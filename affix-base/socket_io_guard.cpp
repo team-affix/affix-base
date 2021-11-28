@@ -2,6 +2,12 @@
 #include "socket_io_guard.h"
 
 using namespace affix_base::networking;
+using namespace asio;
+using namespace asio::ip;
+using std::vector;
+using std::function;
+using std::lock_guard;
+using std::mutex;
 
 socket_io_guard::socket_io_guard(tcp::socket& a_socket) : m_socket(a_socket) {
 

@@ -4,13 +4,11 @@
 namespace affix_base {
 	namespace data {
 
-		using std::vector;
-
 		class builder {
 		protected:
 			size_t m_capacity = 0;
 			size_t m_buffer_used_size = 0;
-			vector<uint8_t> m_buffer;
+			std::vector<uint8_t> m_buffer;
 
 		public:
 			builder();
@@ -31,7 +29,7 @@ namespace affix_base {
 			uint8_t* data();
 
 		public:
-			vector<uint8_t>& buffer();
+			std::vector<uint8_t>& buffer();
 			template<typename T>
 			T build() {
 				T result;
