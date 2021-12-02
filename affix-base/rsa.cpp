@@ -8,6 +8,7 @@
 #include "cryptopp/pssr.h"
 #include "vector_extensions.h"
 #include "byte_buffer.h"
+#include <fstream>
 
 using namespace CryptoPP;
 using affix_base::data::range;
