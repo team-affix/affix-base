@@ -265,8 +265,6 @@ int main() {
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 
-
-
-	return EXIT_SUCCESS;
+ 	return EXIT_SUCCESS;
 
 }

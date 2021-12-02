@@ -338,6 +338,7 @@
     <ClCompile Include="aes.cpp" />
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="cross_thread_mutex.cpp" />
+    <ClCompile Include="file_ios.cpp" />
     <ClCompile Include="handshake.cpp" />
     <ClCompile Include="log_result.cpp" />
     <ClCompile Include="nat.cpp" />
@@ -381,7 +382,9 @@
     <ClInclude Include="details.h" />
     <ClInclude Include="diff.h" />
     <ClInclude Include="exceptions.h" />
+    <ClInclude Include="file_ios.h" />
     <ClInclude Include="handshake.h" />
+    <ClInclude Include="ios.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="semantic_version_number.h" />
     <ClInclude Include="sha.h" />
