@@ -129,6 +129,9 @@
     <ClCompile Include="handshake.cpp">
       <Filter>Source Files\networking</Filter>
     </ClCompile>
+    <ClCompile Include="string_extensions.cpp">
+      <Filter>Source Files\data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="persistent_thread.h">
@@ -250,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="handshake.h">
       <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="string_extensions.h">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,3 +9,4 @@
 #include "sha.h"
 #include "object.h"
 #include "diff.h"
+#include "string_extensions.h"
