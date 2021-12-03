@@ -267,11 +267,8 @@ int main() {
 
 	rsa_key_pair kp = rsa_generate_key_pair(4096);
 
-	vector<uint8_t> l_data(100000);
-	for (int i = 0; i < l_data.size(); i++)
-		l_data[i] = i;
-
-	vector<uint8_t> l_enc = rsa_encrypt_in_chunks(l_data, kp.public_key);
+	rsa_encrypt("input.jpg", "encrypted.dat", kp.public_key);
+	rsa_decrypt("encrypted.dat", "decrypted.jpg", kp.private_key);
 
  	return EXIT_SUCCESS;
 

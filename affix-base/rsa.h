@@ -174,6 +174,18 @@ namespace affix_base {
             const std::vector<CryptoPP::byte>& a_input,
             const CryptoPP::RSA::PrivateKey& a_private_key);
 
+        void rsa_encrypt(
+            const std::string& a_input_file,
+            const std::string& a_output_file,
+            const CryptoPP::RSA::PublicKey a_public_key
+        );
+
+        void rsa_decrypt(
+            const std::string& a_input_file,
+            const std::string& a_output_file,
+            const CryptoPP::RSA::PrivateKey a_private_key
+        );
+
         /// <summary>
         /// Signs a message using an RSA private key.
         /// </summary>
