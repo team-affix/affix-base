@@ -265,20 +265,20 @@ int main() {
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 
-	rsa_key_pair kp = rsa_generate_key_pair(2048);
+	vector<uint8_t> l_key = aes_generate_key();
 
-	std::ifstream l_ifs_e("zerobytes.txt", std::ios::in | std::ios::binary);
-	std::ofstream l_ofs_e("enc.arm", std::ios::out | std::ios::trunc | std::ios::binary);
-	rsa_encrypt(l_ifs_e, l_ofs_e, kp.public_key);
+	std::ifstream l_ifs_e("input.jpg", std::ios::in | std::ios::binary);
+	std::ofstream l_ofs_e("enc.jpg", std::ios::out | std::ios::trunc | std::ios::binary);
+	aes_encrypt(l_ifs_e, l_ofs_e, l_key);
 	l_ifs_e.close();
 	l_ofs_e.close();
 
-	std::ifstream l_ifs_d("enc.arm", std::ios::in | std::ios::binary);
-	std::ofstream l_ofs_d("output.txt", std::ios::out | std::ios::binary | std::ios::trunc);
-	rsa_decrypt(l_ifs_d, l_ofs_d, kp.private_key);
+	std::ifstream l_ifs_d("enc.jpg", std::ios::in | std::ios::binary);
+	std::ofstream l_ofs_d("recovered.jpg", std::ios::out | std::ios::binary | std::ios::trunc);
+	aes_decrypt(l_ifs_d, l_ofs_d, l_key);
 	l_ifs_d.close();
 	l_ofs_d.close();
-
+	
  	return EXIT_SUCCESS;
 
 }
