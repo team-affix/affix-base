@@ -7,6 +7,7 @@
 #include "cryptopp/sha.h"
 #include "cryptopp/pssr.h"
 #include "vector_extensions.h"
+#include <fstream>
 
 namespace affix_base {
     namespace cryptography {
@@ -174,15 +175,29 @@ namespace affix_base {
             const std::vector<CryptoPP::byte>& a_input,
             const CryptoPP::RSA::PrivateKey& a_private_key);
 
+        /// <summary>
+        /// Encrypts a stream using an RSA public key.
+        /// This transformation occurs in blocks or "chunks" to prevent memory overflow.
+        /// </summary>
+        /// <param name="a_input_file"></param>
+        /// <param name="a_output_file"></param>
+        /// <param name="a_public_key"></param>
         void rsa_encrypt(
-            const std::string& a_input_file,
-            const std::string& a_output_file,
+            std::istream& a_input_stream,
+            std::ostream& a_output_stream,
             const CryptoPP::RSA::PublicKey a_public_key
         );
 
+        /// <summary>
+        /// Decrypts a stream using an RSA private key.
+        /// This transformation occurs in blocks or "chunks" to prevent memory overflow.
+        /// </summary>
+        /// <param name="a_input_file"></param>
+        /// <param name="a_output_file"></param>
+        /// <param name="a_private_key"></param>
         void rsa_decrypt(
-            const std::string& a_input_file,
-            const std::string& a_output_file,
+            std::istream& a_input_stream,
+            std::ostream& a_output_stream,
             const CryptoPP::RSA::PrivateKey a_private_key
         );
 

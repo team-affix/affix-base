@@ -162,90 +162,71 @@ namespace affix_base {
         }
 
         void cryptography::rsa_encrypt(
-            const std::string& a_input_file,
-            const std::string& a_output_file,
+            std::istream& a_input_stream,
+            std::ostream& a_output_stream,
             const CryptoPP::RSA::PublicKey a_public_key
         )
         {
             AutoSeededRandomPool l_random;
             RSAES<OAEP<SHA256>>::Encryptor l_encryptor(a_public_key);
 
-            // RESOLVE FILE PATHS
-            fs::path l_input_file = fs::absolute(a_input_file);
-            fs::path l_output_file = fs::absolute(a_output_file);
-
-            // STREAM OBJECTS
-            std::ifstream l_ifs(l_input_file, std::ios::in | std::ios::binary);
-            std::ofstream l_ofs(l_output_file, std::ios::out | std::ios::binary | std::ios::trunc);
-
-            // INPUT FILE SIZE
-            size_t l_input_file_size = fs::file_size(l_input_file);
-
             std::vector<byte> l_input_buffer(l_encryptor.FixedMaxPlaintextLength());
             std::vector<byte> l_output_buffer(l_encryptor.FixedCiphertextLength());
 
-            for (size_t i = 0; i < l_input_file_size; i = l_ifs.tellg())
+            for (size_t block = 0; a_input_stream.peek() != EOF; block++)
             {
-                size_t l_bytes_remaining_in_file = l_input_file_size - i;
-                size_t l_bytes_to_process = std::min(l_encryptor.FixedMaxPlaintextLength(), l_bytes_remaining_in_file);
-                
-                // LOAD BUFFER
-                l_ifs.read((char*)l_input_buffer.data(), l_bytes_to_process);
+                size_t l_bytes_to_process = 0;
+
+                for (;
+                    l_bytes_to_process < l_encryptor.FixedMaxPlaintextLength() &&
+                    a_input_stream.peek() != EOF;
+                    l_bytes_to_process++)
+                {
+                    // LOAD 1 BYTE INTO BUFFER
+                    a_input_stream.read((char*)l_input_buffer.data() + l_bytes_to_process, 1);
+                }
 
                 // ENCRYPT BUFFER
                 l_encryptor.Encrypt(l_random, l_input_buffer.data(), l_bytes_to_process, l_output_buffer.data());
 
                 // WRITE OUTPUT
-                l_ofs.write((const char*)l_output_buffer.data(), l_encryptor.CiphertextLength(l_bytes_to_process));
+                a_output_stream.write((const char*)l_output_buffer.data(), l_encryptor.CiphertextLength(l_bytes_to_process));
 
             }
-
-            l_ifs.close();
-            l_ofs.close();
 
         }
 
         void rsa_decrypt(
-            const std::string& a_input_file,
-            const std::string& a_output_file,
+            std::istream& a_input_stream,
+            std::ostream& a_output_stream,
             const CryptoPP::RSA::PrivateKey a_private_key
         )
         {
             AutoSeededRandomPool l_random;
             RSAES<OAEP<SHA256>>::Decryptor l_decryptor(a_private_key);
 
-            // RESOLVE FILE PATHS
-            fs::path l_input_file = fs::absolute(a_input_file);
-            fs::path l_output_file = fs::absolute(a_output_file);
-
-            // STREAM OBJECTS
-            std::ifstream l_ifs(l_input_file, std::ios::in | std::ios::binary);
-            std::ofstream l_ofs(l_output_file, std::ios::out | std::ios::binary | std::ios::trunc);
-
-            // INPUT FILE SIZE
-            size_t l_input_file_size = fs::file_size(l_input_file);
-
-            std::vector<byte> l_buffer(l_decryptor.FixedCiphertextLength());
+            std::vector<byte> l_input_buffer(l_decryptor.FixedCiphertextLength());
             std::vector<byte> l_output_buffer(l_decryptor.FixedMaxPlaintextLength());
 
-            for (size_t i = 0; i < l_input_file_size; i = l_ifs.tellg())
+            for (size_t block = 0; a_input_stream.peek() != EOF; block++)
             {
-                size_t l_bytes_remaining_in_file = l_input_file_size - i;
-                size_t l_bytes_to_process = std::min(l_decryptor.FixedCiphertextLength(), l_bytes_remaining_in_file);
+                size_t l_bytes_to_process = 0;
+                for (;
+                    l_bytes_to_process < l_decryptor.FixedCiphertextLength() &&
+                    a_input_stream.peek() != EOF;
+                    l_bytes_to_process++)
+                {
+                    // LOAD 1 BYTE INTO BUFFER
+                    a_input_stream.read((char*)l_input_buffer.data() + l_bytes_to_process, 1);
+                }
 
-                // LOAD BUFFER
-                l_ifs.read((char*)l_buffer.data(), l_bytes_to_process);
-
-                // ENCRYPT BUFFER
-                DecodingResult l_decoding_result = l_decryptor.Decrypt(l_random, l_buffer.data(), l_bytes_to_process, l_output_buffer.data());
+                // DECRYPT BUFFER
+                DecodingResult l_decoding_result = l_decryptor.Decrypt(l_random, l_input_buffer.data(), l_bytes_to_process, l_output_buffer.data());
 
                 // WRITE OUTPUT
-                l_ofs.write((const char*)l_output_buffer.data(), l_decoding_result.messageLength);
+                a_output_stream.write((const char*)l_output_buffer.data(), l_decoding_result.messageLength);
 
             }
-
-            l_ifs.close();
-            l_ofs.close();
 
         }
 
