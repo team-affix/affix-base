@@ -1,5 +1,5 @@
 #include "affix_base.h"
-
+#include <filesystem>
 
 using namespace affix_base::networking;
 using namespace affix_base::cryptography;
@@ -260,25 +260,111 @@ struct quality {
 	string requirements;
 };
 
+int main_encrypt_decrypt()
+{
+	using namespace affix_base::callback;
+	using namespace affix_base::threading;
+	namespace fs = std::filesystem;
+
+	std::cout << "To encrypt original/->encrypt/, type E" << std::endl;
+	std::cout << "    (This will require the folders called \"original\" and \"encrypt\" to exist, and the file public.dat to be in the current directory.)" << std::endl;
+	std::cout << "To decrypt encrypt/->decrypt/ type D" << std::endl;
+	std::cout << "    (This will require the folders called \"encrypt\" and \"decrypt\" to exist, and the file private.dat to be in the current directory.)" << std::endl;
+
+	std::filesystem::path l_original_path = fs::absolute("original/");
+	std::filesystem::path l_encrypt_path = fs::absolute("encrypt/");
+	std::filesystem::path l_decrypt_path = fs::absolute("decrypt/");
+
+	fs::path l_input_path;
+	fs::path l_output_path;
+
+	auto num_output_files = [&]
+	{
+		int result = 0;
+		for (const auto& entry : fs::directory_iterator(l_output_path))
+			result++;
+		return result;
+	};
+
+	auto stream_transform_directory = [&](std::function<void(std::ifstream&, std::ofstream&)> a_transform)
+	{
+		for (const auto& entry : fs::directory_iterator(l_input_path))
+		{
+			fs::path l_output_file_path(l_output_path.u8string() + std::to_string(num_output_files()));
+
+			std::ifstream l_ifs(entry.path(), std::ios::in | std::ios::binary);
+			std::ofstream l_ofs_e(l_output_file_path, std::ios::out | std::ios::trunc | std::ios::binary);
+
+			a_transform(l_ifs, l_ofs_e);
+
+			l_ifs.close();
+			l_ofs_e.close();
+		}
+	};
+
+	char response = 0;
+	std::cin.get(response);
+
+	if (response == 'E')
+	{
+		RSA::PublicKey l_public_key;
+
+		if (!rsa_try_import(l_public_key, "public.dat"))
+		{
+			std::cout << "Error: public.dat not found." << std::endl;
+			std::cin.get();
+			return 0;
+		}
+
+		l_input_path = l_original_path;
+		l_output_path = l_encrypt_path;
+		stream_transform_directory(
+			[&](std::ifstream& a_ifs, std::ofstream& a_ofs)
+			{
+				rsa_encrypt(a_ifs, a_ofs, l_public_key);
+			}
+		);
+	}
+	else if (response == 'D')
+	{
+		RSA::PrivateKey l_private_key;
+
+		if (!rsa_try_import(l_private_key, "private.dat"))
+		{
+			std::cout << "Error: private.dat not found." << std::endl;
+			std::cin.get();
+			return 0;
+		}
+
+		l_input_path = l_encrypt_path;
+		l_output_path = l_decrypt_path;
+		stream_transform_directory(
+			[&](std::ifstream& a_ifs, std::ofstream& a_ofs)
+			{
+				rsa_decrypt(a_ifs, a_ofs, l_private_key);
+			}
+		);
+	}
+	else
+	{
+		return 0;
+	}
+
+	return EXIT_SUCCESS;
+
+}
+
 int main() {
 
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
+	namespace fs = std::filesystem;
 
-	vector<uint8_t> l_key = aes_generate_key();
+	rsa_key_pair kp = rsa_generate_key_pair(8192);
 
-	std::ifstream l_ifs_e("input.jpg", std::ios::in | std::ios::binary);
-	std::ofstream l_ofs_e("enc.jpg", std::ios::out | std::ios::trunc | std::ios::binary);
-	aes_encrypt(l_ifs_e, l_ofs_e, l_key);
-	l_ifs_e.close();
-	l_ofs_e.close();
+	rsa_export(kp.public_key, "public.dat");
+	rsa_export(kp.private_key, "private.dat");
 
-	std::ifstream l_ifs_d("enc.jpg", std::ios::in | std::ios::binary);
-	std::ofstream l_ofs_d("recovered.jpg", std::ios::out | std::ios::binary | std::ios::trunc);
-	aes_decrypt(l_ifs_d, l_ofs_d, l_key);
-	l_ifs_d.close();
-	l_ofs_d.close();
-	
  	return EXIT_SUCCESS;
 
 }
