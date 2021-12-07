@@ -360,10 +360,10 @@ int main() {
 	using namespace affix_base::threading;
 	namespace fs = std::filesystem;
 
-	rsa_key_pair kp = rsa_generate_key_pair(8192);
+	std::string l_data = "test.txt.aes.aes";
+	std::string l_query = "";
 
-	rsa_export(kp.public_key, "public.dat");
-	rsa_export(kp.private_key, "private.dat");
+	bool b = affix_base::data::string_can_query(l_data, l_query);
 
  	return EXIT_SUCCESS;
 

@@ -102,7 +102,7 @@ string data::string_trim_left_until(
 size_t data::string_find(
 	const string& a_string,
 	const char& a_char,
-	const int& a_find_index
+	const size_t& a_find_index
 )
 {
 	int l_find_index = 0;
@@ -115,6 +115,29 @@ size_t data::string_find(
 	return a_string.size();
 }
 
+std::vector<size_t> data::string_find_all(
+	const std::string& a_data,
+	const std::string& a_query
+)
+{
+	std::vector<size_t> l_result;
+
+	for (size_t l_offset = 0; true;)
+	{
+		size_t l_found_index = a_data.find(a_query, l_offset);
+		if (l_found_index != string::npos)
+		{
+			l_result.push_back(l_found_index);
+			l_offset = l_found_index + a_query.size();
+		}
+		else
+		{
+			return l_result;
+		}
+	}
+
+}
+
 bool data::string_can_query(
 	const string& a_data,
 	const string& a_query
@@ -123,7 +146,8 @@ bool data::string_can_query(
 	vector<string> match_split = data::string_split(a_query, '*');
 
 	size_t next_match_start = 0;
-	for (int i = 0; i < match_split.size(); i++) {
+	for (int i = 0; i < match_split.size() - 1; i++) {
+
 		const string& l_string = match_split[i];
 		if (l_string != "") {
 			size_t this_match = a_data.find(l_string, next_match_start);
@@ -131,13 +155,26 @@ bool data::string_can_query(
 				return false;
 			if (i == 0 && this_match != 0)
 				return false;
-			if (i == match_split.size() - 1 && this_match + l_string.size() != a_data.size())
-				return false;
 			next_match_start = this_match + l_string.size();
 		}
+
+	}
+
+	std::string final_search = match_split.back();
+
+	if (final_search != "")
+	{
+		if (a_data.size() < final_search.size())
+			return false;
+
+		std::string data_end = a_data.substr(a_data.size() - final_search.size(), final_search.size());
+
+		if (final_search != data_end)
+			return false;
 	}
 
 	return true;
+
 }
 
 bool data::string_any_can_query(

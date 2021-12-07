@@ -81,7 +81,19 @@ namespace affix_base {
 		size_t string_find(
 			const std::string& a_string, 
 			const char& a_char, 
-			const int& a_find_index = 0);
+			const size_t& a_find_index = 0
+		);
+
+		/// <summary>
+		/// Finds all locations of a query string within another string. 
+		/// </summary>
+		/// <param name="a_data"></param>
+		/// <param name="a_query"></param>
+		/// <returns></returns>
+		std::vector<size_t> string_find_all(
+			const std::string& a_data,
+			const std::string& a_query
+		);
 
 		/// <summary>
 		/// Determines if a string (a_query) matches another string (a_data) while respecting wildcards (*) in the query. 
