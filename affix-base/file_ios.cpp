@@ -4,7 +4,7 @@
 
 using namespace affix_base;
 
-void ios::file_write(
+void files::file_write(
 	const std::string& a_path,
 	const std::vector<uint8_t>& a_bytes
 )
@@ -14,7 +14,7 @@ void ios::file_write(
 	l_ofs.close();
 }
 
-void ios::file_read(
+void files::file_read(
 	const std::string& a_path,
 	std::vector<uint8_t>& a_bytes
 )

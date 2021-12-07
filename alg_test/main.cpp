@@ -360,10 +360,7 @@ int main() {
 	using namespace affix_base::threading;
 	namespace fs = std::filesystem;
 
-	std::string l_data = "test.txt.aes.aes";
-	std::string l_query = "";
-
-	bool b = affix_base::data::string_can_query(l_data, l_query);
+	std::string l_valid_path = affix_base::files::get_unoccupied_path("test");
 
  	return EXIT_SUCCESS;
 

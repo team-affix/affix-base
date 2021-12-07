@@ -2,7 +2,7 @@
 #include "pch.h"
 
 namespace affix_base {
-	namespace ios {
+	namespace files {
 
 		void file_write(
 			const std::string& a_path,
