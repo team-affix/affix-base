@@ -72,6 +72,10 @@ namespace affix_base {
 			T* operator->() {
 				return get();
 			}
+			const T* operator->() const
+			{
+				return get();
+			}
 
 		public:
 			void link(const ptr<T>& a_other) {

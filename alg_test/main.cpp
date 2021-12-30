@@ -354,13 +354,25 @@ int main_encrypt_decrypt()
 
 }
 
+struct s
+{
+	void v() const
+	{
+
+	}
+};
+
 int main() {
 
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 	namespace fs = std::filesystem;
 
-	std::string l_valid_path = affix_base::files::get_unoccupied_path("test");
+	ptr<s> p = new s();
+
+	const ptr<s>& p2 = p;
+
+	p2->v();
 
  	return EXIT_SUCCESS;
 
