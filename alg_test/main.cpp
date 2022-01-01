@@ -354,12 +354,25 @@ int main_encrypt_decrypt()
 
 }
 
-struct s
+class custom_class
 {
-	void v() const
-	{
+public:
+	int m_int;
 
+
+public:
+	virtual ~custom_class()
+	{
+		//std::cout << "DECONSTRUCTED" << std::endl;
 	}
+	custom_class(
+		const int& a_int
+	) :
+		m_int(a_int)
+	{
+		//std::cout << "CONSTRUCTED" << std::endl;
+	}
+
 };
 
 int main() {
@@ -368,11 +381,14 @@ int main() {
 	using namespace affix_base::threading;
 	namespace fs = std::filesystem;
 
-	ptr<s> p = new s();
+	ptr<custom_class> p1 = new custom_class(1);
+	ptr<custom_class> p2 = new custom_class(2);
+	ptr<custom_class> p3 = p2;
+	p2.group_link(p1);
 
-	const ptr<s>& p2 = p;
+	p3.group_unlink();
 
-	p2->v();
+	p3 = new custom_class(3);
 
  	return EXIT_SUCCESS;
 
