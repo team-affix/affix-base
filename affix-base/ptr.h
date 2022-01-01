@@ -11,9 +11,16 @@ namespace affix_base {
 
 		class ptr_base {
 		protected:
+			/// <summary>
+			/// Resource map, which holds the owned resources as keys, and the groups of ptr_base's that own that resource as values.
+			/// </summary>
 			static std::map<void*, std::vector<ptr_base*>> s_res_map;
 
 		public:
+			/// <summary>
+			/// Causes this to become an owner of a resource, and if the resource is already owned, it joins the group which owns that resource.
+			/// </summary>
+			/// <param name="a_raw"></param>
 			void link(void* a_raw) {
 
 				// LEAVE ANY RESOURCE GROUPS
@@ -46,6 +53,10 @@ namespace affix_base {
 				acquire_resource(a_raw);
 
 			}
+
+			/// <summary>
+			/// Stops owning resource. If there is only 1 owner when this is called, the resource will be deleted.
+			/// </summary>
 			void unlink() {
 
 				if (!owns_resource())
@@ -83,6 +94,11 @@ namespace affix_base {
 			}
 
 		public:
+			/// <summary>
+			/// Causes each ptr_base which shares the same resource as this to link to another resource.
+			/// This will delete the previously shared resource.
+			/// </summary>
+			/// <param name="a_raw"></param>
 			void group_link(
 				void* a_raw
 			)
@@ -96,6 +112,11 @@ namespace affix_base {
 					l_group[i]->link(a_raw);
 
 			}
+
+			/// <summary>
+			/// Causes each ptr_base which shares the same resource as this to unlink.
+			/// This will delete the previously shared resource, and will cause the previous group to disband.
+			/// </summary>
 			void group_unlink()
 			{
 				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair();
