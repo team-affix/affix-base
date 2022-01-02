@@ -11,104 +11,122 @@ namespace unittest
 	TEST_CLASS(test_async_handshake)
 	{
 	protected:
-		const wchar_t* to_const_wchar_t(const std::string& str)
-		{
-			std::wostringstream wstm;
-			const std::ctype<wchar_t>& ctfacet = std::use_facet<std::ctype<wchar_t>>(wstm.getloc());
-			for (size_t i = 0; i < str.size(); ++i)
-				wstm << ctfacet.widen(str[i]);
-			return wstm.str().c_str();
-		}
-	protected:
-		asio::ip::tcp::socket start_socket(asio::io_context& a_context)
-		{
-			asio::ip::tcp::socket l_result(a_context);
-			return l_result;
-		}
-		asio::ip::tcp::acceptor start_aceptor(asio::io_context& a_context)
-		{
-			asio::ip::tcp::endpoint l_local_endpoint(asio::ip::tcp::v4(), 8091);
-			asio::ip::tcp::acceptor l_result(a_context, l_local_endpoint);
-			return l_result;
-		}
+		asio::ip::tcp::endpoint m_acceptor_endpoint = asio::ip::tcp::endpoint(asio::ip::make_address("192.168.1.141"), 8090);
 
 	protected:
-		void handshake_test(uint16_t a_key_size)
+		void handshake_test(
+			asio::io_context& a_context,
+			asio::ip::tcp::socket& a_socket,
+			const affix_base::cryptography::rsa_key_pair& a_key_pair,
+			const std::vector<CryptoPP::byte>& a_remote_seed,
+			const std::vector<CryptoPP::byte>& a_local_seed,
+			const bool& a_send_first
+		)
 		{
-			asio::io_context l_context;
+			affix_base::networking::socket_io_guard l_socket_io_guard(a_socket);
 
-			asio::ip::tcp::socket l_socket_0 = start_socket(l_context);
-			asio::ip::tcp::acceptor l_acceptor = start_aceptor(l_context);
+			affix_base::data::ptr<affix_base::networking::async_authenticate_remote> ash = nullptr;
+			
+			CryptoPP::AutoSeededRandomPool l_random;
 
-			bool l_connected = false;
-			bool l_accepted = false;
+			auto l_callback = [&](bool a_result)
+			{
+				// VERIFY THAT REMOTE SEED TRANSFERS SUCCESSFULLY
+				Assert::IsTrue(std::equal(a_local_seed.begin(), a_local_seed.end(), ash->m_local_seed.begin(), ash->m_local_seed.end()));
+				// VERIFY THAT THE PUBLIC KEY WAS IN A VALID FORM AND TRANSMITTED PROPERLY
+				Assert::IsTrue(ash->m_remote_public_key.Validate(l_random, 3));
+				// VERIFY THAT NO MISC. ERRORS OCCURED
+				Assert::IsTrue(a_result);
+			};
 
-			affix_base::data::ptr<asio::ip::tcp::socket> l_socket_1 = nullptr;
+			ash = new affix_base::networking::async_authenticate_remote(
+				l_socket_io_guard,
+				a_key_pair,
+				a_remote_seed,
+				l_callback,
+				a_send_first
+			);
+
+			a_context.run();
+
+		}
+
+	protected:
+		void handshake_test(
+			const uint16_t& a_key_size
+		)
+		{
+			asio::io_context l_context_0;
+			asio::io_context l_context_1;
+
+			asio::ip::tcp::acceptor l_acceptor(l_context_0, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), m_acceptor_endpoint.port()));
+			asio::ip::tcp::socket l_socket_0(l_context_0);
+			asio::ip::tcp::socket l_socket_1(l_context_1);
+
 			l_acceptor.async_accept(
 				[&](asio::error_code a_ec, asio::ip::tcp::socket a_socket)
 				{
-					Assert::IsFalse((bool)a_ec, to_const_wchar_t("Error accepting connection using asio::ip::tcp::acceptor."));
-					l_accepted = true;
-					l_socket_1 = new asio::ip::tcp::socket(std::move(a_socket));
-					return;
+					l_socket_0 = std::move(a_socket);
 				});
-			l_socket_0.async_connect(l_acceptor.local_endpoint(),
-				[&](asio::error_code a_ec)
+
+			std::thread l_connect_thread_0(
+				[&]
 				{
-					Assert::IsFalse((bool)a_ec, to_const_wchar_t("Error connecting using asio::ip::tcp::socket."));
-					l_connected = true;
-					return;
+					l_context_0.run();
+				});
+			std::thread l_connect_thread_1(
+				[&]
+				{
+					l_socket_1.connect(m_acceptor_endpoint);
 				});
 
-			l_context.run();
+			if (l_connect_thread_0.joinable())
+				l_connect_thread_0.join();
 
-			affix_base::networking::socket_io_guard l_socket_io_guard_0(l_socket_0);
-			affix_base::networking::socket_io_guard l_socket_io_guard_1(*l_socket_1);
-			
+			if(l_connect_thread_1.joinable())
+				l_connect_thread_1.join();
+
 			affix_base::cryptography::rsa_key_pair l_key_pair_0 = affix_base::cryptography::rsa_generate_key_pair(a_key_size);
 			affix_base::cryptography::rsa_key_pair l_key_pair_1 = affix_base::cryptography::rsa_generate_key_pair(a_key_size);
 
-			std::vector<CryptoPP::byte> l_remote_seed_0;
-			std::vector<CryptoPP::byte> l_remote_seed_1;
+			std::vector<CryptoPP::byte> l_remote_seed_0(25);
+			std::vector<CryptoPP::byte> l_remote_seed_1(25);
 
-			// GENERATE RANDOM SEEDS
 			CryptoPP::AutoSeededRandomPool l_random;
-			l_random.GenerateBlock(l_remote_seed_0.data(), 25);
-			l_random.GenerateBlock(l_remote_seed_1.data(), 25);
+			l_random.GenerateBlock(l_remote_seed_0.data(), l_remote_seed_0.size());
+			l_random.GenerateBlock(l_remote_seed_1.data(), l_remote_seed_1.size());
 
-			affix_base::data::ptr<affix_base::networking::async_handshake> ash_0 = nullptr;
-			affix_base::data::ptr<affix_base::networking::async_handshake> ash_1 = nullptr;
+			std::thread l_thread_0(
+				[&]
+				{
+					handshake_test(
+						l_context_0,
+						l_socket_0,
+						l_key_pair_0,
+						l_remote_seed_0,
+						l_remote_seed_1,
+						true
+					);
+				});
 
-			bool l_callback_0_fired = false;
-			bool l_callback_1_fired = false;
+			std::thread l_thread_1(
+				[&]
+				{
+					handshake_test(
+						l_context_1,
+						l_socket_1,
+						l_key_pair_1,
+						l_remote_seed_1,
+						l_remote_seed_0,
+						false
+					);
+				});
 
-			// CREATE CALLBACK FN'S
-			auto l_callback_0 = [&](bool a_result)
-			{
-				// VERIFY THAT REMOTE SEED TRANSFERS SUCCESSFULLY
-				Assert::IsTrue(std::equal(l_remote_seed_1.begin(), l_remote_seed_1.end(), ash_0->m_local_seed.begin(), ash_0->m_local_seed.end()), (const wchar_t*)"Received seed mismatch.");
-				// VERIFY THAT THE PUBLIC KEY WAS IN A VALID FORM AND TRANSMITTED PROPERLY
-				Assert::IsTrue(ash_0->m_remote_public_key.Validate(l_random, 3), (const wchar_t*)"Remote public key ill-formed.");
-				// VERIFY THAT NO MISC. ERRORS OCCURED
-				Assert::IsTrue(a_result, (const wchar_t*)"Misc error.");
-				l_callback_0_fired = true;
-			};
-			auto l_callback_1 = [&](bool a_result)
-			{
-				// VERIFY THAT REMOTE SEED TRANSFERS SUCCESSFULLY
-				Assert::IsTrue(std::equal(l_remote_seed_0.begin(), l_remote_seed_0.end(), ash_1->m_local_seed.begin(), ash_1->m_local_seed.end()), (const wchar_t*)"Received seed mismatch.");
-				// VERIFY THAT THE PUBLIC KEY WAS IN A VALID FORM AND TRANSMITTED PROPERLY
-				Assert::IsTrue(ash_1->m_remote_public_key.Validate(l_random, 3), (const wchar_t*)"Remote public key ill-formed.");
-				// VERIFY THAT NO MISC. ERRORS OCCURED
-				Assert::IsTrue(a_result, (const wchar_t*)"Misc error.");
-				l_callback_1_fired = true;
-			};
+			if (l_thread_0.joinable())
+				l_thread_0.join();
 
-			ash_0 = new affix_base::networking::async_handshake(l_socket_io_guard_0, l_key_pair_0, l_remote_seed_0, l_callback_0);
-			ash_1 = new affix_base::networking::async_handshake(l_socket_io_guard_1, l_key_pair_1, l_remote_seed_1, l_callback_1);
-
-			// WAIT FOR CALLBACKS TO FIRE
-			l_context.run();
+			if (l_thread_1.joinable())
+				l_thread_1.join();
 
 		}
 

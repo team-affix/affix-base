@@ -381,14 +381,7 @@ int main() {
 	using namespace affix_base::threading;
 	namespace fs = std::filesystem;
 
-	ptr<custom_class> p1 = new custom_class(1);
-	ptr<custom_class> p2 = new custom_class(2);
-	ptr<custom_class> p3 = p2;
-	p2.group_link(p1);
 
-	p3.group_unlink();
-
-	p3 = new custom_class(3);
 
  	return EXIT_SUCCESS;
 
