@@ -132,9 +132,6 @@
     <ClCompile Include="cross_thread_mutex.cpp">
       <Filter>Source Files\threading</Filter>
     </ClCompile>
-    <ClCompile Include="handshake.cpp">
-      <Filter>Source Files\networking</Filter>
-    </ClCompile>
     <ClCompile Include="string_extensions.cpp">
       <Filter>Source Files\data</Filter>
     </ClCompile>
@@ -143,6 +140,15 @@
     </ClCompile>
     <ClCompile Include="path_attributes.cpp">
       <Filter>Source Files\files</Filter>
+    </ClCompile>
+    <ClCompile Include="async_authenticate_local.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="async_authenticate_remote.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="async_authenticate.cpp">
+      <Filter>Source Files\networking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,9 +269,6 @@
     <ClInclude Include="byte_buffer.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="handshake.h">
-      <Filter>Header Files\networking</Filter>
-    </ClInclude>
     <ClInclude Include="string_extensions.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
@@ -277,6 +280,15 @@
     </ClInclude>
     <ClInclude Include="path_attributes.h">
       <Filter>Header Files\files</Filter>
+    </ClInclude>
+    <ClInclude Include="async_authenticate_local.h">
+      <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="async_authenticate_remote.h">
+      <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="async_authenticate.h">
+      <Filter>Header Files\networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

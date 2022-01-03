@@ -9,19 +9,23 @@ namespace affix_base {
 
 		class async_authenticate_remote
 		{
-		protected:
+		public:
 			socket_io_guard& m_socket_io_guard;
 
-		protected:
+		public:
 			std::vector<uint8_t> m_remote_seed;
 			CryptoPP::RSA::PublicKey m_remote_public_key;
 
-		protected:
+		public:
 			std::function<void(bool)> m_callback;
 
 		public:
 			async_authenticate_remote(
-				socket_io_guard& a_socket_io_guard,
+				socket_io_guard& a_socket_io_guard
+			);
+
+		public:
+			void start(
 				const std::vector<uint8_t>& a_remote_seed,
 				const std::function<void(bool)>& a_callback
 			);

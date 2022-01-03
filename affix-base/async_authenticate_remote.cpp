@@ -9,19 +9,27 @@ using affix_base::data::ptr;
 using std::vector;
 
 async_authenticate_remote::async_authenticate_remote(
-	socket_io_guard& a_socket_io_guard,
+	socket_io_guard& a_socket_io_guard
+) :
+	m_socket_io_guard(a_socket_io_guard)
+{
+
+}
+
+void async_authenticate_remote::start(
 	const std::vector<uint8_t>& a_remote_seed,
 	const std::function<void(bool)>& a_callback
-) :
-	m_socket_io_guard(a_socket_io_guard),
-	m_remote_seed(a_remote_seed)
+)
 {
+	m_remote_seed = a_remote_seed;
+	m_callback = a_callback;
 	async_send_seed();
 }
 
 void async_authenticate_remote::async_send_seed()
 {
 	byte_buffer l_byte_buffer;
+
 	l_byte_buffer.push_back(m_remote_seed);
 
 	// SEND DATA
@@ -97,7 +105,7 @@ void async_authenticate_remote::async_recv_auth() {
 
 			bool l_valid_signature = false;
 
-			if (cryptography::rsa_try_verify(l_remote_seed, l_signature, m_remote_public_key, l_valid_signature))
+			if (!cryptography::rsa_try_verify(l_remote_seed, l_signature, m_remote_public_key, l_valid_signature))
 			{
 				m_callback(false);
 				return;

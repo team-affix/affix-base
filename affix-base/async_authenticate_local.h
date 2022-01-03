@@ -9,20 +9,26 @@ namespace affix_base
 	{
 		class async_authenticate_local
 		{
-		protected:
+		public:
 			socket_io_guard& m_socket_io_guard;
 
-		protected:
+		public:
 			std::vector<uint8_t> m_local_seed;
 			affix_base::cryptography::rsa_key_pair m_local_key_pair;
+			size_t m_expected_seed_size = 0;
 
-		protected:
+		public:
 			std::function<void(bool)> m_callback;
 
 		public:
 			async_authenticate_local(
-				socket_io_guard& a_socket_io_guard,
-				affix_base::cryptography::rsa_key_pair a_local_key_pair,
+				socket_io_guard& a_socket_io_guard
+			);
+
+		public:
+			void start(
+				const affix_base::cryptography::rsa_key_pair& a_local_key_pair,
+				const size_t& a_expected_seed_size,
 				const std::function<void(bool)>& a_callback
 			);
 

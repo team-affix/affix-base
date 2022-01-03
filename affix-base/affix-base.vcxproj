@@ -346,10 +346,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="aes.cpp" />
+    <ClCompile Include="async_authenticate.cpp" />
+    <ClCompile Include="async_authenticate_local.cpp" />
+    <ClCompile Include="async_authenticate_remote.cpp" />
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="cross_thread_mutex.cpp" />
     <ClCompile Include="file_ios.cpp" />
-    <ClCompile Include="handshake.cpp" />
     <ClCompile Include="log_result.cpp" />
     <ClCompile Include="nat.cpp" />
     <ClCompile Include="path_attributes.cpp" />
@@ -387,6 +389,9 @@
   <ItemGroup>
     <ClInclude Include="aes.h" />
     <ClInclude Include="affix_base.h" />
+    <ClInclude Include="async_authenticate.h" />
+    <ClInclude Include="async_authenticate_local.h" />
+    <ClInclude Include="async_authenticate_remote.h" />
     <ClInclude Include="callback.h" />
     <ClInclude Include="catch_friendly_assert.h" />
     <ClInclude Include="cross_thread_mutex.h" />
@@ -395,7 +400,6 @@
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="path_attributes.h" />
     <ClInclude Include="file_ios.h" />
-    <ClInclude Include="handshake.h" />
     <ClInclude Include="files.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="semantic_version_number.h" />
