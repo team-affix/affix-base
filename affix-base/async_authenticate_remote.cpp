@@ -9,20 +9,14 @@ using affix_base::data::ptr;
 using std::vector;
 
 async_authenticate_remote::async_authenticate_remote(
-	socket_io_guard& a_socket_io_guard
-) :
-	m_socket_io_guard(a_socket_io_guard)
-{
-
-}
-
-void async_authenticate_remote::start(
+	socket_io_guard& a_socket_io_guard,
 	const std::vector<uint8_t>& a_remote_seed,
 	const std::function<void(bool)>& a_callback
-)
+) :
+	m_socket_io_guard(a_socket_io_guard),
+	m_remote_seed(a_remote_seed),
+	m_callback(a_callback)
 {
-	m_remote_seed = a_remote_seed;
-	m_callback = a_callback;
 	async_send_seed();
 }
 

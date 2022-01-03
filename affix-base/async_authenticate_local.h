@@ -22,11 +22,7 @@ namespace affix_base
 
 		public:
 			async_authenticate_local(
-				socket_io_guard& a_socket_io_guard
-			);
-
-		public:
-			void start(
+				socket_io_guard& a_socket_io_guard,
 				const affix_base::cryptography::rsa_key_pair& a_local_key_pair,
 				const size_t& a_expected_seed_size,
 				const std::function<void(bool)>& a_callback

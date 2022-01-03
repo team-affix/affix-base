@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "transmission.h"
 #include "asio.hpp"
+#include "cross_thread_mutex.h"
 
 namespace affix_base {
 	namespace networking {
@@ -20,9 +21,9 @@ namespace affix_base {
             asio::ip::tcp::socket& m_socket;
 
         protected:
-            std::mutex m_send_mutex;
+            affix_base::threading::cross_thread_mutex m_send_mutex;
             std::deque<socket_send_request> m_send_deque;
-            std::mutex m_receive_mutex;
+            affix_base::threading::cross_thread_mutex m_receive_mutex;
             std::deque<socket_receive_request> m_receive_deque;
 
         public:

@@ -21,11 +21,7 @@ namespace affix_base {
 
 		public:
 			async_authenticate_remote(
-				socket_io_guard& a_socket_io_guard
-			);
-
-		public:
-			void start(
+				socket_io_guard& a_socket_io_guard,
 				const std::vector<uint8_t>& a_remote_seed,
 				const std::function<void(bool)>& a_callback
 			);
