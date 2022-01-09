@@ -381,6 +381,13 @@ int main() {
 	using namespace affix_base::threading;
 	namespace fs = std::filesystem;
 
+	std::ofstream nullstream;
+	std::clog.rdbuf(nullstream.rdbuf());
+
+	cross_thread_mutex ctm;
+	ctm.lock();
+	ctm.unlock();
+
 	asio::ip::address l_local_address; 
 	if (!socket_internal_ip_address(l_local_address))
 		return 1;
