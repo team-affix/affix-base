@@ -73,7 +73,7 @@ bool networking::socket_receive_data(tcp::socket& a_socket, std::vector<uint8_t>
 		l_offset += a_socket.read_some(asio::mutable_buffer(a_data.data() + l_offset, std::min(l_remaining, MAX_BUFFER_SIZE)), l_ec);
 
 		if (l_ec) {
-			LOG("[ ERROR ] " << l_ec.message());
+			std::cerr << "[ SOCKET RECEIVE DATA ] Error: " << l_ec.message() << std::endl;
 			return false;
 		}
 

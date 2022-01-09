@@ -7,12 +7,6 @@
 #include "rsa.h"
 #include "utc_time.h"
 
-#if 1
-#define LOG(x) std::cout << x << std::endl
-#else
-#define LOG(x)
-#endif
-
 using namespace affix_base;
 using affix_base::networking::nat_type;
 using namespace CryptoPP;
@@ -51,14 +45,14 @@ bool networking::socket_external_ip(
 	random.GenerateBlock(l_outbound_data.data(), l_outbound_data.size());
 
 	if (!socket_send_data_to(a_socket, a_returner_endpoint, l_outbound_data)) {
-		LOG("[ NAT ] Error sending data to returner.");
+		std::cerr << "[ NAT ] Error sending data to returner." << std::endl;
 		return false;
 	}
 
 	vector<byte> l_inbound_data(RETURNER_RESPONSE_SIZE);
 
 	if (!socket_receive_data_for(a_socket, l_inbound_data, RETURNER_RESPONSE_TIMEOUT)) {
-		LOG("[ NAT ] Error receiving data from returner.");
+		std::cerr << "[ NAT ] Error receiving data from returner." << std::endl;
 		return false;
 	}
 
@@ -70,47 +64,48 @@ bool networking::socket_external_ip(
 	vector<byte> l_signature;
 
 	try {
-		response_msg.pop_front(l_random_data);
-		response_msg.pop_front(l_external_address);
-		response_msg.pop_front(l_external_port);
-		response_msg.pop_front(l_signature);
+		if (!response_msg.pop_front(l_random_data)) return false;
+		if (!response_msg.pop_front(l_external_address)) return false;
+		if (!response_msg.pop_front(l_external_port)) return false;
+		if (!response_msg.pop_front(l_signature)) return false;
 	}
 	catch (...) {
-		LOG("[ NAT ] Error unpacking message from returner.");
+		std::cerr << "[ NAT ] Error unpacking message from returner." << std::endl;
 		return false;
 	}
 
 	// CHECK THAT THE RANDOM DATA IS THE SAME
 	if (!std::equal(l_random_data.begin(), l_random_data.end(), l_outbound_data.begin(), l_outbound_data.end())) {
-		LOG("[ NAT ] Mismatched random data.");
+		std::cerr << "[ NAT ] Mismatched random data." << std::endl;
 		return false;
 	}
 
 	// REPACK DATA INTO MESSAGE
 	byte_buffer l_temp_message;
-	l_temp_message.push_back(l_random_data);
-	l_temp_message.push_back(l_external_address);
-	l_temp_message.push_back(l_external_port);
+
+	if (!l_temp_message.push_back(l_random_data)) return false;
+	if (!l_temp_message.push_back(l_external_address)) return false;
+	if (!l_temp_message.push_back(l_external_port)) return false;
+
 	vector<byte> l_temp_message_body = l_temp_message.data();
 
 	bool l_signature_valid = false;
 
 	if (!rsa_try_verify(l_temp_message_body, l_signature, a_returner_public_key, l_signature_valid)) {
-		LOG("[ NAT ] Error verifying returner signature.");
+		std::cerr << "[ NAT ] Error verifying returner signature." << std::endl;
 		return false;
 	}
 
 	if (!l_signature_valid) {
-		LOG("[ NAT ] Invalid signature from returner.");
+		std::cerr << "[ NAT ] Invalid signature from returner." << std::endl;
 		return false;
 	}
 
 	a_output.address(ip::address_v4(l_external_address));
 	a_output.port(l_external_port);
 
-	LOG("[ NAT ] Successfully retrieved IP (address, port) pair (from: " << a_returner_endpoint.address().to_string() << ":" << std::to_string(a_returner_endpoint.port()) << "): " << a_output.address().to_string() << ":" << std::to_string(a_output.port()));
-	
 	return true;
+
 }
 
 bool networking::socket_external_ip(
@@ -126,7 +121,7 @@ bool networking::socket_external_ip(
 		}
 	}
 
-	LOG("[ NAT ] Failed after max attempts at gathering external endpoint information from: " << a_returner_endpoint.address().to_string() << ":" << std::to_string(a_returner_endpoint.port()));
+	std::cerr << "[ NAT ] Failed after max attempts at gathering external endpoint information from: " << a_returner_endpoint.address().to_string() << ":" << std::to_string(a_returner_endpoint.port()) << std::endl;
 	return false;
 
 }
@@ -147,12 +142,12 @@ bool networking::socket_nat_type(
 
 	socket_reopen_and_rebind(a_socket);
 	if (!socket_external_ip(a_socket, a_returner_endpoint_0, a_returner_public_key_0, l_external_endpoint_0, a_max_attempts)) {
-		LOG("[ NAT ] Error receiving endpoint information from returner 0.");
+		std::cerr << "[ NAT ] Error receiving endpoint information from returner 0." << std::endl;
 		return false;
 	}
 	socket_reopen_and_rebind(a_socket);
 	if (!socket_external_ip(a_socket, a_returner_endpoint_1, a_returner_public_key_1, l_external_endpoint_1, a_max_attempts)) {
-		LOG("[ NAT ] Error receiving endpoint information from returner 1.");
+		std::cerr << "[ NAT ] Error receiving endpoint information from returner 1." << std::endl;
 		return false;
 	}
 
@@ -208,4 +203,26 @@ bool networking::socket_nat_type(
 
 	return true;
 
+}
+
+bool networking::socket_internal_ip_address(
+	asio::ip::address& a_address
+)
+{
+	try {
+		asio::io_service netService;
+		udp::resolver   resolver(netService);
+		udp::resolver::query query(udp::v4(), "google.com", "");
+		udp::resolver::iterator endpoints = resolver.resolve(query);
+		udp::endpoint ep = *endpoints;
+		udp::socket socket(netService);
+		socket.connect(ep);
+		asio::ip::address addr = socket.local_endpoint().address();
+		a_address = addr;
+		return true;
+	}
+	catch (std::exception& e) {
+		std::cerr << "Could not determing local IP Address. Exception: " << e.what() << std::endl;
+		return false;
+	}
 }

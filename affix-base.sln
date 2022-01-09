@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "affix-base", "affix-base\af
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "alg_test", "alg_test\alg_test.vcxproj", "{7059CA22-B9B9-4BC6-8CDB-386BC9B68FD4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "affix-base-clr", "affix-base-clr\affix-base-clr.vcxproj", "{4228C01F-5CF4-4893-ACA7-91B858A64CA4}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cryptlib", "cryptopp\cryptlib.vcxproj", "{C39F4B46-6E89-4074-902E-CA57073044D2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unit_test", "unit_test\unit_test.vcxproj", "{6318DDA0-EF93-49E1-B8C6-9C296F39DCCF}"
@@ -57,22 +55,6 @@ Global
 		{7059CA22-B9B9-4BC6-8CDB-386BC9B68FD4}.Release|x64.Build.0 = Release|x64
 		{7059CA22-B9B9-4BC6-8CDB-386BC9B68FD4}.Release|x86.ActiveCfg = Release|Win32
 		{7059CA22-B9B9-4BC6-8CDB-386BC9B68FD4}.Release|x86.Build.0 = Release|Win32
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.Debug|x64.ActiveCfg = Debug|x64
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.Debug|x64.Build.0 = Debug|x64
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.Debug|x86.ActiveCfg = Debug|Win32
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.Debug|x86.Build.0 = Debug|Win32
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.DLL-Import Debug|x64.ActiveCfg = Debug|x64
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.DLL-Import Debug|x64.Build.0 = Debug|x64
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.DLL-Import Debug|x86.ActiveCfg = Debug|Win32
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.DLL-Import Debug|x86.Build.0 = Debug|Win32
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.DLL-Import Release|x64.ActiveCfg = Release|x64
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.DLL-Import Release|x64.Build.0 = Release|x64
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.DLL-Import Release|x86.ActiveCfg = Release|Win32
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.DLL-Import Release|x86.Build.0 = Release|Win32
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.Release|x64.ActiveCfg = Release|x64
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.Release|x64.Build.0 = Release|x64
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.Release|x86.ActiveCfg = Release|Win32
-		{4228C01F-5CF4-4893-ACA7-91B858A64CA4}.Release|x86.Build.0 = Release|Win32
 		{C39F4B46-6E89-4074-902E-CA57073044D2}.Debug|x64.ActiveCfg = Debug|x64
 		{C39F4B46-6E89-4074-902E-CA57073044D2}.Debug|x64.Build.0 = Debug|x64
 		{C39F4B46-6E89-4074-902E-CA57073044D2}.Debug|x86.ActiveCfg = Debug|Win32

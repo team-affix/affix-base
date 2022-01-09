@@ -381,7 +381,11 @@ int main() {
 	using namespace affix_base::threading;
 	namespace fs = std::filesystem;
 
+	asio::ip::address l_local_address; 
+	if (!socket_internal_ip_address(l_local_address))
+		return 1;
 
+	std::cout << l_local_address.to_v4().to_string() << std::endl;
 
  	return EXIT_SUCCESS;
 
