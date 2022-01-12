@@ -27,7 +27,12 @@ namespace affix_base {
             std::deque<socket_receive_request> m_receive_deque;
 
         public:
-            socket_io_guard(asio::ip::tcp::socket& a_socket);
+            virtual ~socket_io_guard(
+
+            );
+            socket_io_guard(
+                asio::ip::tcp::socket& a_socket
+            );
 
         public:
             void async_send(const std::vector<uint8_t>& a_data, std::function<void(bool)> a_callback);

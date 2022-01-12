@@ -11,6 +11,13 @@ using std::lock_guard;
 using std::mutex;
 using affix_base::threading::cross_thread_mutex;
 
+socket_io_guard::~socket_io_guard(
+
+)
+{
+    m_socket.cancel();
+}
+
 socket_io_guard::socket_io_guard(tcp::socket& a_socket) : m_socket(a_socket) {
 
 }
