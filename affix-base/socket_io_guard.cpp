@@ -62,12 +62,34 @@ void socket_io_guard::receive_callback(const bool& a_result) {
 
 void socket_io_guard::send_next() {
 
-    socket_async_send(m_socket, m_send_deque.front().m_data, [&](const bool& a_result) { send_callback(a_result); });
+    socket_async_send(m_socket, m_send_deque.front().m_data, 
+        [&](const bool& a_result)
+        { 
+            try
+            {
+                send_callback(a_result);
+            }
+            catch (...)
+            {
+                std::cerr << "[ SOCKET IO GUARD ] Error: unable to successfully complete the send callback." << std::endl;
+            }
+        });
 
 }
 
 void socket_io_guard::receive_next() {
 
-    socket_async_receive(m_socket, m_receive_deque.front().m_data, [&](const bool& a_result) { receive_callback(a_result); });
+    socket_async_receive(m_socket, m_receive_deque.front().m_data,
+        [&](const bool& a_result)
+        { 
+            try
+            {
+                receive_callback(a_result);
+            }
+            catch (...)
+            {
+                std::cerr << "[ SOCKET IO GUARD ] Error: unable to successfully complete the receive callback." << std::endl;
+            }
+        });
 
 }
