@@ -10,6 +10,7 @@
 #include "byte_buffer.h"
 #include <fstream>
 #include <filesystem>
+#include "cryptopp/base64.h"
 
 using namespace CryptoPP;
 using affix_base::data::range;
@@ -28,6 +29,26 @@ namespace affix_base {
             priKey.GenerateRandomWithKeySize(random, a_key_size);
             RSA::PublicKey pubKey(priKey);
             return { priKey, pubKey };
+        }
+
+        std::string cryptography::rsa_to_base64_string(
+            const CryptoPP::RSA::PrivateKey& a_private_key
+        )
+        {
+            string l_result;
+            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result));
+            a_private_key.DEREncode(l_string_sink);
+            return l_result;
+        }
+
+        std::string cryptography::rsa_to_base64_string(
+            const CryptoPP::RSA::PublicKey& a_public_key
+        )
+        {
+            string l_result;
+            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result));
+            a_public_key.DEREncode(l_string_sink);
+            return l_result;
         }
 
         void cryptography::rsa_export(const RSA::PrivateKey& a_private_key, const string& a_file_name) {
