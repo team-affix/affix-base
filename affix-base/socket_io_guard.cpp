@@ -37,8 +37,8 @@ void socket_io_guard::clear_queues(
 
 )
 {
-    lock_guard<cross_thread_mutex> l_lock_guard(m_send_mutex);
-    lock_guard<cross_thread_mutex> l_lock_guard(m_receive_mutex);
+    lock_guard<cross_thread_mutex> l_send_lock_guard(m_send_mutex);
+    lock_guard<cross_thread_mutex> l_receive_lock_guard(m_receive_mutex);
     m_send_deque.clear();
     m_receive_deque.clear();
 }
