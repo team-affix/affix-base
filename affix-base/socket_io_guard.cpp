@@ -33,6 +33,16 @@ void socket_io_guard::async_receive(vector<uint8_t>& a_data, function<void(bool)
 
 }
 
+void socket_io_guard::clear_queues(
+
+)
+{
+    lock_guard<cross_thread_mutex> l_lock_guard(m_send_mutex);
+    lock_guard<cross_thread_mutex> l_lock_guard(m_receive_mutex);
+    m_send_deque.clear();
+    m_receive_deque.clear();
+}
+
 void socket_io_guard::send_callback(const bool& a_result) {
     
     lock_guard<cross_thread_mutex> l_lock(m_send_mutex);

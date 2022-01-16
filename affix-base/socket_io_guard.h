@@ -35,6 +35,9 @@ namespace affix_base {
             void async_send(const std::vector<uint8_t>& a_data, std::function<void(bool)> a_callback);
             void async_receive(std::vector<uint8_t>& a_data, std::function<void(bool)> a_callback);
 
+        public:
+            void clear_queues();
+
         protected:
             void send_callback(const bool& a_result);
             void receive_callback(const bool& a_result);
