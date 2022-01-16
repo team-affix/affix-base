@@ -379,20 +379,12 @@ int main() {
 
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
+	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	std::ofstream nullstream;
-	std::clog.rdbuf(nullstream.rdbuf());
+	vector<uint8_t> l_vector = { 65, 75 };
 
-	cross_thread_mutex ctm;
-	ctm.lock();
-	ctm.unlock();
-
-	asio::ip::address l_local_address; 
-	if (!socket_internal_ip_address(l_local_address))
-		return 1;
-
-	std::cout << l_local_address.to_v4().to_string() << std::endl;
+	string l_string = to_string(l_vector, " ");
 
  	return EXIT_SUCCESS;
 
