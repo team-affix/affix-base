@@ -375,6 +375,13 @@ public:
 
 };
 
+enum class test_enum : uint8_t
+{
+	unknown = 0,
+	value1,
+	value2
+};
+
 int main() {
 
 	using namespace affix_base::callback;
@@ -382,9 +389,7 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	vector<uint8_t> l_vector = { 65, 75 };
 
-	string l_string = to_string(l_vector, " ");
 
  	return EXIT_SUCCESS;
 

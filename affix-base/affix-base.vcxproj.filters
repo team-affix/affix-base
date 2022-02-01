@@ -290,5 +290,8 @@
     <ClInclude Include="async_authenticate.h">
       <Filter>Header Files\networking</Filter>
     </ClInclude>
+    <ClInclude Include="guarded_resource.h">
+      <Filter>Header Files\threading</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

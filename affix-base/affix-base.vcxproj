@@ -398,6 +398,7 @@
     <ClInclude Include="details.h" />
     <ClInclude Include="diff.h" />
     <ClInclude Include="exceptions.h" />
+    <ClInclude Include="guarded_resource.h" />
     <ClInclude Include="path_attributes.h" />
     <ClInclude Include="file_ios.h" />
     <ClInclude Include="files.h" />
