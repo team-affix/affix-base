@@ -389,20 +389,7 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	ptr<cross_thread_mutex> ctm = new cross_thread_mutex();
 
-	std::thread thd1([&]
-		{
-			lock_guard<cross_thread_mutex> l_lock_guard(*ctm);
-			Sleep(10000);
-		});
-
-	Sleep(100);
-
-	ctm.unlink();
-
-	if (thd1.joinable())
-		thd1.join();
 
  	return EXIT_SUCCESS;
 

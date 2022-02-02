@@ -12,7 +12,7 @@ using affix_base::threading::cross_thread_mutex;
 using std::lock_guard;
 
 cross_thread_mutex::~cross_thread_mutex() {
-	lock_guard<cross_thread_mutex> l_lock_guard(*this);
+
 }
 
 void cross_thread_mutex::lock() {
