@@ -389,7 +389,12 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
+	guarded_resource<vector<uint8_t>, cross_thread_mutex> l_guarded_resource;
 
+	locked_resource l_locked_resource = l_guarded_resource.lock();
+
+	(*l_locked_resource).push_back(10);
+	l_locked_resource->push_back(12);
 
  	return EXIT_SUCCESS;
 

@@ -30,6 +30,16 @@ namespace affix_base
 				return m_resource;
 			}
 
+			RESOURCE_TYPE* operator ->()
+			{
+				return &resource();
+			}
+
+			RESOURCE_TYPE& operator*()
+			{
+				return resource();
+			}
+
 		};
 
 		template<typename RESOURCE_TYPE, typename MUTEX_TYPE>
