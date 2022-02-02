@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "diff.h"
+#include "cryptopp/base64.h"
 
 namespace affix_base {
 	namespace data {
@@ -118,6 +119,21 @@ namespace affix_base {
 			};
 
 			return unordered_comparison(a_old, a_new, l_match);
+
+		}
+
+		template<typename T>
+		std::string to_string(const std::vector<T>& a_vector, const std::string& a_separator = ", ")
+		{
+			std::string l_result;
+
+			if (a_vector.size() > 0)
+				l_result += std::to_string(a_vector.front());
+
+			for (int i = 1; i < a_vector.size(); i++)
+				l_result += a_separator + std::to_string(a_vector[i]);
+
+			return l_result;
 
 		}
 

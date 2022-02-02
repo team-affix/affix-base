@@ -73,6 +73,12 @@
     <Filter Include="Source Files\security">
       <UniqueIdentifier>{a6dfd3d7-a496-4d2b-8e5d-439cdf39c45e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\files">
+      <UniqueIdentifier>{cd482f85-d2da-483a-b851-8ffd960a1b87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\files">
+      <UniqueIdentifier>{728d9d42-433b-4009-9e4e-4b84da98f199}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -126,7 +132,22 @@
     <ClCompile Include="cross_thread_mutex.cpp">
       <Filter>Source Files\threading</Filter>
     </ClCompile>
-    <ClCompile Include="handshake.cpp">
+    <ClCompile Include="string_extensions.cpp">
+      <Filter>Source Files\data</Filter>
+    </ClCompile>
+    <ClCompile Include="file_ios.cpp">
+      <Filter>Source Files\files</Filter>
+    </ClCompile>
+    <ClCompile Include="path_attributes.cpp">
+      <Filter>Source Files\files</Filter>
+    </ClCompile>
+    <ClCompile Include="async_authenticate_local.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="async_authenticate_remote.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="async_authenticate.cpp">
       <Filter>Source Files\networking</Filter>
     </ClCompile>
   </ItemGroup>
@@ -248,8 +269,29 @@
     <ClInclude Include="byte_buffer.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="handshake.h">
+    <ClInclude Include="string_extensions.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="file_ios.h">
+      <Filter>Header Files\files</Filter>
+    </ClInclude>
+    <ClInclude Include="files.h">
+      <Filter>Header Files\files</Filter>
+    </ClInclude>
+    <ClInclude Include="path_attributes.h">
+      <Filter>Header Files\files</Filter>
+    </ClInclude>
+    <ClInclude Include="async_authenticate_local.h">
       <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="async_authenticate_remote.h">
+      <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="async_authenticate.h">
+      <Filter>Header Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="guarded_resource.h">
+      <Filter>Header Files\threading</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

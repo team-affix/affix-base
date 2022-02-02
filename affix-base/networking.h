@@ -4,4 +4,6 @@
 #include "transmission.h"
 #include "nat.h"
 #include "socket_io_guard.h"
-#include "handshake.h"
+#include "async_authenticate_remote.h"
+#include "async_authenticate_local.h"
+#include "async_authenticate.h"

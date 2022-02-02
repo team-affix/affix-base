@@ -7,6 +7,7 @@
 #include "cryptopp/sha.h"
 #include "cryptopp/pssr.h"
 #include "vector_extensions.h"
+#include <fstream>
 
 namespace affix_base {
     namespace cryptography {
@@ -27,6 +28,24 @@ namespace affix_base {
         rsa_key_pair rsa_generate_key_pair(
             uint32_t a_key_size);
         
+        /// <summary>
+        /// Exports the base64 version of the RSA private key as a string.
+        /// </summary>
+        /// <param name="a_private_key"></param>
+        /// <param name="a_ostream"></param>
+        std::string rsa_to_base64_string(
+            const CryptoPP::RSA::PrivateKey& a_private_key
+        );
+
+        /// <summary>
+        /// Exports the base64 version of the RSA public key as a string.
+        /// </summary>
+        /// <param name="a_private_key"></param>
+        /// <param name="a_ostream"></param>
+        std::string rsa_to_base64_string(
+            const CryptoPP::RSA::PublicKey& a_public_key
+        );
+
         /// <summary>
         /// Exports an RSA private key to an output file.
         /// </summary>
@@ -173,6 +192,32 @@ namespace affix_base {
         std::vector<CryptoPP::byte> rsa_decrypt_in_chunks(
             const std::vector<CryptoPP::byte>& a_input,
             const CryptoPP::RSA::PrivateKey& a_private_key);
+
+        /// <summary>
+        /// Encrypts a stream using an RSA public key.
+        /// This transformation occurs in blocks or "chunks" to prevent memory overflow.
+        /// </summary>
+        /// <param name="a_input_file"></param>
+        /// <param name="a_output_file"></param>
+        /// <param name="a_public_key"></param>
+        void rsa_encrypt(
+            std::istream& a_input_stream,
+            std::ostream& a_output_stream,
+            const CryptoPP::RSA::PublicKey a_public_key
+        );
+
+        /// <summary>
+        /// Decrypts a stream using an RSA private key.
+        /// This transformation occurs in blocks or "chunks" to prevent memory overflow.
+        /// </summary>
+        /// <param name="a_input_file"></param>
+        /// <param name="a_output_file"></param>
+        /// <param name="a_private_key"></param>
+        void rsa_decrypt(
+            std::istream& a_input_stream,
+            std::ostream& a_output_stream,
+            const CryptoPP::RSA::PrivateKey a_private_key
+        );
 
         /// <summary>
         /// Signs a message using an RSA private key.

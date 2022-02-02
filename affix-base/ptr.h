@@ -1,6 +1,8 @@
 #pragma once
 #include "pch.h"
 #include <map>
+#include "guarded_resource.h"
+#include "cross_thread_mutex.h"
 #define PTR_DEBUG 0
 #if PTR_DEBUG
 #include <iostream>
@@ -11,7 +13,159 @@ namespace affix_base {
 
 		class ptr_base {
 		protected:
-			static std::map<void*, size_t> res_map;
+			/// <summary>
+			/// Resource map, which holds the owned resources as keys, and the groups of ptr_base's that own that resource as values.
+			/// </summary>
+			static affix_base::threading::guarded_resource<std::map<void*, std::vector<ptr_base*>>, affix_base::threading::cross_thread_mutex> s_res_map;
+
+		public:
+			/// <summary>
+			/// Causes this to become an owner of a resource, and if the resource is already owned, it joins the group which owns that resource.
+			/// </summary>
+			/// <param name="a_raw"></param>
+			void link(void* a_raw) {
+
+				// LOCK RESOURCE MAP MUTEX
+				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+
+				// LEAVE ANY RESOURCE GROUPS
+				unlink();
+
+				if (a_raw == nullptr)
+					return;
+
+				// CHECK MAP FOR PRE-OWNED MEMORY ADDRESS
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = l_res_map->find(a_raw);
+
+				if (l_res_pair != l_res_map->end()) {
+
+					std::vector<ptr_base*>& group = l_res_pair->second;
+#if PTR_DEBUG
+					std::cout << "GROUP JOIN" << std::endl;
+#endif
+					// JOIN PREEXISTING GROUP
+					group.push_back(this);
+				}
+				else {
+#if PTR_DEBUG
+					std::cout << "GROUP CREATE" << std::endl;
+#endif
+					// CREATE NEW GROUP FOR THIS RESOURCE
+					l_res_map->insert({ a_raw, { this } });
+				}
+
+				// ACQUIRE RESOURCE
+				acquire_resource(a_raw);
+
+			}
+
+			/// <summary>
+			/// Stops owning resource. If there is only 1 owner when this is called, the resource will be deleted.
+			/// </summary>
+			void unlink() {
+
+				// LOCK RESOURCE MAP MUTEX
+				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+
+				if (!owns_resource())
+					return;
+
+				// CHECK MAP FOR OWNERSHIP OVER A RESOURCE
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
+
+				if (l_res_pair != l_res_map->end()) {
+
+					std::vector<ptr_base*>& group = l_res_pair->second;
+
+					if (group.size() > 1) {
+#if PTR_DEBUG
+						std::cout << "LEAVE GROUP" << std::endl;
+#endif
+						// LEAVE GROUP
+						std::vector<ptr_base*>::iterator this_iterator = std::find(group.begin(), group.end(), this);
+						group.erase(this_iterator);
+					}
+					else {
+#if PTR_DEBUG
+						std::cout << "DELETE RESOURCE" << std::endl;
+#endif
+						// LEAVE GROUP AND DELETE RESOURCE
+						l_res_map->erase(l_res_pair);
+						delete_resource();
+					}
+
+				}
+
+				// CLEAR RESOURCE
+				clear_resource();
+
+			}
+
+		public:
+			/// <summary>
+			/// Causes each ptr_base which shares the same resource as this to link to another resource.
+			/// This will delete the previously shared resource.
+			/// </summary>
+			/// <param name="a_raw"></param>
+			void group_link(
+				void* a_raw
+			)
+			{
+				// LOCK RESOURCE MAP MUTEX
+				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+
+				// GET RESOURCE PAIR AND GROUP
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
+
+				std::vector<ptr_base*>& l_group = l_res_pair->second;
+
+				// EACH MEMBER OF GROUP LINKS RESOURCE
+				for (int i = l_group.size() - 1; i >= 0; i--)
+					l_group[i]->link(a_raw);
+
+			}
+
+			/// <summary>
+			/// Causes each ptr_base which shares the same resource as this to unlink.
+			/// This will delete the previously shared resource, and will cause the previous group to disband.
+			/// </summary>
+			void group_unlink()
+			{
+				// LOCK RESOURCE MAP MUTEX
+				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+
+				// GET RESOURCE PAIR AND GROUP
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
+
+				std::vector<ptr_base*>& l_group = l_res_pair->second;
+
+				// EACH MEMBER OF GROUP UNLINKS RESOURCE
+				for (int i = l_group.size() - 1; i >= 0; i--)
+					l_group[i]->unlink();
+
+			}
+
+		protected:
+			virtual void acquire_resource(void* a_raw)
+			{
+
+			}
+			virtual void delete_resource()
+			{
+
+			}
+			virtual void clear_resource()
+			{
+
+			}
+			virtual bool owns_resource()
+			{
+				return false;
+			}
+			virtual std::map<void*, std::vector<ptr_base*>>::iterator res_pair(std::map<void*, std::vector<ptr_base*>>& a_res_map)
+			{
+				return a_res_map.end();
+			}
 
 		};
 
@@ -24,32 +178,35 @@ namespace affix_base {
 			virtual ~ptr() {
 				unlink();
 			}
+
+		public:
 			ptr() {
 
 			}
-			ptr(T* a_raw) {
-				link(a_raw);
-			}
-			void operator=(T* a_raw) {
-				link(a_raw);
-			}
-			template<typename J>
-			ptr(J* a_raw) {
+			ptr(void* a_raw) {
 				link((T*)a_raw);
-			}
-			void operator=(const ptr<T>& a_other) {
-				link(a_other.m_raw);
-			}
-			template<typename J>
-			void operator=(const ptr<J>& a_other) {
-				link(a_other.m_raw);
-			}
-			template<typename J>
-			ptr(ptr<J> a_other) {
-				link((T*)a_other.m_raw);
 			}
 			ptr(const ptr<T>& a_other) {
 				link(a_other.m_raw);
+			}
+			template<typename J>
+			ptr(const ptr<J>& a_other) {
+				link((T*)a_other.m_raw);
+			}
+
+		public:
+			ptr<T>& operator=(void* a_raw) {
+				link((T*)a_raw);
+				return *this;
+			}
+			ptr<T>& operator=(const ptr<T>& a_other) {
+				link(a_other.m_raw);
+				return *this;
+			}
+			template<typename J>
+			ptr<T>& operator=(const ptr<J>& a_other) {
+				link(a_other.m_raw);
+				return *this;
 			}
 
 		public:
@@ -65,77 +222,42 @@ namespace affix_base {
 			operator T* () const {
 				return get();
 			}
-			template<typename J>
-			operator J* () const {
-				return (J*)m_raw;
-			}
+
+		public:
 			T* operator->() {
+				return get();
+			}
+			const T* operator->() const
+			{
 				return get();
 			}
 
 		public:
-			void link(const ptr<T>& a_other) {
-				link(a_other.m_raw);
+			template<typename J>
+			operator J* () const {
+				return (J*)m_raw;
 			}
-			void link(T* a_raw) {
-				// LEAVE ANY RESOURCE GROUPS
-				unlink();
 
-				if (a_raw == nullptr)
-					return;
-
-				// CHECK MAP FOR PRE-OWNED MEMORY ADDRESS
-				std::map<void*, size_t>::iterator res_pair = res_map.find(a_raw);
-
-				if (res_pair != res_map.end()) {
-					size_t& group_size = res_pair->second;
-#if PTR_DEBUG
-					std::cout << "GROUP JOIN" << std::endl;
-#endif
-					// JOIN PREEXISTING GROUP
-					group_size++;
-				}
-				else {
-#if PTR_DEBUG
-					std::cout << "GROUP CREATE" << std::endl;
-#endif
-					// CREATE NEW GROUP FOR THIS RESOURCE
-					res_map.insert({ a_raw, 1 });
-				}
-
-				// ACQUIRE RESOURCE
-				m_raw = a_raw;
+		protected:
+			virtual void acquire_resource(void* a_raw)
+			{
+				m_raw = (T*)a_raw;
 			}
-			void unlink() {
-
-				if (m_raw == nullptr)
-					return;
-
-				// CHECK MAP FOR OWNERSHIP OVER A RESOURCE
-				std::map<void*, size_t>::iterator res_pair = res_map.find(m_raw);
-
-				if (res_pair != res_map.end()) {
-					size_t& group_size = res_pair->second;
-					if (group_size > 1) {
-#if PTR_DEBUG
-						std::cout << "LEAVE GROUP" << std::endl;
-#endif
-						// PASS OWNERSHIP TO m_prev
-						group_size--;
-					}
-					else {
-#if PTR_DEBUG
-						std::cout << "DELETE RESOURCE" << std::endl;
-#endif
-						// DELETE RESOURCE
-						res_map.erase(res_pair);
-						delete m_raw;
-					}
-			
-				}
-
-				// CLEAR RESOURCE
+			virtual void delete_resource()
+			{
+				delete m_raw;
+			}
+			virtual void clear_resource()
+			{
 				m_raw = nullptr;
+			}
+			virtual bool owns_resource()
+			{
+				return m_raw != nullptr;
+			}
+			virtual std::map<void*, std::vector<ptr_base*>>::iterator res_pair(std::map<void*, std::vector<ptr_base*>>& a_res_map)
+			{
+				return a_res_map.find(m_raw);
 			}
 
 		};

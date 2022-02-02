@@ -158,6 +158,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -203,6 +204,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -228,6 +231,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -251,6 +255,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -272,6 +278,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -295,6 +302,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -320,6 +329,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../;../asio/asio/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -336,11 +346,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="aes.cpp" />
+    <ClCompile Include="async_authenticate.cpp" />
+    <ClCompile Include="async_authenticate_local.cpp" />
+    <ClCompile Include="async_authenticate_remote.cpp" />
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="cross_thread_mutex.cpp" />
-    <ClCompile Include="handshake.cpp" />
+    <ClCompile Include="file_ios.cpp" />
     <ClCompile Include="log_result.cpp" />
     <ClCompile Include="nat.cpp" />
+    <ClCompile Include="path_attributes.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Standalone Debug|Win32'">Create</PrecompiledHeader>
@@ -368,19 +382,26 @@
     <ClCompile Include="sha.cpp" />
     <ClCompile Include="socket_io_guard.cpp" />
     <ClCompile Include="stopwatch.cpp" />
+    <ClCompile Include="string_extensions.cpp" />
     <ClCompile Include="transmission.cpp" />
     <ClCompile Include="watch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aes.h" />
     <ClInclude Include="affix_base.h" />
+    <ClInclude Include="async_authenticate.h" />
+    <ClInclude Include="async_authenticate_local.h" />
+    <ClInclude Include="async_authenticate_remote.h" />
     <ClInclude Include="callback.h" />
     <ClInclude Include="catch_friendly_assert.h" />
     <ClInclude Include="cross_thread_mutex.h" />
     <ClInclude Include="details.h" />
     <ClInclude Include="diff.h" />
     <ClInclude Include="exceptions.h" />
-    <ClInclude Include="handshake.h" />
+    <ClInclude Include="guarded_resource.h" />
+    <ClInclude Include="path_attributes.h" />
+    <ClInclude Include="file_ios.h" />
+    <ClInclude Include="files.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="semantic_version_number.h" />
     <ClInclude Include="sha.h" />
@@ -394,6 +415,7 @@
     <ClInclude Include="networking.h" />
     <ClInclude Include="socket_io_guard.h" />
     <ClInclude Include="stopwatch.h" />
+    <ClInclude Include="string_extensions.h" />
     <ClInclude Include="transmission.h" />
     <ClInclude Include="byte_buffer.h" />
     <ClInclude Include="pch.h" />

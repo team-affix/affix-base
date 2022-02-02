@@ -8,14 +8,18 @@
 #include "cryptopp/pssr.h"
 #include "vector_extensions.h"
 #include "byte_buffer.h"
+#include <fstream>
+#include <filesystem>
+#include "cryptopp/base64.h"
 
 using namespace CryptoPP;
 using affix_base::data::range;
 using std::vector;
 using std::string;
 using affix_base::data::byte_buffer;
-
+namespace fs = std::filesystem;
 using namespace affix_base;
+
 namespace affix_base {
     namespace cryptography {
 
@@ -25,6 +29,26 @@ namespace affix_base {
             priKey.GenerateRandomWithKeySize(random, a_key_size);
             RSA::PublicKey pubKey(priKey);
             return { priKey, pubKey };
+        }
+
+        std::string cryptography::rsa_to_base64_string(
+            const CryptoPP::RSA::PrivateKey& a_private_key
+        )
+        {
+            string l_result;
+            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result));
+            a_private_key.DEREncode(l_string_sink);
+            return l_result;
+        }
+
+        std::string cryptography::rsa_to_base64_string(
+            const CryptoPP::RSA::PublicKey& a_public_key
+        )
+        {
+            string l_result;
+            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result));
+            a_public_key.DEREncode(l_string_sink);
+            return l_result;
         }
 
         void cryptography::rsa_export(const RSA::PrivateKey& a_private_key, const string& a_file_name) {
@@ -156,6 +180,75 @@ namespace affix_base {
                 result.insert(result.end(), decrypted.begin(), decrypted.end());
             }
             return result;
+        }
+
+        void cryptography::rsa_encrypt(
+            std::istream& a_input_stream,
+            std::ostream& a_output_stream,
+            const CryptoPP::RSA::PublicKey a_public_key
+        )
+        {
+            AutoSeededRandomPool l_random;
+            RSAES<OAEP<SHA256>>::Encryptor l_encryptor(a_public_key);
+
+            std::vector<byte> l_input_buffer(l_encryptor.FixedMaxPlaintextLength());
+            std::vector<byte> l_output_buffer(l_encryptor.FixedCiphertextLength());
+
+            for (size_t block = 0; a_input_stream.peek() != EOF; block++)
+            {
+                size_t l_bytes_to_process = 0;
+
+                for (;
+                    l_bytes_to_process < l_encryptor.FixedMaxPlaintextLength() &&
+                    a_input_stream.peek() != EOF;
+                    l_bytes_to_process++)
+                {
+                    // LOAD 1 BYTE INTO BUFFER
+                    a_input_stream.read((char*)l_input_buffer.data() + l_bytes_to_process, 1);
+                }
+
+                // ENCRYPT BUFFER
+                l_encryptor.Encrypt(l_random, l_input_buffer.data(), l_bytes_to_process, l_output_buffer.data());
+
+                // WRITE OUTPUT
+                a_output_stream.write((const char*)l_output_buffer.data(), l_encryptor.CiphertextLength(l_bytes_to_process));
+
+            }
+
+        }
+
+        void rsa_decrypt(
+            std::istream& a_input_stream,
+            std::ostream& a_output_stream,
+            const CryptoPP::RSA::PrivateKey a_private_key
+        )
+        {
+            AutoSeededRandomPool l_random;
+            RSAES<OAEP<SHA256>>::Decryptor l_decryptor(a_private_key);
+
+            std::vector<byte> l_input_buffer(l_decryptor.FixedCiphertextLength());
+            std::vector<byte> l_output_buffer(l_decryptor.FixedMaxPlaintextLength());
+
+            for (size_t block = 0; a_input_stream.peek() != EOF; block++)
+            {
+                size_t l_bytes_to_process = 0;
+                for (;
+                    l_bytes_to_process < l_decryptor.FixedCiphertextLength() &&
+                    a_input_stream.peek() != EOF;
+                    l_bytes_to_process++)
+                {
+                    // LOAD 1 BYTE INTO BUFFER
+                    a_input_stream.read((char*)l_input_buffer.data() + l_bytes_to_process, 1);
+                }
+
+                // DECRYPT BUFFER
+                DecodingResult l_decoding_result = l_decryptor.Decrypt(l_random, l_input_buffer.data(), l_bytes_to_process, l_output_buffer.data());
+
+                // WRITE OUTPUT
+                a_output_stream.write((const char*)l_output_buffer.data(), l_decoding_result.messageLength);
+
+            }
+
         }
 
         vector<byte> cryptography::rsa_sign(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {

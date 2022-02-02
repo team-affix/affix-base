@@ -10,3 +10,4 @@
 #include "cryptography.h"
 #include "timing.h"
 #include "exceptions.h"
+#include "files.h"

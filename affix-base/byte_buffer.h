@@ -4,6 +4,7 @@
 #include "builder.h"
 #include <tuple>
 #include "catch_friendly_assert.h"
+#include <string>
 
 namespace affix_base {
 	namespace data {
@@ -65,6 +66,68 @@ namespace affix_base {
 				m_body.erase(m_body.begin(), m_body.begin() + sizeof(DATA_TYPE));
 
 				return true;
+			}
+			template<>
+			bool push_back<std::string>(const std::string& a_data)
+			{
+				// Push the size onto the stack twice, once before
+				if (!push_back(a_data.size())) return false;
+
+				for (int i = 0; i < a_data.size(); i++)
+					if (!push_back(a_data[i])) return false;
+
+				// and once after
+				if (!push_back(a_data.size())) return false;
+
+				return true;
+			}
+			template<>
+			bool push_front<std::string>(const std::string& a_data)
+			{
+				// Push the size onto the stack twice, once before
+				if (!push_front(a_data.size())) return false;
+
+				for (int i = a_data.size() - 1; i >= 0; i--)
+					if (!push_front(a_data[i])) return false;
+
+				// and once after
+				if (!push_front(a_data.size())) return false;
+
+				return true;
+			}
+			template<>
+			bool pop_back<std::string>(std::string& a_data)
+			{
+				size_t l_size;
+				
+				if (!pop_back(l_size)) return false;
+				
+				a_data.resize(l_size);
+
+				for (int i = l_size - 1; i >= 0; i--)
+					if (!pop_back(a_data[i])) return false;
+
+				if (!pop_back(l_size)) return false;
+
+				return true;
+
+			}
+			template<>
+			bool pop_front<std::string>(std::string& a_data)
+			{
+				size_t l_size;
+
+				if (!pop_front(l_size)) return false;
+
+				a_data.resize(l_size);
+
+				for (int i = 0; i < l_size; i++)
+					if (!pop_front(a_data[i])) return false;
+
+				if (!pop_front(l_size)) return false;
+
+				return true;
+
 			}
 			template<typename DATA_TYPE>
 			bool push_back(const std::vector<DATA_TYPE>& a_vec) {

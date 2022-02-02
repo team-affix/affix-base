@@ -47,6 +47,10 @@ namespace affix_base {
 			nat_type& a_output,
 			const size_t& a_trials);
 
+		bool socket_internal_ip_address(
+			asio::ip::address& a_address
+		);
+
 
 	}
 }
