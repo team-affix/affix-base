@@ -394,7 +394,7 @@ int main() {
 	std::thread thd1([&]
 		{
 			lock_guard<cross_thread_mutex> l_lock_guard(*ctm);
-			Sleep(3000);
+			Sleep(10000);
 		});
 
 	Sleep(100);

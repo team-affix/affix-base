@@ -11,6 +11,14 @@ using std::lock_guard;
 using std::mutex;
 using affix_base::threading::cross_thread_mutex;
 
+socket_io_guard::~socket_io_guard(
+
+)
+{
+    lock_guard<cross_thread_mutex> l_receive_lock_guard(m_receive_mutex);
+    lock_guard<cross_thread_mutex> l_send_lock_guard(m_send_mutex);
+}
+
 socket_io_guard::socket_io_guard(tcp::socket& a_socket) : m_socket(a_socket) {
 
 }

@@ -27,6 +27,9 @@ namespace affix_base {
             std::deque<socket_receive_request> m_receive_deque;
 
         public:
+            virtual ~socket_io_guard(
+
+            );
             socket_io_guard(
                 asio::ip::tcp::socket& a_socket
             );
