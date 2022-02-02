@@ -389,25 +389,20 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	ptr<int> p1 = new int(3);
-	ptr<double> pd1 = new double(10.5);
+	ptr<cross_thread_mutex> ctm = new cross_thread_mutex();
 
-	std::thread t1(
-		[&]
+	std::thread thd1([&]
 		{
-			while (true)
-			{
-				ptr<int> p2 = p1;
-				ptr<double> pd2 = pd1;
-				pd2.group_link(pd1);
-			}
+			lock_guard<cross_thread_mutex> l_lock_guard(*ctm);
+			Sleep(3000);
 		});
 
-	while (true)
-	{
-		ptr<int> p3 = p1;
-		ptr<double> pd3 = pd1;
-	}
+	Sleep(100);
+
+	ctm.unlink();
+
+	if (thd1.joinable())
+		thd1.join();
 
  	return EXIT_SUCCESS;
 
