@@ -1,6 +1,8 @@
 #pragma once
 #include "pch.h"
 #include <map>
+#include "guarded_resource.h"
+#include "cross_thread_mutex.h"
 #define PTR_DEBUG 0
 #if PTR_DEBUG
 #include <iostream>
@@ -14,7 +16,7 @@ namespace affix_base {
 			/// <summary>
 			/// Resource map, which holds the owned resources as keys, and the groups of ptr_base's that own that resource as values.
 			/// </summary>
-			static std::map<void*, std::vector<ptr_base*>> s_res_map;
+			static affix_base::threading::guarded_resource<std::map<void*, std::vector<ptr_base*>>, affix_base::threading::cross_thread_mutex> s_res_map;
 
 		public:
 			/// <summary>
@@ -23,6 +25,9 @@ namespace affix_base {
 			/// <param name="a_raw"></param>
 			void link(void* a_raw) {
 
+				// LOCK RESOURCE MAP MUTEX
+				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+
 				// LEAVE ANY RESOURCE GROUPS
 				unlink();
 
@@ -30,9 +35,9 @@ namespace affix_base {
 					return;
 
 				// CHECK MAP FOR PRE-OWNED MEMORY ADDRESS
-				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = s_res_map.find(a_raw);
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = l_res_map->find(a_raw);
 
-				if (l_res_pair != s_res_map.end()) {
+				if (l_res_pair != l_res_map->end()) {
 
 					std::vector<ptr_base*>& group = l_res_pair->second;
 #if PTR_DEBUG
@@ -46,7 +51,7 @@ namespace affix_base {
 					std::cout << "GROUP CREATE" << std::endl;
 #endif
 					// CREATE NEW GROUP FOR THIS RESOURCE
-					s_res_map.insert({ a_raw, { this } });
+					l_res_map->insert({ a_raw, { this } });
 				}
 
 				// ACQUIRE RESOURCE
@@ -59,13 +64,16 @@ namespace affix_base {
 			/// </summary>
 			void unlink() {
 
+				// LOCK RESOURCE MAP MUTEX
+				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+
 				if (!owns_resource())
 					return;
 
 				// CHECK MAP FOR OWNERSHIP OVER A RESOURCE
-				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair();
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
 
-				if (l_res_pair != s_res_map.end()) {
+				if (l_res_pair != l_res_map->end()) {
 
 					std::vector<ptr_base*>& group = l_res_pair->second;
 
@@ -82,7 +90,7 @@ namespace affix_base {
 						std::cout << "DELETE RESOURCE" << std::endl;
 #endif
 						// LEAVE GROUP AND DELETE RESOURCE
-						s_res_map.erase(l_res_pair);
+						l_res_map->erase(l_res_pair);
 						delete_resource();
 					}
 
@@ -103,7 +111,11 @@ namespace affix_base {
 				void* a_raw
 			)
 			{
-				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair();
+				// LOCK RESOURCE MAP MUTEX
+				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+
+				// GET RESOURCE PAIR AND GROUP
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
 
 				std::vector<ptr_base*>& l_group = l_res_pair->second;
 
@@ -119,11 +131,15 @@ namespace affix_base {
 			/// </summary>
 			void group_unlink()
 			{
-				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair();
+				// LOCK RESOURCE MAP MUTEX
+				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+
+				// GET RESOURCE PAIR AND GROUP
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
 
 				std::vector<ptr_base*>& l_group = l_res_pair->second;
 
-				// EACH MEMBER OF GROUP LINKS RESOURCE
+				// EACH MEMBER OF GROUP UNLINKS RESOURCE
 				for (int i = l_group.size() - 1; i >= 0; i--)
 					l_group[i]->unlink();
 
@@ -146,9 +162,9 @@ namespace affix_base {
 			{
 				return false;
 			}
-			virtual std::map<void*, std::vector<ptr_base*>>::iterator res_pair()
+			virtual std::map<void*, std::vector<ptr_base*>>::iterator res_pair(std::map<void*, std::vector<ptr_base*>>& a_res_map)
 			{
-				return s_res_map.end();
+				return a_res_map.end();
 			}
 
 		};
@@ -239,9 +255,9 @@ namespace affix_base {
 			{
 				return m_raw != nullptr;
 			}
-			virtual std::map<void*, std::vector<ptr_base*>>::iterator res_pair()
+			virtual std::map<void*, std::vector<ptr_base*>>::iterator res_pair(std::map<void*, std::vector<ptr_base*>>& a_res_map)
 			{
-				return s_res_map.find(m_raw);
+				return a_res_map.find(m_raw);
 			}
 
 		};
