@@ -2,6 +2,16 @@
 #include "async_authenticate.h"
 
 using affix_base::networking::async_authenticate;
+using std::lock_guard;
+using affix_base::threading::cross_thread_mutex;
+
+async_authenticate::~async_authenticate(
+
+)
+{
+	lock_guard<cross_thread_mutex> l_receive_lock_guard(m_socket_io_guard.m_receive_mutex);
+	lock_guard<cross_thread_mutex> l_send_lock_guard(m_socket_io_guard.m_send_mutex);
+}
 
 async_authenticate::async_authenticate(
 	socket_io_guard& a_socket_io_guard,

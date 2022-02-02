@@ -25,6 +25,9 @@ namespace affix_base
 			std::function<void(bool)> m_callback;
 
 		public:
+			virtual ~async_authenticate(
+
+			);
 			async_authenticate(
 				socket_io_guard& a_socket_io_guard,
 				const std::vector<uint8_t>& a_remote_seed,

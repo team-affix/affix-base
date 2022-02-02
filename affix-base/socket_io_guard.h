@@ -21,10 +21,12 @@ namespace affix_base {
             asio::ip::tcp::socket& m_socket;
 
         protected:
-            affix_base::threading::cross_thread_mutex m_send_mutex;
             std::deque<socket_send_request> m_send_deque;
-            affix_base::threading::cross_thread_mutex m_receive_mutex;
             std::deque<socket_receive_request> m_receive_deque;
+
+        public:
+            affix_base::threading::cross_thread_mutex m_send_mutex;
+            affix_base::threading::cross_thread_mutex m_receive_mutex;
 
         public:
             virtual ~socket_io_guard(

@@ -21,6 +21,9 @@ namespace affix_base
 			std::function<void(bool)> m_callback;
 
 		public:
+			virtual ~async_authenticate_local(
+
+			);
 			async_authenticate_local(
 				socket_io_guard& a_socket_io_guard,
 				const affix_base::cryptography::rsa_key_pair& a_local_key_pair,

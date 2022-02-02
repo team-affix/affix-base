@@ -6,6 +6,16 @@ using networking::async_authenticate_local;
 using affix_base::data::byte_buffer;
 using affix_base::data::ptr;
 using std::vector;
+using std::lock_guard;
+using affix_base::threading::cross_thread_mutex;
+
+async_authenticate_local::~async_authenticate_local(
+
+)
+{
+	lock_guard<cross_thread_mutex> l_receive_lock_guard(m_socket_io_guard.m_receive_mutex);
+	lock_guard<cross_thread_mutex> l_send_lock_guard(m_socket_io_guard.m_send_mutex);
+}
 
 async_authenticate_local::async_authenticate_local(
 	socket_io_guard& a_socket_io_guard,
