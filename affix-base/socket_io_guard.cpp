@@ -52,21 +52,45 @@ void socket_io_guard::clear_queues(
 
 void socket_io_guard::send_callback(const bool& a_result) {
     
-    lock_guard<cross_thread_mutex> l_lock(m_send_mutex);
-    m_send_deque.front().m_callback(a_result);
-    m_send_deque.pop_front();
-    if (m_send_deque.size() > 0 && a_result)
-        send_next();
+    // LOCAL COPY OF THE CALLBACK
+    std::function<void(bool)> l_callback;
+
+    {
+        lock_guard<cross_thread_mutex> l_lock(m_send_mutex);
+
+        // SAVE COPY OF CALLBACK BEFORE ERASING IT
+        l_callback = m_send_deque.front().m_callback;
+
+        m_send_deque.pop_front();
+        if (m_send_deque.size() > 0 && a_result)
+            send_next();
+
+    }
+
+    // AVOID CALLING BACK WHILE MUTEX IS LOCKED
+    l_callback(a_result);
 
 }
 
 void socket_io_guard::receive_callback(const bool& a_result) {
 
-    lock_guard<cross_thread_mutex> l_lock(m_receive_mutex);
-    m_receive_deque.front().m_callback(a_result);
-    m_receive_deque.pop_front();
-    if (m_receive_deque.size() > 0 && a_result)
-        receive_next();
+    // LOCAL COPY OF THE CALLBACK
+    std::function<void(bool)> l_callback;
+
+    {
+        lock_guard<cross_thread_mutex> l_lock(m_receive_mutex);
+
+        // SAVE COPY OF CALLBACK BEFORE ERASING IT
+        l_callback = m_receive_deque.front().m_callback;
+
+        m_receive_deque.pop_front();
+        if (m_receive_deque.size() > 0 && a_result)
+            receive_next();
+
+    }
+
+    // AVOID CALLING BACK WHILE MUTEX IS LOCKED
+    l_callback(a_result);
 
 }
 
