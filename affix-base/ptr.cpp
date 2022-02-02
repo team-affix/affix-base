@@ -4,5 +4,6 @@
 using affix_base::data::ptr_base;
 using std::vector;
 using std::map;
+using namespace affix_base::threading;
 
-map<void*, std::vector<ptr_base*>> ptr_base::s_res_map;
+guarded_resource<map<void*, std::vector<ptr_base*>>, cross_thread_mutex> ptr_base::s_res_map;

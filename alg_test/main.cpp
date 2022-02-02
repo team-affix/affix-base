@@ -389,12 +389,25 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	guarded_resource<vector<uint8_t>, cross_thread_mutex> l_guarded_resource;
+	ptr<int> p1 = new int(3);
+	ptr<double> pd1 = new double(10.5);
 
-	locked_resource l_locked_resource = l_guarded_resource.lock();
+	std::thread t1(
+		[&]
+		{
+			while (true)
+			{
+				ptr<int> p2 = p1;
+				ptr<double> pd2 = pd1;
+				pd2.group_link(pd1);
+			}
+		});
 
-	(*l_locked_resource).push_back(10);
-	l_locked_resource->push_back(12);
+	while (true)
+	{
+		ptr<int> p3 = p1;
+		ptr<double> pd3 = pd1;
+	}
 
  	return EXIT_SUCCESS;
 
