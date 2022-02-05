@@ -293,5 +293,8 @@
     <ClInclude Include="guarded_resource.h">
       <Filter>Header Files\threading</Filter>
     </ClInclude>
+    <ClInclude Include="synchronized_resource.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

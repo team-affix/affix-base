@@ -389,19 +389,15 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	rsa_key_pair l_key_pair = rsa_generate_key_pair(2048);
+	std::string l_string;
 
-	std::string l_string_0 = rsa_to_base64_string(l_key_pair.private_key);
-	std::string l_string_1 = rsa_to_base64_string(l_key_pair.public_key);
+	synchronized_resource<std::string, int> l_resource(l_string, 10);
 
-	rsa_key_pair l_recovered;
+	if (!l_resource.import_resource())
+	{
 
-	bool b1 = rsa_from_base64_string(l_recovered.private_key, l_string_0);
-	bool b2 = rsa_from_base64_string(l_recovered.public_key, l_string_1);
-
-	std::cout << l_string_0 << std::endl << std::endl;
-	std::cout << l_string_1 << std::endl;
-
+	}
+	
  	return EXIT_SUCCESS;
 
 }

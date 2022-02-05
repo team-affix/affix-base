@@ -10,3 +10,4 @@
 #include "object.h"
 #include "diff.h"
 #include "string_extensions.h"
+#include "synchronized_resource.h"
