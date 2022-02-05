@@ -389,7 +389,13 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
+	rsa_key_pair l_key_pair = rsa_generate_key_pair(2048);
 
+	std::string l_string_0 = rsa_to_base64_string(l_key_pair.private_key);
+	std::string l_string_1 = rsa_to_base64_string(l_key_pair.public_key);
+
+	std::cout << l_string_0 << std::endl << std::endl;
+	std::cout << l_string_1 << std::endl;
 
  	return EXIT_SUCCESS;
 

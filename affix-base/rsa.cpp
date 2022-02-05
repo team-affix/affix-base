@@ -36,7 +36,7 @@ namespace affix_base {
         )
         {
             string l_result;
-            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result));
+            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result), false);
             a_private_key.DEREncode(l_string_sink);
             return l_result;
         }
@@ -46,7 +46,7 @@ namespace affix_base {
         )
         {
             string l_result;
-            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result));
+            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result), false);
             a_public_key.DEREncode(l_string_sink);
             return l_result;
         }
