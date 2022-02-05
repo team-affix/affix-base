@@ -38,6 +38,7 @@ namespace affix_base {
             string l_result;
             CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result), false);
             a_private_key.DEREncode(l_string_sink);
+            l_string_sink.MessageEnd();
             return l_result;
         }
 
@@ -48,7 +49,48 @@ namespace affix_base {
             string l_result;
             CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result), false);
             a_public_key.DEREncode(l_string_sink);
+            l_string_sink.MessageEnd();
             return l_result;
+        }
+
+        bool cryptography::rsa_from_base64_string(
+            CryptoPP::RSA::PrivateKey& a_private_key,
+            const std::string& a_base_64_string
+        )
+        {
+            try
+            {
+                StringSource ss(a_base_64_string, true, new Base64Decoder);
+                a_private_key.BERDecode(ss);
+                
+                // Validate key integrity
+                AutoSeededRandomPool l_random;
+                return a_private_key.Validate(l_random, 3);
+            }
+            catch (...)
+            {
+                return false;
+            }
+        }
+
+        bool cryptography::rsa_from_base64_string(
+            CryptoPP::RSA::PublicKey& a_public_key,
+            const std::string& a_base_64_string
+        )
+        {
+            try
+            {
+                StringSource ss(a_base_64_string, true, new Base64Decoder);
+                a_public_key.BERDecode(ss);
+
+                // Validate key integrity
+                AutoSeededRandomPool l_random;
+                return a_public_key.Validate(l_random, 3);
+            }
+            catch (...)
+            {
+                return false;
+            }
         }
 
         void cryptography::rsa_export(const RSA::PrivateKey& a_private_key, const string& a_file_name) {

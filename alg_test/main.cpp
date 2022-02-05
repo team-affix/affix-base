@@ -394,6 +394,11 @@ int main() {
 	std::string l_string_0 = rsa_to_base64_string(l_key_pair.private_key);
 	std::string l_string_1 = rsa_to_base64_string(l_key_pair.public_key);
 
+	rsa_key_pair l_recovered;
+
+	bool b1 = rsa_from_base64_string(l_recovered.private_key, l_string_0);
+	bool b2 = rsa_from_base64_string(l_recovered.public_key, l_string_1);
+
 	std::cout << l_string_0 << std::endl << std::endl;
 	std::cout << l_string_1 << std::endl;
 

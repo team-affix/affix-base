@@ -47,6 +47,24 @@ namespace affix_base {
         );
 
         /// <summary>
+        /// Imports the RSA private key from a base64 string.
+        /// </summary>
+        /// <returns></returns>
+        bool rsa_from_base64_string(
+            CryptoPP::RSA::PrivateKey& a_private_key,
+            const std::string& a_base_64_string
+        );
+
+        /// <summary>
+        /// Imports the RSA public key from a base64 string.
+        /// </summary>
+        /// <returns></returns>
+        bool rsa_from_base64_string(
+            CryptoPP::RSA::PublicKey& a_public_key,
+            const std::string& a_base_64_string
+        );
+
+        /// <summary>
         /// Exports an RSA private key to an output file.
         /// </summary>
         /// <param name="a_private_key"></param>
