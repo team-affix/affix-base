@@ -32,7 +32,7 @@ namespace affix_base
 			cache(
 				const std::function<void(LOCAL_TYPE&)>& a_pull,
 				const std::function<void(LOCAL_TYPE&)>& a_push,
-				const std::function<void(LOCAL_TYPE&)>& a_validate,
+				const std::function<void(LOCAL_TYPE&)>& a_validate = [](LOCAL_TYPE&) {},
 				LOCAL_TYPE a_local = {},
 				const std::function<void(LOCAL_TYPE&, std::exception a_exception)>& a_import_failed_callback = [](LOCAL_TYPE&, std::exception) {},
 				const std::function<void(LOCAL_TYPE&, std::exception a_exceptions)>& a_export_failed_callback = [](LOCAL_TYPE&, std::exception) {}

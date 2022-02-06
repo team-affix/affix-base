@@ -400,19 +400,6 @@ int main() {
 		[&](int& a_local)
 		{
 			l_remote = std::to_string(a_local);
-		},
-		[&](int& a_local)
-		{
-
-		},
-		0,
-		[&](int& a_local, std::exception a_exception)
-		{
-
-		},
-		[&](int& a_local, std::exception a_exception)
-		{
-
 		}
 	);
 
