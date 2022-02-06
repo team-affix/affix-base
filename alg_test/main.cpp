@@ -395,11 +395,15 @@ int main() {
 	cache<int> l_cache(
 		[&](int& a_local)
 		{
-			a_local = std::stoi(l_remote);
+			throw std::exception("pull");
 		},
 		[&](int& a_local)
 		{
-			l_remote = std::to_string(a_local);
+			throw std::exception("push");
+		},
+		[&](int& a_local)
+		{
+			throw std::exception("validate");
 		}
 	);
 

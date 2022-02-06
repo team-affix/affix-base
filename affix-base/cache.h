@@ -34,8 +34,8 @@ namespace affix_base
 				const std::function<void(LOCAL_TYPE&)>& a_push,
 				const std::function<void(LOCAL_TYPE&)>& a_validate = [](LOCAL_TYPE&) {},
 				LOCAL_TYPE a_local = {},
-				const std::function<void(LOCAL_TYPE&, std::exception a_exception)>& a_import_failed_callback = [](LOCAL_TYPE&, std::exception) {},
-				const std::function<void(LOCAL_TYPE&, std::exception a_exceptions)>& a_export_failed_callback = [](LOCAL_TYPE&, std::exception) {}
+				const std::function<void(LOCAL_TYPE&, std::exception a_exception)>& a_import_failed_callback = [](LOCAL_TYPE&, std::exception a_exception) { throw a_exception; },
+				const std::function<void(LOCAL_TYPE&, std::exception a_exceptions)>& a_export_failed_callback = [](LOCAL_TYPE&, std::exception a_exception) { throw a_exception; }
 			) :
 				m_pull(a_pull),
 				m_push(a_push),
