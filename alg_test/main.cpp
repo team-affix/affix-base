@@ -396,26 +396,23 @@ int main() {
 		[&](int& a_local)
 		{
 			a_local = std::stoi(l_remote);
-			return true;
 		},
 		[&](int& a_local)
 		{
 			l_remote = std::to_string(a_local);
-			return true;
 		},
 		[&](int& a_local)
 		{
-			return a_local == 12345;
+
 		},
 		0,
-		[&](int& a_local)
+		[&](int& a_local, std::exception a_exception)
 		{
-			//std::cerr << "Failed to import resource" << std::endl;
-			throw std::exception("Failed to import resource");
+
 		},
-		[&](int& a_local)
+		[&](int& a_local, std::exception a_exception)
 		{
-			throw std::exception("Failed to export resource");
+
 		}
 	);
 
