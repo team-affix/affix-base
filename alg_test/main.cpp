@@ -359,7 +359,6 @@ class custom_class
 public:
 	int m_int;
 
-
 public:
 	virtual ~custom_class()
 	{
@@ -382,42 +381,7 @@ enum class test_enum : uint8_t
 	value2
 };
 
-using affix_base::data::synchronized_resource;
-class synchronized_resource_string_to_int : public synchronized_resource
-{
-protected:
-	std::string& m_remote;
-	int& m_local;
 
-public:
-	synchronized_resource_string_to_int(
-		std::string& a_remote,
-		int& a_local
-	) :
-		m_remote(a_remote),
-		m_local(a_local)
-	{
-
-	}
-
-protected:
-	bool pull(
-
-	) override
-	{
-		m_local = std::stoi(m_remote);
-		return true;
-	}
-
-	bool push(
-
-	) override
-	{
-		m_remote = std::to_string(m_local);
-		return true;
-	}
-
-};
 
 int main() {
 
@@ -426,20 +390,52 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	std::string l_remote = "12345";
-	int l_local = 0;
+	std::string l_remote = "1234";
 
-	synchronized_resource_string_to_int l_resource(l_remote, l_local);
+	cache<int> l_cache(
+		[&](int& a_local)
+		{
+			a_local = std::stoi(l_remote);
+			return true;
+		},
+		[&](int& a_local)
+		{
+			l_remote = std::to_string(a_local);
+			return true;
+		},
+		[&](int& a_local)
+		{
+			return a_local == 12345;
+		},
+		0,
+		[&](int& a_local)
+		{
+			//std::cerr << "Failed to import resource" << std::endl;
+			throw std::exception("Failed to import resource");
+		},
+		[&](int& a_local)
+		{
+			throw std::exception("Failed to export resource");
+		}
+	);
 
-	if (!l_resource.import_resource())
+	try
 	{
-		std::cerr << "Failed to import resource" << std::endl;
+		l_cache.import_resource();
 	}
-	if (!l_resource.export_resource())
+	catch (std::exception a_exception)
 	{
-		std::cerr << "Failed to export resource" << std::endl;
+		std::cerr << a_exception.what() << std::endl;
 	}
-
+	try
+	{
+		l_cache.export_resource();
+	}
+	catch (std::exception a_exception)
+	{
+		std::cerr << a_exception.what() << std::endl;
+	}
+	
  	return EXIT_SUCCESS;
 
 }
