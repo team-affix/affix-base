@@ -382,6 +382,43 @@ enum class test_enum : uint8_t
 	value2
 };
 
+using affix_base::data::synchronized_resource;
+class synchronized_resource_string_to_int : public synchronized_resource
+{
+protected:
+	std::string& m_remote;
+	int& m_local;
+
+public:
+	synchronized_resource_string_to_int(
+		std::string& a_remote,
+		int& a_local
+	) :
+		m_remote(a_remote),
+		m_local(a_local)
+	{
+
+	}
+
+protected:
+	bool pull(
+
+	) override
+	{
+		m_local = std::stoi(m_remote);
+		return true;
+	}
+
+	bool push(
+
+	) override
+	{
+		m_remote = std::to_string(m_local);
+		return true;
+	}
+
+};
+
 int main() {
 
 	using namespace affix_base::callback;
@@ -389,15 +426,20 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	std::string l_string;
+	std::string l_remote = "12345";
+	int l_local = 0;
 
-	synchronized_resource<std::string, int> l_resource(l_string, 10);
+	synchronized_resource_string_to_int l_resource(l_remote, l_local);
 
 	if (!l_resource.import_resource())
 	{
-
+		std::cerr << "Failed to import resource" << std::endl;
 	}
-	
+	if (!l_resource.export_resource())
+	{
+		std::cerr << "Failed to export resource" << std::endl;
+	}
+
  	return EXIT_SUCCESS;
 
 }

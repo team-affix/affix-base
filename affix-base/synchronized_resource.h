@@ -5,73 +5,88 @@ namespace affix_base
 {
 	namespace data
 	{
-		template<typename T>
 		class synchronized_resource
 		{
-		protected:
-			T m_resource;
-
 		public:
-			virtual ~synchronized_resource(
+			/// <summary>
+			/// Attempts to import the resource. If the resource cannot be pulled, it will be initialized.
+			/// </summary>
+			/// <returns></returns>
+			bool import_resource(
 
 			)
 			{
-
-			}
-
-			synchronized_resource(
-				T a_resource
-			) :
-				m_resource(a_resource)
-			{
-				if (!import_resource())
+				if (pull())
 				{
-					if (initialize_resource())
-					{
-						if (export_resource())
-						{
-
-						}
-						else
-						{
-
-						}
-					}
-					else
-					{
-						throw std::exception("Unable to initialize synchronized resource.");
-					}
+					return validate();
+				}
+				else
+				{
+					return initialize();
 				}
 			}
 
-		public:
-			virtual bool import_resource(
+			/// <summary>
+			/// Attempts to export the resource. If the resource can be validated, it will be pushed.
+			/// </summary>
+			/// <returns></returns>
+			bool export_resource(
+
+			)
+			{
+				if (validate())
+				{
+					return push();
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+		protected:
+			/// <summary>
+			/// Pulls from the remote.
+			/// </summary>
+			/// <returns></returns>
+			virtual bool pull(
 
 			)
 			{
 				return false;
 			}
 
-			virtual bool export_resource(
+			/// <summary>
+			/// Initializes the resource to something completely new.
+			/// </summary>
+			/// <returns></returns>
+			virtual bool initialize(
 
 			)
 			{
 				return false;
 			}
 
-			virtual bool initialize_resource(
+			/// <summary>
+			/// Validates that the resource is in an acceptable form.
+			/// </summary>
+			/// <returns></returns>
+			virtual bool validate(
 
 			)
 			{
 				return false;
 			}
 
-		public:
-			virtual T& resource(
+			/// <summary>
+			/// Pushes to the remote.
+			/// </summary>
+			/// <returns></returns>
+			virtual bool push(
 
 			)
 			{
-				return m_resource;
+				return false;
 			}
 
 		};
