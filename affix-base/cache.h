@@ -5,48 +5,13 @@ namespace affix_base
 {
 	namespace data
 	{
-		template<typename LOCAL_TYPE>
+		template<typename T>
 		class cache
 		{
 		protected:
-			LOCAL_TYPE m_local;
+			T m_resource;
 
 		public:
-			virtual ~cache(
-
-			)
-			{
-
-			}
-
-			/// <summary>
-			/// Constructor, which initializes pull/push/validate methods, as well as 
-			/// callback functions for event failures.
-			/// </summary>
-			/// <param name="a_pull"></param>
-			/// <param name="a_push"></param>
-			/// <param name="a_validate"></param>
-			/// <param name="a_local"></param>
-			/// <param name="a_import_failed_callback"></param>
-			/// <param name="a_export_failed_callback"></param>
-			cache(
-				const std::function<void(LOCAL_TYPE&)>& a_pull,
-				const std::function<void(LOCAL_TYPE&)>& a_push,
-				const std::function<void(LOCAL_TYPE&)>& a_validate = [](LOCAL_TYPE&) {},
-				LOCAL_TYPE a_local = {},
-				const std::function<void(LOCAL_TYPE&, std::exception a_exception)>& a_import_failed_callback = [](LOCAL_TYPE&, std::exception a_exception) { throw a_exception; },
-				const std::function<void(LOCAL_TYPE&, std::exception a_exceptions)>& a_export_failed_callback = [](LOCAL_TYPE&, std::exception a_exception) { throw a_exception; }
-			) :
-				m_pull(a_pull),
-				m_push(a_push),
-				m_validate(a_validate),
-				m_local(a_local),
-				m_import_failed_callback(a_import_failed_callback),
-				m_export_failed_callback(a_export_failed_callback)
-			{
-
-			}
-
 			/// <summary>
 			/// Attempts to import the resource. If the resource cannot be pulled, it will be initialized.
 			/// </summary>
@@ -57,12 +22,12 @@ namespace affix_base
 			{
 				try
 				{
-					m_pull(m_local);
-					m_validate(m_local);
+					m_pull(m_resource);
+					m_validate(m_resource);
 				}
 				catch (std::exception a_exception)
 				{
-					m_import_failed_callback(m_local, a_exception);
+					m_import_failed_callback(m_resource, a_exception);
 				}
 			}
 
@@ -76,12 +41,12 @@ namespace affix_base
 			{
 				try
 				{
-					m_validate(m_local);
-					m_push(m_local);
+					m_validate(m_resource);
+					m_push(m_resource);
 				}
 				catch (std::exception a_exception)
 				{
-					m_export_failed_callback(m_local, a_exception);
+					m_export_failed_callback(m_resource, a_exception);
 				}
 			}
 
@@ -90,37 +55,72 @@ namespace affix_base
 			/// Pulls from the remote.
 			/// </summary>
 			/// <returns></returns>
-			std::function<void(LOCAL_TYPE&)> m_pull;
+			std::function<void(T&)> m_pull = [](T&) {};
 
 			/// <summary>
 			/// Pushes to the remote.
 			/// </summary>
 			/// <returns></returns>
-			std::function<void(LOCAL_TYPE&)> m_push;
+			std::function<void(T&)> m_push = [](T&) {};
 
 			/// <summary>
 			/// Validates that the local is in an acceptable form.
 			/// </summary>
 			/// <returns></returns>
-			std::function<void(LOCAL_TYPE&)> m_validate;
+			std::function<void(T&)> m_validate = [](T&) {};
 
 		protected:
 			/// <summary>
 			/// Callback for when importing fails.
 			/// </summary>
-			std::function<void(LOCAL_TYPE&, std::exception)> m_import_failed_callback;
+			std::function<void(T&, std::exception)> m_import_failed_callback = [](T&, std::exception a_exception) { throw a_exception; };
 
 			/// <summary>
 			/// Callback for when exporting fails.
 			/// </summary>
-			std::function<void(LOCAL_TYPE&, std::exception)> m_export_failed_callback;
+			std::function<void(T&, std::exception)> m_export_failed_callback = [](T&, std::exception a_exception) { throw a_exception; };
 
 		public:
-			LOCAL_TYPE& local(
+			void set_pull(
+				const std::function<void(T&)>& a_pull
+			)
+			{
+				m_pull = a_pull;
+			}
+
+			void set_push(
+				const std::function<void(T&)>& a_push
+			)
+			{
+				m_push = a_push;
+			}
+
+			void set_validate(
+				const std::function<void(T&)>& a_validate
+			)
+			{
+				m_validate = a_validate;
+			}
+
+			void set_import_failed_callback(
+				const std::function<void(T&)>& a_import_failed_callback
+			)
+			{
+				m_import_failed_callback = a_import_failed_callback;
+			}
+
+			void export_failed_callback(
+				const std::function<void(T&)>& a_export_failed_callback
+			)
+			{
+				m_import_failed_callback = a_export_failed_callback;
+			}
+
+			T& resource(
 
 			)
 			{
-				return m_local;
+				return m_resource;
 			}
 			
 		};

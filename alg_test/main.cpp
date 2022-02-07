@@ -381,7 +381,12 @@ enum class test_enum : uint8_t
 	value2
 };
 
-
+struct s1
+{
+	bool field0;
+	bool field1;
+	bool field2;
+};
 
 int main() {
 
@@ -390,22 +395,19 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	std::string l_remote = "1234";
+	std::string l_remote = "abc";
 
-	cache<int> l_cache(
-		[&](int& a_local)
+	cache<int> l_cache;
+
+	l_cache.set_pull([&](int& a_resource)
 		{
-			throw std::exception("pull");
-		},
-		[&](int& a_local)
+			a_resource = std::stoi(l_remote);
+		});
+
+	l_cache.set_push([&](int& a_resource)
 		{
-			throw std::exception("push");
-		},
-		[&](int& a_local)
-		{
-			throw std::exception("validate");
-		}
-	);
+			l_remote = std::to_string(a_resource);
+		});
 
 	try
 	{
@@ -415,6 +417,7 @@ int main() {
 	{
 		std::cerr << a_exception.what() << std::endl;
 	}
+
 	try
 	{
 		l_cache.export_resource();
