@@ -103,14 +103,14 @@ namespace affix_base
 			}
 
 			void set_import_failed_callback(
-				const std::function<void(T&)>& a_import_failed_callback
+				const std::function<void(T&, std::exception)>& a_import_failed_callback
 			)
 			{
 				m_import_failed_callback = a_import_failed_callback;
 			}
 
-			void export_failed_callback(
-				const std::function<void(T&)>& a_export_failed_callback
+			void set_export_failed_callback(
+				const std::function<void(T&, std::exception)>& a_export_failed_callback
 			)
 			{
 				m_import_failed_callback = a_export_failed_callback;
