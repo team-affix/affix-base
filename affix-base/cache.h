@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "utc_time.h"
 
 namespace affix_base
 {
@@ -14,6 +15,17 @@ namespace affix_base
 			/// </summary>
 			T m_resource;
 
+		protected:
+			/// <summary>
+			/// UTC time at which the resource was most recently imported.
+			/// </summary>
+			uint64_t m_last_imported_time = 0;
+
+			/// <summary>
+			/// UTC time at which the resource was most recently exported.
+			/// </summary>
+			uint64_t m_last_exported_time = 0;
+
 		public:
 			/// <summary>
 			/// Attempts to import the resource. If the resource cannot be pulled, it will be initialized.
@@ -27,6 +39,8 @@ namespace affix_base
 				{
 					m_pull(m_resource);
 					m_validate(m_resource);
+					// Save the last imported time
+					m_last_imported_time = affix_base::timing::utc_time();
 				}
 				catch (std::exception a_exception)
 				{
@@ -46,11 +60,27 @@ namespace affix_base
 				{
 					m_validate(m_resource);
 					m_push(m_resource);
+					// Save the last exported time
+					m_last_exported_time = affix_base::timing::utc_time();
 				}
 				catch (std::exception a_exception)
 				{
 					m_export_failed_callback(m_resource, a_exception);
 				}
+			}
+
+			uint64_t time_since_last_import(
+				
+			) const
+			{
+				return affix_base::timing::utc_time() - m_last_imported_time;
+			}
+
+			uint64_t time_since_last_export(
+
+			) const
+			{
+				return affix_base::timing::utc_time() - m_last_exported_time;
 			}
 
 		protected:

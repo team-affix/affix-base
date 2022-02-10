@@ -426,7 +426,7 @@ int main() {
 	{
 		std::cerr << a_exception.what() << std::endl;
 	}
-	
+
  	return EXIT_SUCCESS;
 
 }
