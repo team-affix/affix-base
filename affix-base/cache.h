@@ -9,6 +9,9 @@ namespace affix_base
 		class cache
 		{
 		protected:
+			/// <summary>
+			/// The local resource held in this object.
+			/// </summary>
 			T m_resource;
 
 		public:
@@ -81,6 +84,10 @@ namespace affix_base
 			std::function<void(T&, std::exception)> m_export_failed_callback = [](T&, std::exception a_exception) { throw a_exception; };
 
 		public:
+			/// <summary>
+			/// Sets the pull function.
+			/// </summary>
+			/// <param name="a_pull"></param>
 			void set_pull(
 				const std::function<void(T&)>& a_pull
 			)
@@ -88,6 +95,10 @@ namespace affix_base
 				m_pull = a_pull;
 			}
 
+			/// <summary>
+			/// Sets the push function.
+			/// </summary>
+			/// <param name="a_push"></param>
 			void set_push(
 				const std::function<void(T&)>& a_push
 			)
@@ -95,6 +106,10 @@ namespace affix_base
 				m_push = a_push;
 			}
 
+			/// <summary>
+			/// Sets the validate function. (Responsible for validating the integrity of the resource.)
+			/// </summary>
+			/// <param name="a_validate"></param>
 			void set_validate(
 				const std::function<void(T&)>& a_validate
 			)
@@ -102,6 +117,10 @@ namespace affix_base
 				m_validate = a_validate;
 			}
 
+			/// <summary>
+			/// Sets the import_failed_callback function.
+			/// </summary>
+			/// <param name="a_import_failed_callback"></param>
 			void set_import_failed_callback(
 				const std::function<void(T&, std::exception)>& a_import_failed_callback
 			)
@@ -109,6 +128,10 @@ namespace affix_base
 				m_import_failed_callback = a_import_failed_callback;
 			}
 
+			/// <summary>
+			/// Sets the export_failed_callback function.
+			/// </summary>
+			/// <param name="a_export_failed_callback"></param>
 			void set_export_failed_callback(
 				const std::function<void(T&, std::exception)>& a_export_failed_callback
 			)
@@ -116,6 +139,10 @@ namespace affix_base
 				m_import_failed_callback = a_export_failed_callback;
 			}
 
+			/// <summary>
+			/// Gets the resource stored locally in the cache.
+			/// </summary>
+			/// <returns></returns>
 			T& resource(
 
 			)
