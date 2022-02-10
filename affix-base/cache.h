@@ -69,18 +69,18 @@ namespace affix_base
 				}
 			}
 
-			uint64_t time_since_last_import(
+			uint64_t last_imported_time(
 				
 			) const
 			{
-				return affix_base::timing::utc_time() - m_last_imported_time;
+				return m_last_imported_time;
 			}
 
-			uint64_t time_since_last_export(
+			uint64_t last_exported_time(
 
 			) const
 			{
-				return affix_base::timing::utc_time() - m_last_exported_time;
+				return m_last_exported_time;
 			}
 
 		protected:
