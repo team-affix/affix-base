@@ -296,5 +296,8 @@
     <ClInclude Include="cache.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
+    <ClInclude Include="tree.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

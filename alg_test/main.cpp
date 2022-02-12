@@ -395,37 +395,12 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	std::string l_remote = "abc";
+	tree<std::string> l_tree("root");
 
-	cache<int> l_cache;
+	l_tree.insert(l_tree.end(), { std::string("hello"), std::string("my"), std::string("name") });
+	l_tree[1].insert(l_tree[1].end(), { std::string("is"), std::string("Jake") });
 
-	l_cache.set_pull([&](int& a_resource)
-		{
-			a_resource = std::stoi(l_remote);
-		});
-
-	l_cache.set_push([&](int& a_resource)
-		{
-			l_remote = std::to_string(a_resource);
-		});
-
-	try
-	{
-		l_cache.import_resource();
-	}
-	catch (std::exception a_exception)
-	{
-		std::cerr << a_exception.what() << std::endl;
-	}
-
-	try
-	{
-		l_cache.export_resource();
-	}
-	catch (std::exception a_exception)
-	{
-		std::cerr << a_exception.what() << std::endl;
-	}
+	tree<std::string>::path l_path = l_tree.find("Jake");
 
  	return EXIT_SUCCESS;
 

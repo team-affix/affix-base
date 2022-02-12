@@ -11,3 +11,4 @@
 #include "diff.h"
 #include "string_extensions.h"
 #include "cache.h"
+#include "tree.h"

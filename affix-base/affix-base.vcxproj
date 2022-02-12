@@ -431,6 +431,7 @@
     <ClInclude Include="builder.h" />
     <ClInclude Include="threading.h" />
     <ClInclude Include="timing.h" />
+    <ClInclude Include="tree.h" />
     <ClInclude Include="utc_time.h" />
     <ClInclude Include="ts_deque.h" />
     <ClInclude Include="vector_extensions.h" />
