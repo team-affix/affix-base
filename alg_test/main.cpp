@@ -402,6 +402,17 @@ int main() {
 
 	tree<std::string>::path l_path = l_tree.find("Jake");
 
+	bool b1 = l_tree.contains("Jake");
+	bool b2 = l_tree.contains("Jake1");
+
+	l_tree.pre_order_traverse([](tree<std::string>& a_tree, size_t a_depth)
+		{
+			for (int i = 0; i < a_depth; i++)
+				std::cout << "   ";
+			std::cout << "|--";
+			std::cout << a_tree.m_resource << std::endl;
+		});
+
  	return EXIT_SUCCESS;
 
 }

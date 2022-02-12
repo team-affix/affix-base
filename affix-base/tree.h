@@ -92,7 +92,7 @@ namespace affix_base
 			}
 
 			/// <summary>
-			/// Returns a pointer to the node where the argued predicate is satisfied.
+			/// Returns a path to the node where the argued predicate is satisfied.
 			/// </summary>
 			/// <param name="a_predicate"></param>
 			/// <returns></returns>
@@ -127,7 +127,7 @@ namespace affix_base
 			}
 
 			/// <summary>
-			/// Returns a pointer to the node where the stored resource matches the argued resource.
+			/// Returns a path to the node where the stored resource matches the argued resource.
 			/// </summary>
 			/// <param name="a_resource"></param>
 			/// <returns></returns>
@@ -140,6 +140,72 @@ namespace affix_base
 					{
 						return a_lambda_resource == a_resource;
 					});
+			}
+
+			/// <summary>
+			/// Suggests whether the argued resource can be found within the tree.
+			/// </summary>
+			/// <param name="a_resource"></param>
+			/// <returns></returns>
+			bool contains(
+				const T& a_resource
+			)
+			{
+				return find(a_resource).valid();
+			}
+
+			/// <summary>
+			/// Recursively applies a function to each node in the tree, using pre-order traversal.
+			/// </summary>
+			/// <param name="a_function"></param>
+			void pre_order_traverse(
+				const std::function<void(tree<T>&)>& a_function
+			)
+			{
+				a_function(*this);
+				for (int i = 0; i < std::vector<tree<T>>::size(); i++)
+					std::vector<tree<T>>::at(i).pre_order_traverse(a_function);
+			}
+
+			/// <summary>
+			/// Recursively applies a function to each node in the tree, using pre-order traversal, where each function call is supplied the node depth.
+			/// </summary>
+			/// <param name="a_function"></param>
+			void pre_order_traverse(
+				const std::function<void(tree<T>&, size_t)>& a_function,
+				const size_t a_depth = 0
+			)
+			{
+				a_function(*this, a_depth);
+				for (int i = 0; i < std::vector<tree<T>>::size(); i++)
+					std::vector<tree<T>>::at(i).pre_order_traverse(a_function, a_depth + 1);
+			}
+
+			/// <summary>
+			/// Recursively applies a function to each node in the tree, using post-order traversal.
+			/// </summary>
+			/// <param name="a_function"></param>
+			void post_order_traverse(
+				const std::function<void(tree<T>&)>& a_function
+			)
+			{
+				for (int i = 0; i < std::vector<tree<T>>::size(); i++)
+					std::vector<tree<T>>::at(i).post_order_traverse(a_function);
+				a_function(*this);
+			}
+
+			/// <summary>
+			/// Recursively applies a function to each node in the tree, using pre-order traversal, where each function call is supplied the node depth.
+			/// </summary>
+			/// <param name="a_function"></param>
+			void post_order_traverse(
+				const std::function<void(tree<T>&, size_t)>& a_function,
+				const size_t a_depth = 0
+			)
+			{
+				for (int i = 0; i < std::vector<tree<T>>::size(); i++)
+					std::vector<tree<T>>::at(i).post_order_traverse(a_function, a_depth + 1);
+				a_function(*this, a_depth);
 			}
 
 		};
