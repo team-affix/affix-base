@@ -405,13 +405,17 @@ int main() {
 	bool b1 = l_tree.contains("Jake");
 	bool b2 = l_tree.contains("Jake1");
 
-	l_tree.pre_order_traverse([](tree<std::string>& a_tree, size_t a_depth)
-		{
-			for (int i = 0; i < a_depth; i++)
-				std::cout << "   ";
-			std::cout << "|--";
-			std::cout << a_tree.m_resource << std::endl;
-		});
+	auto l_print_tree = [](tree<std::string>& a_tree, size_t a_depth)
+	{
+		for (int i = 0; i < a_depth; i++)
+			std::cout << "   ";
+		std::cout << "|--";
+		std::cout << a_tree.m_resource << std::endl;
+	};
+
+	l_tree.pre_order_traverse(l_print_tree);
+
+
 
  	return EXIT_SUCCESS;
 

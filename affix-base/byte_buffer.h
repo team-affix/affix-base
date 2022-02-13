@@ -5,6 +5,7 @@
 #include <tuple>
 #include "catch_friendly_assert.h"
 #include <string>
+#include "tree.h"
 
 namespace affix_base {
 	namespace data {
@@ -230,6 +231,75 @@ namespace affix_base {
 				if (!pop_front(std::get<1>(a_tuple))) return false;
 
 				return true;
+			}
+
+			template<typename DATA_TYPE>
+			bool push_back(
+				const affix_base::data::tree<DATA_TYPE>& a_tree
+			)
+			{
+				if (!push_back(a_tree.m_resource))
+					return false;
+
+				const std::vector<affix_base::data::tree<DATA_TYPE>>& l_subtrees(a_tree);
+
+				if (!push_back(l_subtrees))
+					return false;
+
+				return true;
+
+			}
+
+			template<typename DATA_TYPE>
+			bool push_front(
+				const affix_base::data::tree<DATA_TYPE>& a_tree
+			)
+			{
+				const std::vector<affix_base::data::tree<DATA_TYPE>>& l_subtrees(a_tree);
+
+				if (!push_front(l_subtrees))
+					return false;
+
+				if (!push_front(a_tree.m_resource))
+					return false;
+
+				return true;
+
+			}
+
+			template<typename DATA_TYPE>
+			bool pop_back(
+				affix_base::data::tree<DATA_TYPE>& a_tree
+			)
+			{
+
+				std::vector<affix_base::data::tree<DATA_TYPE>>& l_subtrees(a_tree);
+
+				if (!pop_back(l_subtrees))
+					return false;
+
+				if (!pop_back(a_tree.m_resource))
+					return false;
+
+				return true;
+
+			}
+
+			template<typename DATA_TYPE>
+			bool pop_front(
+				affix_base::data::tree<DATA_TYPE>& a_tree
+			)
+			{
+				if (!pop_front(a_tree.m_resource))
+					return false;
+
+				std::vector<affix_base::data::tree<DATA_TYPE>>& l_subtrees(a_tree);
+
+				if (!pop_front(l_subtrees))
+					return false;
+
+				return true;
+
 			}
 
 		public:
