@@ -393,7 +393,7 @@
     <ClInclude Include="async_authenticate_local.h" />
     <ClInclude Include="async_authenticate_remote.h" />
     <ClInclude Include="callback.h" />
-    <ClInclude Include="callback_dispatcher.h" />
+    <ClInclude Include="dispatcher.h" />
     <ClInclude Include="catch_friendly_assert.h" />
     <ClInclude Include="cross_thread_mutex.h" />
     <ClInclude Include="details.h" />

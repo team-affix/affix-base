@@ -14,7 +14,7 @@ namespace affix_base
 		/// <typeparam name="RETURN_TYPE"></typeparam>
 		/// <typeparam name="...PARAMETER_TYPES"></typeparam>
 		template<typename MUTEX_TYPE, typename RETURN_TYPE = void, typename ... PARAMETER_TYPES>
-		class callback_dispatcher
+		class dispatcher
 		{
 		protected:
 			/// <summary>

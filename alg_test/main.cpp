@@ -415,7 +415,7 @@ int main() {
 
 	l_tree.pre_order_traverse(l_print_tree);
 
-	callback_dispatcher<affix_base::threading::cross_thread_mutex> l_callback_dispatcher;
+	dispatcher<affix_base::threading::cross_thread_mutex> l_callback_dispatcher;
 
 	auto a0 = l_callback_dispatcher.dispatch([] {});
 	auto a1 = l_callback_dispatcher.dispatch([] {});
