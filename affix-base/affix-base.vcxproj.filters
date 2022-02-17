@@ -299,5 +299,8 @@
     <ClInclude Include="tree.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
+    <ClInclude Include="callback_dispatcher.h">
+      <Filter>Header Files\callback</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
