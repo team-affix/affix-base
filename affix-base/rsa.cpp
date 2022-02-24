@@ -31,26 +31,42 @@ namespace affix_base {
             return { priKey, pubKey };
         }
 
-        std::string cryptography::rsa_to_base64_string(
-            const CryptoPP::RSA::PrivateKey& a_private_key
+        bool cryptography::rsa_to_base64_string(
+            const CryptoPP::RSA::PrivateKey& a_private_key,
+            std::string& a_string
         )
         {
-            string l_result;
-            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result), false);
-            a_private_key.DEREncode(l_string_sink);
-            l_string_sink.MessageEnd();
-            return l_result;
+            try
+            {
+                a_string.clear();
+                CryptoPP::Base64Encoder l_string_sink(new StringSink(a_string), false);
+                a_private_key.DEREncode(l_string_sink);
+                l_string_sink.MessageEnd();
+                return true;
+            }
+            catch (std::exception a_exception)
+            {
+                return false;
+            }
         }
 
-        std::string cryptography::rsa_to_base64_string(
-            const CryptoPP::RSA::PublicKey& a_public_key
+        bool cryptography::rsa_to_base64_string(
+            const CryptoPP::RSA::PublicKey& a_public_key,
+            std::string& a_string
         )
         {
-            string l_result;
-            CryptoPP::Base64Encoder l_string_sink(new StringSink(l_result), false);
-            a_public_key.DEREncode(l_string_sink);
-            l_string_sink.MessageEnd();
-            return l_result;
+            try
+            {
+                a_string.clear();
+                CryptoPP::Base64Encoder l_string_sink(new StringSink(a_string), false);
+                a_public_key.DEREncode(l_string_sink);
+                l_string_sink.MessageEnd();
+                return true;
+            }
+            catch (std::exception a_exception)
+            {
+                return false;
+            }
         }
 
         bool cryptography::rsa_from_base64_string(

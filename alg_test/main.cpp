@@ -395,35 +395,11 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	tree<std::string> l_tree("root");
+	CryptoPP::RSA::PublicKey l_public_key;
 
-	l_tree.insert(l_tree.end(), { std::string("hello"), std::string("my"), std::string("name") });
-	l_tree[1].insert(l_tree[1].end(), { std::string("is"), std::string("Jake") });
+	std::string l_public_key_string;
 
-	tree<std::string>::path l_path = l_tree.find("Jake");
-
-	bool b1 = l_tree.contains("Jake");
-	bool b2 = l_tree.contains("Jake1");
-
-	auto l_print_tree = [](tree<std::string>& a_tree, size_t a_depth)
-	{
-		for (int i = 0; i < a_depth; i++)
-			std::cout << "   ";
-		std::cout << "|--";
-		std::cout << a_tree.m_resource << std::endl;
-	};
-
-	l_tree.pre_order_traverse(l_print_tree);
-
-	dispatcher<affix_base::threading::cross_thread_mutex> l_callback_dispatcher;
-
-	auto a0 = l_callback_dispatcher.dispatch([] {});
-	auto a1 = l_callback_dispatcher.dispatch([] {});
-	auto a2 = l_callback_dispatcher.dispatch([] {});
-
-	a0();
-	a1();
-	a2();
+	bool l_successful = rsa_to_base64_string(l_public_key, l_public_key_string);
 
  	return EXIT_SUCCESS;
 

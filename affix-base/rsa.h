@@ -33,8 +33,9 @@ namespace affix_base {
         /// </summary>
         /// <param name="a_private_key"></param>
         /// <param name="a_ostream"></param>
-        std::string rsa_to_base64_string(
-            const CryptoPP::RSA::PrivateKey& a_private_key
+        bool rsa_to_base64_string(
+            const CryptoPP::RSA::PrivateKey& a_private_key,
+            std::string& a_string
         );
 
         /// <summary>
@@ -42,8 +43,9 @@ namespace affix_base {
         /// </summary>
         /// <param name="a_private_key"></param>
         /// <param name="a_ostream"></param>
-        std::string rsa_to_base64_string(
-            const CryptoPP::RSA::PublicKey& a_public_key
+        bool rsa_to_base64_string(
+            const CryptoPP::RSA::PublicKey& a_public_key,
+            std::string& a_string
         );
 
         /// <summary>
