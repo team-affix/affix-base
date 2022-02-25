@@ -379,6 +379,7 @@ namespace affix_base {
         bool cryptography::rsa_try_verify(const vector<byte>& a_input, const vector<byte>& a_signature, const RSA::PublicKey& a_public_key, bool& a_output) {
             try {
                 a_output = rsa_verify(a_input, a_signature, a_public_key);
+                return true;
             }
             catch (...) {
                 return false;
