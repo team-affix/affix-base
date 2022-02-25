@@ -62,7 +62,7 @@ void socket_io_guard::send_callback(const bool& a_result) {
         l_callback = m_send_deque.front().m_callback;
 
         m_send_deque.pop_front();
-        if (m_send_deque.size() > 0 && a_result)
+        if (m_send_deque.size() > 0)
             send_next();
 
     }
@@ -84,7 +84,7 @@ void socket_io_guard::receive_callback(const bool& a_result) {
         l_callback = m_receive_deque.front().m_callback;
 
         m_receive_deque.pop_front();
-        if (m_receive_deque.size() > 0 && a_result)
+        if (m_receive_deque.size() > 0)
             receive_next();
 
     }
