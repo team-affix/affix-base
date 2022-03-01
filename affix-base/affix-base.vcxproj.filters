@@ -141,12 +141,6 @@
     <ClCompile Include="path_attributes.cpp">
       <Filter>Source Files\files</Filter>
     </ClCompile>
-    <ClCompile Include="async_authenticate_local.cpp">
-      <Filter>Source Files\networking</Filter>
-    </ClCompile>
-    <ClCompile Include="async_authenticate_remote.cpp">
-      <Filter>Source Files\networking</Filter>
-    </ClCompile>
     <ClCompile Include="async_authenticate.cpp">
       <Filter>Source Files\networking</Filter>
     </ClCompile>
@@ -280,12 +274,6 @@
     </ClInclude>
     <ClInclude Include="path_attributes.h">
       <Filter>Header Files\files</Filter>
-    </ClInclude>
-    <ClInclude Include="async_authenticate_local.h">
-      <Filter>Header Files\networking</Filter>
-    </ClInclude>
-    <ClInclude Include="async_authenticate_remote.h">
-      <Filter>Header Files\networking</Filter>
     </ClInclude>
     <ClInclude Include="async_authenticate.h">
       <Filter>Header Files\networking</Filter>

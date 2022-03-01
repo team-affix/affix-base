@@ -347,8 +347,6 @@
   <ItemGroup>
     <ClCompile Include="aes.cpp" />
     <ClCompile Include="async_authenticate.cpp" />
-    <ClCompile Include="async_authenticate_local.cpp" />
-    <ClCompile Include="async_authenticate_remote.cpp" />
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="cross_thread_mutex.cpp" />
     <ClCompile Include="file_ios.cpp" />
@@ -390,8 +388,6 @@
     <ClInclude Include="aes.h" />
     <ClInclude Include="affix_base.h" />
     <ClInclude Include="async_authenticate.h" />
-    <ClInclude Include="async_authenticate_local.h" />
-    <ClInclude Include="async_authenticate_remote.h" />
     <ClInclude Include="callback.h" />
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="catch_friendly_assert.h" />
