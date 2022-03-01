@@ -12,16 +12,15 @@ namespace affix_base
 		{
 		protected:
 			socket_io_guard& m_socket_io_guard;
-
-			affix_base::cryptography::rsa_key_pair m_local_key_pair;
-			std::vector<uint8_t> m_local_seed;
-
-			CryptoPP::RSA::PublicKey m_remote_public_key;
-			std::vector<uint8_t> m_remote_seed;
-
 			bool m_identify_local_first = false;
 			size_t m_authentication_count = -1;
 			std::function<void(bool)> m_callback;
+
+		public:
+			affix_base::cryptography::rsa_key_pair m_local_key_pair;
+			std::vector<uint8_t> m_local_seed;
+			CryptoPP::RSA::PublicKey m_remote_public_key;
+			std::vector<uint8_t> m_remote_seed;
 
 		public:
 			virtual ~async_authenticate(
