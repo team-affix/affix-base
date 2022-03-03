@@ -28,6 +28,14 @@ struct simple_struct : affix_base::data::serializable
 
 	}
 
+	simple_struct(
+		const simple_struct& a_other
+	) :
+		affix_base::data::serializable(m_string, m_int)
+	{
+
+	}
+
 };
 
 struct simpler_struct
@@ -45,11 +53,13 @@ int main() {
 
 	byte_buffer l_byte_buffer;
 
-	simpler_struct s;
+	simple_struct s;
+
+	simple_struct s3 = s;
 
 	l_byte_buffer.push_back(s);
 	
-	simpler_struct s2;
+	simple_struct s2;
 
 	l_byte_buffer.pop_front(s2);
 
