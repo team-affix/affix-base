@@ -19,6 +19,10 @@ namespace affix_base
 			std::function<bool(affix_base::data::byte_buffer&)> m_deserialize;
 
 		public:
+			serializable(
+
+			) = delete;
+
 			template<typename ... FIELDS>
 			serializable(
 				FIELDS& ... a_fields
