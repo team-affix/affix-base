@@ -1,5 +1,6 @@
 #include "affix_base.h"
 #include <filesystem>
+#include "serializable.h"
 
 using namespace affix_base::networking;
 using namespace affix_base::cryptography;
@@ -14,6 +15,27 @@ using std::string;
 namespace ip = asio::ip;
 using asio::error_code;
 
+struct simple_struct : affix_base::data::serializable
+{
+	std::string m_string = "hello world";
+	int m_int = 3;
+
+	simple_struct(
+
+	) :
+		affix_base::data::serializable(m_string, m_int)
+	{
+
+	}
+
+};
+
+struct simpler_struct
+{
+	int i1 = 1;
+	int i2 = 2;
+};
+
 int main() {
 
 	using namespace affix_base::callback;
@@ -21,9 +43,15 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	rsa_key_pair l_rsa_key_pair_0 = rsa_generate_key_pair(2048);
-	rsa_key_pair l_rsa_key_pair_1 = rsa_generate_key_pair(2048);
+	byte_buffer l_byte_buffer;
 
+	simpler_struct s;
+
+	l_byte_buffer.push_back(s);
+	
+	simpler_struct s2;
+
+	l_byte_buffer.pop_front(s2);
 
 
  	return EXIT_SUCCESS;

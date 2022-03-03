@@ -30,43 +30,79 @@ namespace affix_base {
 		public:
 			template<typename DATA_TYPE>
 			bool push_back(const DATA_TYPE& a_data) {
-				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
-				// PUSH DATA TO BACK OF STACK
-				uint8_t* l_data_begin = (uint8_t*)&a_data;
-				uint8_t* l_data_end = l_data_begin + sizeof(DATA_TYPE);
-				m_body.insert(m_body.end(), l_data_begin, l_data_end);
-				return true;
+				if constexpr (std::is_standard_layout<DATA_TYPE>::value)
+				{
+					// PUSH DATA TO BACK OF STACK
+					uint8_t* l_data_begin = (uint8_t*)&a_data;
+					uint8_t* l_data_end = l_data_begin + sizeof(DATA_TYPE);
+					m_body.insert(m_body.end(), l_data_begin, l_data_end);
+					return true;
+				}
+				else
+				{
+					byte_buffer l_byte_buffer;
+					if (!a_data.serialize(l_byte_buffer))
+						return false;
+					return push_back(l_byte_buffer);
+				}
 			}
 			template<typename DATA_TYPE>
 			bool push_front(const DATA_TYPE& a_data) {
-				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
-				// PUSH DATA TO FRONT OF STACK
-				uint8_t* l_data_begin = (uint8_t*)&a_data;
-				uint8_t* l_data_end = l_data_begin + sizeof(DATA_TYPE);
-				m_body.insert(m_body.begin(), l_data_begin, l_data_end);
-				return true;
+				if constexpr (std::is_standard_layout<DATA_TYPE>::value)
+				{
+					// PUSH DATA TO FRONT OF STACK
+					uint8_t* l_data_begin = (uint8_t*)&a_data;
+					uint8_t* l_data_end = l_data_begin + sizeof(DATA_TYPE);
+					m_body.insert(m_body.begin(), l_data_begin, l_data_end);
+					return true;
+				}
+				else
+				{
+					byte_buffer l_byte_buffer;
+					if (!a_data.serialize(l_byte_buffer))
+						return false;
+					return push_front(l_byte_buffer);
+				}
 			}
 			template<typename DATA_TYPE>
 			bool pop_back(DATA_TYPE& a_data) {
-				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
-				if (m_body.size() < sizeof(DATA_TYPE)) return false;
+				if constexpr (std::is_standard_layout<DATA_TYPE>::value)
+				{
+					if (m_body.size() < sizeof(DATA_TYPE)) return false;
 
-				// POP DATA FROM BACK OF STACK
-				std::copy(m_body.end() - sizeof(DATA_TYPE), m_body.end(), (uint8_t*)&a_data);
-				m_body.erase(m_body.end() - sizeof(DATA_TYPE), m_body.end());
+					// POP DATA FROM BACK OF STACK
+					std::copy(m_body.end() - sizeof(DATA_TYPE), m_body.end(), (uint8_t*)&a_data);
+					m_body.erase(m_body.end() - sizeof(DATA_TYPE), m_body.end());
 
-				return true;
+					return true;
+				}
+				else
+				{
+					byte_buffer l_byte_buffer;
+					if (!pop_back(l_byte_buffer))
+						return false;
+					return a_data.deserialize(l_byte_buffer);
+				}
 			}
 			template<typename DATA_TYPE>
 			bool pop_front(DATA_TYPE& a_data) {
-				static_assert(std::is_standard_layout<DATA_TYPE>::value, "Data is not in a standard layout.");
-				if (m_body.size() < sizeof(DATA_TYPE)) return false;
+				if constexpr (std::is_standard_layout<DATA_TYPE>::value)
+				{
+					if (m_body.size() < sizeof(DATA_TYPE)) return false;
 
-				// POP DATA FROM FRONT OF STACK
-				std::copy(m_body.begin(), m_body.begin() + sizeof(DATA_TYPE), (uint8_t*)&a_data);
-				m_body.erase(m_body.begin(), m_body.begin() + sizeof(DATA_TYPE));
+					// POP DATA FROM FRONT OF STACK
+					std::copy(m_body.begin(), m_body.begin() + sizeof(DATA_TYPE), (uint8_t*)&a_data);
+					m_body.erase(m_body.begin(), m_body.begin() + sizeof(DATA_TYPE));
 
-				return true;
+					return true;
+				}
+				else
+				{
+					byte_buffer l_byte_buffer;
+					if (!pop_front(l_byte_buffer))
+						return false;
+					return a_data.deserialize(l_byte_buffer);
+				}
 			}
 			template<>
 			bool push_back<std::string>(const std::string& a_data)
@@ -230,6 +266,31 @@ namespace affix_base {
 				if (!pop_front(std::get<0>(a_tuple))) return false;
 				if (!pop_front(std::get<1>(a_tuple))) return false;
 
+				return true;
+			}
+
+			bool push_back(const byte_buffer& a_byte_buffer)
+			{
+				return push_back(a_byte_buffer.data());
+			}
+			bool push_front(const byte_buffer& a_byte_buffer)
+			{
+				return push_front(a_byte_buffer.data());
+			}
+			bool pop_back(byte_buffer& a_byte_buffer)
+			{
+				std::vector<uint8_t> l_byte_buffer_data;
+				if (!pop_back(l_byte_buffer_data))
+					return false;
+				a_byte_buffer = byte_buffer(l_byte_buffer_data);
+				return true;
+			}
+			bool pop_front(byte_buffer& a_byte_buffer)
+			{
+				std::vector<uint8_t> l_byte_buffer_data;
+				if (!pop_front(l_byte_buffer_data))
+					return false;
+				a_byte_buffer = byte_buffer(l_byte_buffer_data);
 				return true;
 			}
 

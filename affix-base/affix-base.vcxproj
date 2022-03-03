@@ -401,6 +401,7 @@
     <ClInclude Include="files.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="semantic_version_number.h" />
+    <ClInclude Include="serializable.h" />
     <ClInclude Include="sha.h" />
     <ClInclude Include="cryptography.h" />
     <ClInclude Include="data.h" />

@@ -290,5 +290,8 @@
     <ClInclude Include="dispatcher.h">
       <Filter>Header Files\callback</Filter>
     </ClInclude>
+    <ClInclude Include="serializable.h">
+      <Filter>Header Files\data</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
