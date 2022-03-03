@@ -2,11 +2,6 @@
 #include "pch.h"
 #include "byte_buffer.h"
 
-template<typename FUNCTION_TYPE, typename ... PARAMS>
-constexpr void constexpr_for(FUNCTION_TYPE&& a_function, PARAMS&& ... a_params)
-{
-	(a_function(std::forward<PARAMS>(a_params)), ...);
-}
 
 namespace affix_base
 {
@@ -17,6 +12,12 @@ namespace affix_base
 		protected:
 			std::function<bool(affix_base::data::byte_buffer&)> m_serialize;
 			std::function<bool(affix_base::data::byte_buffer&)> m_deserialize;
+
+			template<typename FUNCTION_TYPE, typename ... PARAMS>
+			constexpr void constexpr_for(FUNCTION_TYPE&& a_function, PARAMS&& ... a_params)
+			{
+				(a_function(std::forward<PARAMS>(a_params)), ...);
+			}
 
 		public:
 			serializable(

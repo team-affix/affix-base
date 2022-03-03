@@ -53,16 +53,16 @@ int main() {
 
 	byte_buffer l_byte_buffer;
 
-	simple_struct s;
+	std::map<std::string, std::string> l_map = {
+		{"jake", "thebest2"},
+		{"gianna", "thebest"}
+	};
 
-	simple_struct s3 = s;
+	l_byte_buffer.push_front(l_map);
 
-	l_byte_buffer.push_back(s);
-	
-	simple_struct s2;
+	std::map<std::string, std::string> l_map_2;
 
-	l_byte_buffer.pop_front(s2);
-
+	l_byte_buffer.pop_back(l_map_2);
 
  	return EXIT_SUCCESS;
 

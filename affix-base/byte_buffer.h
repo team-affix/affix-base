@@ -233,38 +233,99 @@ namespace affix_base {
 				return true;
 			}
 			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
-			bool push_back(const std::tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+			bool push_back(const std::pair<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
 
 				// ALWAYS PUSH TUPLE IN FRONT-FACING ORDER
-				if (!push_back(std::get<0>(a_tuple))) return false;
-				if (!push_back(std::get<1>(a_tuple))) return false;
+				if (!push_back(a_tuple.first)) return false;
+				if (!push_back(a_tuple.second)) return false;
 
 				return true;
 			}
 			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
-			bool push_front(const std::tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+			bool push_front(const std::pair<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
 
 				// ALWAYS PUSH TUPLE IN FRONT-FACING ORDER
-				if (!push_back(std::get<1>(a_tuple))) return false;
-				if (!push_back(std::get<0>(a_tuple))) return false;
+				if (!push_front(a_tuple.second)) return false;
+				if (!push_front(a_tuple.first)) return false;
 
 				return true;
 			}
 			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
-			bool pop_back(std::tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+			bool pop_back(std::pair<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
 
 				// ALWAYS POP TUPLE IN FRONT-FACING ORDER
-				if (!pop_back(std::get<1>(a_tuple))) return false;
-				if (!pop_back(std::get<0>(a_tuple))) return false;
+				if (!pop_back(a_tuple.second)) return false;
+				if (!pop_back(a_tuple.first)) return false;
 
 				return true;
 			}
 			template<typename DATA_TYPE_1, typename DATA_TYPE_2>
-			bool pop_front(std::tuple<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
+			bool pop_front(std::pair<DATA_TYPE_1, DATA_TYPE_2>& a_tuple) {
 
 				// ALWAYS POP TUPLE IN FRONT-FACING ORDER
-				if (!pop_front(std::get<0>(a_tuple))) return false;
-				if (!pop_front(std::get<1>(a_tuple))) return false;
+				if (!pop_front(a_tuple.first)) return false;
+				if (!pop_front(a_tuple.second)) return false;
+
+				return true;
+			}
+
+			template<typename KEY_TYPE, typename VALUE_TYPE>
+			bool push_back(const std::map<KEY_TYPE, VALUE_TYPE>& a_map)
+			{
+				std::vector<std::pair<KEY_TYPE, VALUE_TYPE>> l_vector;
+
+				for (typename std::map<KEY_TYPE, VALUE_TYPE>::const_iterator l_it = a_map.begin(); l_it != a_map.end(); l_it++)
+				{
+					l_vector.push_back(*l_it);
+				}
+
+				if (!push_back(l_vector))
+					return false;
+
+				return true;
+			}
+			template<typename KEY_TYPE, typename VALUE_TYPE>
+			bool push_front(const std::map<KEY_TYPE, VALUE_TYPE>& a_map)
+			{
+				std::vector<std::pair<KEY_TYPE, VALUE_TYPE>> l_vector;
+
+				for (typename std::map<KEY_TYPE, VALUE_TYPE>::const_iterator l_it = a_map.begin(); l_it != a_map.end(); l_it++)
+				{
+					l_vector.push_back(*l_it);
+				}
+
+				if (!push_front(l_vector))
+					return false;
+
+				return true;
+			}
+			template<typename KEY_TYPE, typename VALUE_TYPE>
+			bool pop_back(std::map<KEY_TYPE, VALUE_TYPE>& a_map)
+			{
+				a_map.clear();
+
+				std::vector<std::pair<KEY_TYPE, VALUE_TYPE>> l_vector;
+				
+				if (!pop_back(l_vector))
+					return false;
+
+				for (int i = 0; i < l_vector.size(); i++)
+					a_map.insert(a_map.end(), l_vector[i]);
+
+				return true;
+			}
+			template<typename KEY_TYPE, typename VALUE_TYPE>
+			bool pop_front(std::map<KEY_TYPE, VALUE_TYPE>& a_map)
+			{
+				a_map.clear();
+
+				std::vector<std::pair<KEY_TYPE, VALUE_TYPE>> l_vector;
+
+				if (!pop_front(l_vector))
+					return false;
+
+				for (int i = 0; i < l_vector.size(); i++)
+					a_map.insert(a_map.end(), l_vector[i]);
 
 				return true;
 			}
