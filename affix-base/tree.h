@@ -92,6 +92,17 @@ namespace affix_base
 			}
 
 			/// <summary>
+			/// Returns the resource stored in this tree node.
+			/// </summary>
+			/// <returns></returns>
+			T& resource(
+
+			)
+			{
+				return m_resource;
+			}
+
+			/// <summary>
 			/// Returns a path to the node where the argued predicate is satisfied.
 			/// </summary>
 			/// <param name="a_predicate"></param>
