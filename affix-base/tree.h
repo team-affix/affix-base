@@ -45,6 +45,23 @@ namespace affix_base
 					return std::vector<tree<T>*>::size() != 0;
 				}
 
+				/// <summary>
+				/// Converts the vector of pointers to trees to a vector of the resources in each tree node.
+				/// </summary>
+				/// <typeparam name="T"></typeparam>
+				std::vector<T> resource_path(
+
+				) const
+				{
+					std::vector<T> l_result(std::vector<tree<T>*>::size());
+
+					for (int i = 0; i < std::vector<tree<T>*>::size(); i++)
+						l_result[i] = std::vector<tree<T>*>::at(i)->resource();
+
+					return l_result;
+
+				}
+
 			};
 
 		public:
@@ -65,25 +82,13 @@ namespace affix_base
 			}
 
 			/// <summary>
-			/// Value-initializing constructor. Initializes m_resource to the argued value.
-			/// </summary>
-			/// <param name="a_resource"></param>
-			tree(
-				const T& a_resource
-			) :
-				m_resource(a_resource)
-			{
-
-			}
-
-			/// <summary>
 			/// Value-initializing constructor. Initializes m_resource and the base vector to their argued values.
 			/// </summary>
 			/// <param name="a_resource"></param>
 			/// <param name="a_subtrees"></param>
 			tree(
 				const T& a_resource,
-				const std::vector<tree<T>>& a_subtrees
+				const std::vector<tree<T>>& a_subtrees = {}
 			) :
 				m_resource(a_resource),
 				std::vector<tree<T>>(a_subtrees)
@@ -151,6 +156,50 @@ namespace affix_base
 					{
 						return a_lambda_resource == a_resource;
 					});
+			}
+
+			/// <summary>
+			/// Returns a real path given a resource path.
+			/// </summary>
+			/// <typeparam name="T"></typeparam>
+			path bind_resource_path(
+				const std::vector<T>& a_resource_path,
+				const std::function<bool(const T&, const T&)>& a_matches = [](const T& a_resource_0, const T& a_resource_1) { return a_resource_0 == a_resource_1; }
+			)
+			{
+				// Generate an empty result path
+				path l_result;
+
+				if (a_resource_path.size() == 0 || !a_matches(resource(), a_resource_path.front()))
+					// If the resource that should match this resource doesn't, return an invalid (empty) path
+					return l_result;
+
+				if (a_resource_path.size() == 1)
+				{
+					// This is the last resource in the resource path
+					l_result.push_back(this);
+					return l_result;
+				}
+
+				// Get the next resource path
+				std::vector<T> a_child_resource_path(a_resource_path.begin() + 1, a_resource_path.end());
+				
+				for (int i = 0; i < std::vector<tree<T>>::size(); i++)
+				{
+					// Set the resulting path equal to the child's bind result
+					l_result = std::vector<tree<T>>::at(i).bind_resource_path(a_child_resource_path, a_matches);
+
+					if (l_result.valid())
+					{
+						// If the path is in fact valid, push this tree node onto the front of the path
+						l_result.insert(l_result.begin(), this);
+						return l_result;
+					}
+					
+				}
+
+				return l_result;
+
 			}
 
 			/// <summary>

@@ -51,18 +51,19 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	byte_buffer l_byte_buffer;
+	affix_base::data::tree<int> l_tree;
 
-	std::map<std::string, std::string> l_map = {
-		{"jake", "thebest2"},
-		{"gianna", "thebest"}
-	};
+	l_tree.resource() = 0;
 
-	l_byte_buffer.push_front(l_map);
+	l_tree.push_back(1);
+	l_tree.push_back(2);
 
-	std::map<std::string, std::string> l_map_2;
+	l_tree[0].push_back(3);
+	l_tree[1].push_back(4);
 
-	l_byte_buffer.pop_back(l_map_2);
+	tree<int>::path l_path = l_tree.bind_resource_path(
+		{}
+	);
 
  	return EXIT_SUCCESS;
 
