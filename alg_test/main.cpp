@@ -82,6 +82,30 @@ std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)> exte
 		});
 }
 
+template<typename RETURN_TYPE>
+class async_result
+{
+public:
+	RETURN_TYPE m_result;
+
+	async_result(
+
+	);
+
+};
+
+template<typename RETURN_TYPE = void, typename ... PARAMETER_TYPES>
+std::function<async_result<RETURN_TYPE>(PARAMETER_TYPES ...)> remote_function(
+	const std::string& a_function_identifier,
+	const std::function<void(const affix_base::data::byte_buffer&, async_result<RETURN_TYPE>)> a_send
+)
+{
+	return std::function<async_result<RETURN_TYPE>(PARAMETER_TYPES ...)>(
+		[&](PARAMETER_TYPES ... a_params)
+		{
+
+		});
+}
 
 
 int main() {
