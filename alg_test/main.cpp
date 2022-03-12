@@ -82,6 +82,8 @@ std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)> exte
 		});
 }
 
+
+
 int main() {
 
 	using namespace affix_base::callback;
@@ -89,19 +91,11 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	auto ef = external_function(
-			std::function([&]()
-			{
-				
-			}));
+	auto l_external_function = external_function(
+		std::function([](std::string a_string)
+		{
 
-	byte_buffer l_input;
-	std::string s = "yo";
-	l_input.push_back(s);
-
-	byte_buffer l_output = ef(l_input);
-	std::string s2;
-	l_output.pop_front(s2);
+		}));
 
  	return EXIT_SUCCESS;
 
