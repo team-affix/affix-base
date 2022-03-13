@@ -2,6 +2,8 @@
 #include <filesystem>
 #include "serializable.h"
 #include <tuple>
+#include "cryptopp/osrng.h"
+#include "guarded_resource.h"
 
 using namespace affix_base::networking;
 using namespace affix_base::cryptography;
@@ -17,7 +19,7 @@ namespace ip = asio::ip;
 using asio::error_code;
 
 template<typename RETURN_TYPE = void, typename ... PARAMETER_TYPES>
-std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)> external_function(
+std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)> local_function(
 	const std::function<RETURN_TYPE(PARAMETER_TYPES ...)>& a_function
 )
 {
@@ -82,31 +84,62 @@ std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)> exte
 		});
 }
 
-template<typename RETURN_TYPE>
+template<typename T>
 class async_result
 {
+protected:
+	affix_base::threading::guarded_resource<bool, affix_base::threading::cross_thread_mutex> m_resource_available;
+	T m_resource;
+
 public:
-	RETURN_TYPE m_result;
+	void set(
+		const T& a_resource
+	)
+	{
+		affix_base::threading::locked_resource l_resource_available = m_resource_available.lock();
+		m_resource = a_resource;
+		*l_resource_available = true;
+	}
 
-	async_result(
+	T& get(
 
-	);
+	)
+	{
+		while (true)
+		{
+			affix_base::threading::locked_resource l_resource_available = m_resource_available.lock();
+			if (*l_resource_available)
+			{
+				break;
+			}
+		}
+		return m_resource;
+	}
 
 };
 
 template<typename RETURN_TYPE = void, typename ... PARAMETER_TYPES>
-std::function<async_result<RETURN_TYPE>(PARAMETER_TYPES ...)> remote_function(
+std::function<affix_base::data::ptr<async_result<RETURN_TYPE>>(PARAMETER_TYPES ...)> remote_function(
 	const std::string& a_function_identifier,
-	const std::function<void(const affix_base::data::byte_buffer&, async_result<RETURN_TYPE>)> a_send
+	const std::function<void(affix_base::data::byte_buffer, affix_base::data::ptr<async_result<RETURN_TYPE>>)> a_call_remote_function
 )
 {
-	return std::function<async_result<RETURN_TYPE>(PARAMETER_TYPES ...)>(
-		[&](PARAMETER_TYPES ... a_params)
+	return std::function<affix_base::data::ptr<async_result<RETURN_TYPE>>(PARAMETER_TYPES ...)>(
+		[&, a_function_identifier, a_](PARAMETER_TYPES ... a_params)
 		{
+			affix_base::data::byte_buffer l_input;
+			affix_base::data::serializable l_serializable(a_params);
+			l_serializable.serialize(l_input);
+
+
 
 		});
 }
 
+int v(int a, int b)
+{
+	return a * b;
+}
 
 int main() {
 
@@ -115,11 +148,12 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	auto l_external_function = external_function(
-		std::function([](std::string a_string)
-		{
+	/*std::map<std::string, std::function<byte_buffer(byte_buffer)>> l_local_function_map;
+	l_local_function_map.insert({ "multiply_doubles", local_function(std::function([&](double a_a, double a_b) { return a_a * a_b; })) });*/
 
-		}));
+	std::shared_future<int> l_future;
+
+	l_future.get();
 
  	return EXIT_SUCCESS;
 
