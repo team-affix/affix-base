@@ -84,55 +84,53 @@ std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)> loca
 		});
 }
 
-template<typename T>
-class async_result
-{
-protected:
-	affix_base::threading::guarded_resource<bool, affix_base::threading::cross_thread_mutex> m_resource_available;
-	T m_resource;
-
-public:
-	void set(
-		const T& a_resource
-	)
-	{
-		affix_base::threading::locked_resource l_resource_available = m_resource_available.lock();
-		m_resource = a_resource;
-		*l_resource_available = true;
-	}
-
-	T& get(
-
-	)
-	{
-		while (true)
-		{
-			affix_base::threading::locked_resource l_resource_available = m_resource_available.lock();
-			if (*l_resource_available)
-			{
-				break;
-			}
-		}
-		return m_resource;
-	}
-
-};
-
-template<typename RETURN_TYPE = void, typename ... PARAMETER_TYPES>
-std::function<affix_base::data::ptr<async_result<RETURN_TYPE>>(PARAMETER_TYPES ...)> remote_function(
-	const std::string& a_function_identifier,
-	const std::function<void(affix_base::data::byte_buffer, affix_base::data::ptr<async_result<RETURN_TYPE>>)> a_call_remote_function
+template<
+	typename RETURN_TYPE = void,
+	typename FUNCTION_IDENTIFIER_TYPE = std::string,
+	typename CALL_IDENTIFIER_TYPE = std::string,
+	typename ... PARAMETER_TYPES>
+std::function<std::future<RETURN_TYPE>(PARAMETER_TYPES ...)> remote_function(
+	const FUNCTION_IDENTIFIER_TYPE& a_function_identifier,
+	const std::function<CALL_IDENTIFIER_TYPE(FUNCTION_IDENTIFIER_TYPE, affix_base::data::byte_buffer)>& a_initiate_remote_function_call,
+	const std::function<affix_base::data::byte_buffer(CALL_IDENTIFIER_TYPE)>& a_get_result
 )
 {
-	return std::function<affix_base::data::ptr<async_result<RETURN_TYPE>>(PARAMETER_TYPES ...)>(
-		[&, a_function_identifier, a_](PARAMETER_TYPES ... a_params)
+	return std::function<std::future<RETURN_TYPE>(PARAMETER_TYPES ...)>(
+		[&, a_function_identifier, a_initiate_remote_function_call, a_get_result](PARAMETER_TYPES ... a_params)
 		{
+			// Serialize all input parameters
 			affix_base::data::byte_buffer l_input;
-			affix_base::data::serializable l_serializable(a_params);
-			l_serializable.serialize(l_input);
 
+			if constexpr (sizeof...(PARAMETER_TYPES) > 0)
+			{
+				// Only try to serialize the parameters if there are parameters expected
+				affix_base::data::serializable l_serializable(a_params...);
+				l_serializable.serialize(l_input);
+			}
 
+			// Initiate the remote function call
+			CALL_IDENTIFIER_TYPE l_call_identifier = a_initiate_remote_function_call(a_function_identifier, l_input);
 
+			return std::async(std::launch::deferred,
+				[&, a_get_result, l_call_identifier]
+				{
+					// Get the returned value from calling the remote function
+					affix_base::data::byte_buffer l_result_byte_buffer = a_get_result(l_call_identifier);
+
+					if constexpr (std::is_same<RETURN_TYPE, void>::value)
+					{
+						// Return type is void
+						return;
+					}
+					else
+					{
+						// Return type is non-void
+						RETURN_TYPE l_result;
+						l_result_byte_buffer.pop_front(l_result);
+						return l_result;
+					}
+				});
+			
 		});
 }
 
@@ -141,19 +139,112 @@ int v(int a, int b)
 	return a * b;
 }
 
+struct function_data_transfer_declaration
+{
+	std::string m_function_identifier;
+	std::string m_call_identifier;
+	affix_base::data::byte_buffer m_byte_buffer;
+};
+
+affix_base::threading::guarded_resource<std::vector<function_data_transfer_declaration>, affix_base::threading::cross_thread_mutex> i_function_data_transfers_to_remote;
+affix_base::threading::guarded_resource<std::vector<function_data_transfer_declaration>, affix_base::threading::cross_thread_mutex> i_function_data_transfers_to_local;
+
+void remote_main()
+{
+	using namespace affix_base::threading;
+
+	std::map<std::string, std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)>> l_local_function_map;
+
+	l_local_function_map.insert({ 
+		"multiply_doubles",
+		local_function(std::function([&](double a, double b)
+		{
+			return a * b;
+		})) 
+	});
+
+
+	while (true)
+	{
+		locked_resource l_function_data_transfers_to_remote = i_function_data_transfers_to_remote.lock();
+
+		for (int i = l_function_data_transfers_to_remote->size() - 1; i >= 0; i--)
+		{
+			auto l_it = l_function_data_transfers_to_remote->begin() + i;
+
+			// Extract data from iterator
+			function_data_transfer_declaration l_result_data_transfer = *l_it;
+
+			// Erase element from vector
+			l_function_data_transfers_to_remote->erase(l_it);
+
+			l_result_data_transfer.m_byte_buffer = l_local_function_map[l_result_data_transfer.m_function_identifier](l_result_data_transfer.m_byte_buffer);
+
+			locked_resource l_function_data_transfers_to_local = i_function_data_transfers_to_local.lock();
+			
+			l_function_data_transfers_to_local->push_back(l_result_data_transfer);
+
+		}
+
+	}
+}
+
 int main() {
 
 	using namespace affix_base::callback;
 	using namespace affix_base::threading;
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
+	
+	auto multiply_doubles = remote_function<double, std::string, std::string, double, double>(std::string("multiply_doubles"),
+		std::function([&](std::string a_function_identifier, affix_base::data::byte_buffer a_byte_buffer)
+		{
+			std::string l_call_identifier;
+			l_call_identifier.resize(25);
+			CryptoPP::AutoSeededRandomPool l_random;
+			l_random.GenerateBlock((CryptoPP::byte*)l_call_identifier.data(), l_call_identifier.size());
+			
+			locked_resource l_function_data_transfers_to_remote = i_function_data_transfers_to_remote.lock();
 
-	/*std::map<std::string, std::function<byte_buffer(byte_buffer)>> l_local_function_map;
-	l_local_function_map.insert({ "multiply_doubles", local_function(std::function([&](double a_a, double a_b) { return a_a * a_b; })) });*/
+			function_data_transfer_declaration l_function_data_transfer = {
+				a_function_identifier,
+				l_call_identifier,
+				a_byte_buffer
+			};
 
-	std::shared_future<int> l_future;
+			l_function_data_transfers_to_remote->push_back(l_function_data_transfer);
 
-	l_future.get();
+			return l_call_identifier;
+
+		}),
+		std::function([&](std::string a_call_identifier)
+		{
+			while (true)
+			{
+				locked_resource l_function_data_transfers_to_local = i_function_data_transfers_to_local.lock();
+
+				auto l_result = std::find_if(l_function_data_transfers_to_local->begin(), l_function_data_transfers_to_local->end(),
+					[&](function_data_transfer_declaration& a_function_data_transfer_declaration)
+					{
+						return a_function_data_transfer_declaration.m_call_identifier == a_call_identifier;
+					});
+
+				if (l_result != l_function_data_transfers_to_local->end())
+					return l_result->m_byte_buffer;
+
+			}
+		}));
+
+	std::thread l_remote_thd(remote_main);
+
+	// Wait for thread to start
+	while (!l_remote_thd.joinable());
+
+	std::future<double> l_future_result = multiply_doubles(2, 3);
+
+	double l_result = l_future_result.get();
+
+	l_remote_thd.join();
 
  	return EXIT_SUCCESS;
 
