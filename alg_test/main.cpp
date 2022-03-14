@@ -134,6 +134,60 @@ std::function<std::future<RETURN_TYPE>(PARAMETER_TYPES ...)> remote_function(
 		});
 }
 
+template<typename FUNCTION_IDENTIFIER_TYPE, typename CALL_IDENTIFIER_TYPE>
+class remote_function_invoker
+{
+protected:
+	std::function<CALL_IDENTIFIER_TYPE(FUNCTION_IDENTIFIER_TYPE, affix_base::data::byte_buffer)> m_call_function;
+	std::function<affix_base::data::byte_buffer(CALL_IDENTIFIER_TYPE)> m_get_result;
+
+public:
+	remote_function_invoker(
+		const std::function<CALL_IDENTIFIER_TYPE(FUNCTION_IDENTIFIER_TYPE, affix_base::data::byte_buffer)>& a_call_function,
+		const std::function<affix_base::data::byte_buffer(CALL_IDENTIFIER_TYPE)>& a_get_result
+	) :
+		m_call_function(a_call_function),
+		m_get_result(a_get_result)
+	{
+
+	}
+
+	template<typename RETURN_TYPE, typename ... PARAMETER_TYPES>
+	std::future<RETURN_TYPE> invoke(
+		FUNCTION_IDENTIFIER_TYPE a_function_identifier,
+		PARAMETER_TYPES ... a_params
+	)
+	{
+		affix_base::data::byte_buffer l_input;
+
+		if constexpr (!std::is_same<RETURN_TYPE, void>::value)
+		{
+			affix_base::data::serializable l_serializable(a_params);
+			l_serializable.serialize(l_input);
+		}
+
+		CALL_IDENTIFIER_TYPE l_call_identifier = m_call_function(a_function_identifier, l_input);
+
+		return std::async(std::launch::deferred,
+			[&](CALL_IDENTIFIER_TYPE a_call_identifier)
+			{
+				affix_base::data::byte_buffer l_output = m_get_result(a_call_identifier);
+				if (std::is_same<RETURN_TYPE, void>::value)
+				{
+					return;
+				}
+				else
+				{
+					RETURN_TYPE l_result;
+					l_output.pop_front(l_result);
+					return l_result;
+				}
+			}, l_call_identifier);
+
+	}
+
+};
+
 int v(int a, int b)
 {
 	return a * b;
@@ -196,43 +250,14 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 	
-	auto multiply_doubles = remote_function<double, std::string, std::string, double, double>(std::string("multiply_doubles"),
+	remote_function_invoker<std::string, std::string> l_remote_function_invoker(
 		std::function([&](std::string a_function_identifier, affix_base::data::byte_buffer a_byte_buffer)
 		{
-			std::string l_call_identifier;
-			l_call_identifier.resize(25);
-			CryptoPP::AutoSeededRandomPool l_random;
-			l_random.GenerateBlock((CryptoPP::byte*)l_call_identifier.data(), l_call_identifier.size());
-			
-			locked_resource l_function_data_transfers_to_remote = i_function_data_transfers_to_remote.lock();
-
-			function_data_transfer_declaration l_function_data_transfer = {
-				a_function_identifier,
-				l_call_identifier,
-				a_byte_buffer
-			};
-
-			l_function_data_transfers_to_remote->push_back(l_function_data_transfer);
-
-			return l_call_identifier;
 
 		}),
 		std::function([&](std::string a_call_identifier)
 		{
-			while (true)
-			{
-				locked_resource l_function_data_transfers_to_local = i_function_data_transfers_to_local.lock();
 
-				auto l_result = std::find_if(l_function_data_transfers_to_local->begin(), l_function_data_transfers_to_local->end(),
-					[&](function_data_transfer_declaration& a_function_data_transfer_declaration)
-					{
-						return a_function_data_transfer_declaration.m_call_identifier == a_call_identifier;
-					});
-
-				if (l_result != l_function_data_transfers_to_local->end())
-					return l_result->m_byte_buffer;
-
-			}
 		}));
 
 	std::thread l_remote_thd(remote_main);
