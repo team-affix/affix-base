@@ -160,9 +160,9 @@ public:
 	{
 		affix_base::data::byte_buffer l_input;
 
-		if constexpr (!std::is_same<RETURN_TYPE, void>::value)
+		if constexpr (sizeof...(PARAMETER_TYPES) > 0)
 		{
-			affix_base::data::serializable l_serializable(a_params);
+			affix_base::data::serializable l_serializable(a_params...);
 			l_serializable.serialize(l_input);
 		}
 
@@ -172,7 +172,7 @@ public:
 			[&](CALL_IDENTIFIER_TYPE a_call_identifier)
 			{
 				affix_base::data::byte_buffer l_output = m_get_result(a_call_identifier);
-				if (std::is_same<RETURN_TYPE, void>::value)
+				if constexpr (std::is_same<RETURN_TYPE, void>::value)
 				{
 					return;
 				}
@@ -216,6 +216,13 @@ void remote_main()
 			return a * b;
 		})) 
 	});
+	l_local_function_map.insert({
+		"std_cout",
+		local_function(std::function([&](std::string a_text)
+		{
+			std::cout << a_text << std::endl;
+		}))
+	});
 
 
 	while (true)
@@ -253,11 +260,43 @@ int main() {
 	remote_function_invoker<std::string, std::string> l_remote_function_invoker(
 		std::function([&](std::string a_function_identifier, affix_base::data::byte_buffer a_byte_buffer)
 		{
+			locked_resource l_function_data_transfers_to_remote = i_function_data_transfers_to_remote.lock();
+
+			std::string l_call_identifier;
+			l_call_identifier.resize(25);
+
+			CryptoPP::AutoSeededRandomPool l_random;
+			l_random.GenerateBlock((CryptoPP::byte*)l_call_identifier.data(), l_call_identifier.size());
+
+			function_data_transfer_declaration l_func_call_decl{
+				a_function_identifier,
+				l_call_identifier,
+				a_byte_buffer
+			};
+
+			l_function_data_transfers_to_remote->push_back(l_func_call_decl);
+
+			return l_call_identifier;
 
 		}),
 		std::function([&](std::string a_call_identifier)
 		{
+			while (true)
+			{
+				locked_resource l_function_data_transfers_to_local = i_function_data_transfers_to_local.lock();
 
+				auto l_it = std::find_if(l_function_data_transfers_to_local->begin(), l_function_data_transfers_to_local->end(),
+					[&](const function_data_transfer_declaration& a_func_decl)
+					{
+						return a_func_decl.m_call_identifier == a_call_identifier;
+					});
+
+				if (l_it != l_function_data_transfers_to_local->end())
+				{
+					return l_it->m_byte_buffer;
+				}
+
+			}
 		}));
 
 	std::thread l_remote_thd(remote_main);
@@ -265,9 +304,20 @@ int main() {
 	// Wait for thread to start
 	while (!l_remote_thd.joinable());
 
-	std::future<double> l_future_result = multiply_doubles(2, 3);
+	std::future<double> l_future_result_0 = l_remote_function_invoker.invoke<double, double, double>
+		("multiply_doubles", 1, 1);
+	std::future<double> l_future_result_1 = l_remote_function_invoker.invoke<double, double, double>
+		("multiply_doubles", 1, 2);
+	std::future<double> l_future_result_2 = l_remote_function_invoker.invoke<double, double, double>
+		("multiply_doubles", 1, 3);
 
-	double l_result = l_future_result.get();
+	std::future l_future_result_3 = l_remote_function_invoker.invoke<void, std::string>
+		("std_cout", "this_is_a_test");
+
+	double l_result_0 = l_future_result_0.get();
+	double l_result_1 = l_future_result_1.get();
+	double l_result_2 = l_future_result_2.get();
+	l_future_result_3.get();
 
 	l_remote_thd.join();
 

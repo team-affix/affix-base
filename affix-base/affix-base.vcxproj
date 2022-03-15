@@ -394,12 +394,15 @@
     <ClInclude Include="cross_thread_mutex.h" />
     <ClInclude Include="details.h" />
     <ClInclude Include="diff.h" />
+    <ClInclude Include="distributed_computing.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="guarded_resource.h" />
     <ClInclude Include="path_attributes.h" />
     <ClInclude Include="file_ios.h" />
     <ClInclude Include="files.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="remote_function_invoker.h" />
+    <ClInclude Include="remote_invocation_processor.h" />
     <ClInclude Include="semantic_version_number.h" />
     <ClInclude Include="serializable.h" />
     <ClInclude Include="sha.h" />

@@ -79,6 +79,9 @@
     <Filter Include="Source Files\files">
       <UniqueIdentifier>{728d9d42-433b-4009-9e4e-4b84da98f199}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\distributed_computing">
+      <UniqueIdentifier>{3e2bea91-9190-42fc-a52f-5d4fab6c34bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="persistent_thread_group.cpp">
@@ -292,6 +295,15 @@
     </ClInclude>
     <ClInclude Include="serializable.h">
       <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="remote_function_invoker.h">
+      <Filter>Header Files\distributed_computing</Filter>
+    </ClInclude>
+    <ClInclude Include="remote_invocation_processor.h">
+      <Filter>Header Files\distributed_computing</Filter>
+    </ClInclude>
+    <ClInclude Include="distributed_computing.h">
+      <Filter>Header Files\distributed_computing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
