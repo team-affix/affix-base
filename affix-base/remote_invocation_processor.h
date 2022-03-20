@@ -42,7 +42,8 @@ namespace affix_base
 							}, l_tuple);
 
 						// Deserialize the byte buffer
-						l_serializer->deserialize(a_byte_buffer);
+						if (!l_serializer->deserialize(a_byte_buffer))
+							return l_result;
 
 						if constexpr (std::is_same<RETURN_TYPE, void>::value)
 						{
@@ -91,6 +92,24 @@ namespace affix_base
 				auto l_it = m_function_map.find(a_function_identifier);
 				if (l_it != m_function_map.end())
 					m_function_map.erase(l_it);
+			}
+
+			affix_base::data::byte_buffer process(
+				FUNCTION_IDENTIFIER_TYPE a_function_identifier,
+				affix_base::data::byte_buffer l_input
+			)
+			{
+				affix_base::data::byte_buffer l_result;
+
+				auto l_it = m_function_map.find(a_function_identifier);
+
+				if (l_it != m_function_map.end())
+				{
+					l_result = l_it->second(l_input);
+				}
+
+				return l_result;
+
 			}
 
 		};

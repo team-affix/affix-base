@@ -11,3 +11,4 @@
 #include "timing.h"
 #include "exceptions.h"
 #include "files.h"
+#include "distributed_computing.h"
