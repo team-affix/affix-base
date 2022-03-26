@@ -8,7 +8,7 @@ namespace affix_base
 	{
 		class serializable
 		{
-		protected:
+		private:
 			std::function<bool(affix_base::data::byte_buffer&)> m_serialize;
 			std::function<bool(affix_base::data::byte_buffer&)> m_deserialize;
 
