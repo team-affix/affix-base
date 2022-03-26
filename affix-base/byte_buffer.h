@@ -14,6 +14,12 @@ namespace affix_base {
 		protected:
 			std::deque<uint8_t> m_body;
 
+			template<typename FUNCTION_TYPE, typename ... PARAMS>
+			constexpr void constexpr_for(FUNCTION_TYPE&& a_function, PARAMS&& ... a_params)
+			{
+				(a_function(std::forward<PARAMS>(a_params)), ...);
+			}
+
 		public:
 			byte_buffer() {
 
@@ -104,6 +110,80 @@ namespace affix_base {
 					return a_data.deserialize(l_byte_buffer);
 				}
 			}
+
+			template<typename ... DATA_TYPES>
+			bool push_back(const DATA_TYPES& ... a_data)
+			{
+				try
+				{
+					constexpr_for(
+						[&](const auto& a_field)
+						{
+							if (!push_back(a_field))
+								throw std::exception();
+						}, a_data...);
+					return true;
+				}
+				catch (std::exception)
+				{
+					return false;
+				}
+			}
+			template<typename ... DATA_TYPES>
+			bool push_front(const DATA_TYPES& ... a_data)
+			{
+				try
+				{
+					constexpr_for(
+						[&](const auto& a_field)
+						{
+							if (!push_front(a_field))
+								throw std::exception();
+						}, a_data...);
+					return true;
+				}
+				catch (std::exception)
+				{
+					return false;
+				}
+			}
+			template<typename ... DATA_TYPES>
+			bool pop_back(DATA_TYPES& ... a_data)
+			{
+				try
+				{
+					constexpr_for(
+						[&](auto& a_field)
+						{
+							if (!pop_back(a_field))
+								throw std::exception();
+						}, a_data...);
+					return true;
+				}
+				catch (std::exception)
+				{
+					return false;
+				}
+			}
+			template<typename ... DATA_TYPES>
+			bool pop_front(DATA_TYPES& ... a_data)
+			{
+				try
+				{
+					constexpr_for(
+						[&](auto& a_field)
+						{
+							if (!pop_front(a_field))
+								throw std::exception();
+						}, a_data...);
+					return true;
+				}
+				catch (std::exception)
+				{
+					return false;
+				}
+			}
+
 			template<>
 			bool push_back<std::string>(const std::string& a_data)
 			{

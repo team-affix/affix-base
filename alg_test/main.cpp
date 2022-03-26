@@ -31,7 +31,7 @@ affix_base::threading::guarded_resource<std::vector<function_data_transfer_decla
 void remote_main()
 {
 	using namespace affix_base::threading;
-
+	
 	affix_base::distributed_computing::remote_invocation_processor<std::string, std::string> l_remote_invocation_processor;
 
 	l_remote_invocation_processor.add_function<double, double, double>(
@@ -68,6 +68,198 @@ void remote_main()
 	}
 }
 
+class matrix
+{
+protected:
+	std::vector<std::vector<double>> m_matrix;
+
+public:
+	matrix(
+		const size_t& a_rows,
+		const size_t& a_cols
+	)
+	{
+		m_matrix.resize(a_rows);
+		for (int i = 0; i < a_rows; i++)
+			m_matrix[i].resize(a_cols);
+	}
+
+	matrix(
+		const std::vector<std::vector<double>>& a_matrix
+	) :
+		m_matrix(a_matrix)
+	{
+
+	}
+
+public:
+	size_t rows(
+
+	) const
+	{
+		return m_matrix.size();
+	}
+
+	size_t cols(
+
+	) const
+	{
+		return m_matrix.front().size();
+	}
+
+	matrix range(
+		const size_t& a_row,
+		const size_t& a_col,
+		const size_t& a_rows,
+		const size_t& a_cols
+	) const
+	{
+		matrix l_result(a_rows, a_cols);
+		for (int i = 0; i < a_rows; i++)
+		{
+			const size_t l_row = a_row + i;
+			for (int j = 0; j < a_cols; j++)
+			{
+				const size_t l_col = a_col + j;
+				l_result.m_matrix[l_row][l_col] = m_matrix[l_row][l_col];
+			}
+		}
+		return l_result;
+	}
+
+	matrix transpose(
+
+	) const
+	{
+		matrix l_result(cols(), rows());
+
+		for (int i = 0; i < rows(); i++)
+		{
+			for (int j = 0; j < cols(); j++)
+			{
+				l_result.m_matrix[j][i] = m_matrix[i][j];
+			}
+		}
+
+		return l_result;
+
+	}
+
+	matrix tanh(
+
+	) const
+	{
+		matrix l_result(rows(), cols());
+
+		for (int i = 0; i < rows(); i++)
+		{
+			for (int j = 0; j < cols(); j++)
+			{
+				l_result.m_matrix[i][j] = std::tanh(m_matrix[i][j]);
+			}
+		}
+		
+		return l_result;
+
+	}
+
+	matrix add(
+		const matrix& a_other
+	) const
+	{
+		assert(a_other.rows() == rows() && a_other.cols() == cols());
+		matrix l_result(rows(), cols());
+		for (int i = 0; i < rows(); i++)
+		{
+			for (int j = 0; j < cols(); j++)
+			{
+				l_result.m_matrix[i][j] = m_matrix[i][j] + a_other.m_matrix[i][j];
+			}
+		}
+		return l_result;
+	}
+
+	matrix subtract(
+		const matrix& a_other
+	) const
+	{
+		assert(a_other.rows() == rows() && a_other.cols() == cols());
+		matrix l_result(rows(), cols());
+		for (int i = 0; i < rows(); i++)
+		{
+			for (int j = 0; j < cols(); j++)
+			{
+				l_result.m_matrix[i][j] = m_matrix[i][j] - a_other.m_matrix[i][j];
+			}
+		}
+		return l_result;
+	}
+
+	matrix left_multiply(
+		const matrix& a_other
+	) const
+	{
+		return a_other.right_multiply(*this);
+	}
+
+	matrix right_multiply(
+		const matrix& a_other
+	) const
+	{
+		assert(cols() == a_other.rows());
+
+		matrix l_result(rows(), a_other.cols());
+
+		for (int i = 0; i < rows(); i++)
+		{
+			for (int j = 0; j < a_other.cols(); j++)
+			{
+				for (int k = 0; k < cols(); k++)
+				{
+					l_result.m_matrix[i][j] += m_matrix[i][k] * a_other.m_matrix[k][j];
+				}
+			}
+		}
+
+		return l_result;
+
+	}
+
+	matrix operator +(
+		const matrix& a_other
+	) const
+	{
+		return add(a_other);
+	}
+
+	matrix operator -(
+		const matrix& a_other
+	) const
+	{
+		return subtract(a_other);
+	}
+
+	matrix operator *(
+		const matrix& a_other
+	) const
+	{
+		return right_multiply(a_other);
+	}
+
+};
+
+class differentiable_matrix_function
+{
+protected:
+	std::function<matrix(matrix)> m_forward;
+	std::function<matrix(matrix)> m_backward;
+
+public:
+
+
+
+};
+
 int main() {
 
 	using namespace affix_base::callback;
@@ -75,112 +267,7 @@ int main() {
 	using namespace affix_base::data;
 	namespace fs = std::filesystem;
 
-	const size_t VECTOR_SIZE = 500000;
 
-	std::vector<double> v1(VECTOR_SIZE);
-	std::vector<double> v2(VECTOR_SIZE);
-	std::vector<double> product(VECTOR_SIZE);
-
-	for (int i = 0; i < VECTOR_SIZE; i++)
-	{
-		v1[i] = i;
-		v2[i] = 2 * i;
-	}
-
-	auto process_one_fifth = 
-	[&] (size_t a_fifth_index)
-	{
-		for (int i = a_fifth_index / 5 * v1.size(); i < (a_fifth_index + 1) / 5 * v1.size(); i++)
-			product[i] = v1[i] * v2[i];
-	};
-
-	const int MAX_TEST_ITERATIONS = 10000;
-
-	affix_base::timing::stopwatch sw;
-	sw.start();
-	for (int i = 0; i < MAX_TEST_ITERATIONS; i++)
-	{
-		std::future l_future_0 = std::async(std::launch::async, process_one_fifth, 0);
-		std::future l_future_1 = std::async(std::launch::async, process_one_fifth, 1);
-		std::future l_future_2 = std::async(std::launch::async, process_one_fifth, 2);
-		std::future l_future_3 = std::async(std::launch::async, process_one_fifth, 3);
-		std::future l_future_4 = std::async(std::launch::async, process_one_fifth, 4);
-		l_future_0.get();
-		l_future_1.get();
-		l_future_2.get();
-		l_future_3.get();
-		l_future_4.get();
-	}
-	std::cout << "MULTITHREAD PERIOD (ms): " << sw.duration_milliseconds() << std::endl;
-
-	sw.start();
-	for (int i = 0; i < MAX_TEST_ITERATIONS; i++)
-	{
-		process_one_fifth(0);
-		process_one_fifth(1);
-		process_one_fifth(2);
-		process_one_fifth(3);
-		process_one_fifth(4);
-	}
-	std::cout << "SINGLETHREAD PERIOD (ms): " << sw.duration_milliseconds() << std::endl;
-
-
-	//affix_base::distributed_computing::remote_function_invoker<std::string, std::string> l_remote_function_invoker(
-	//	std::function([&](std::string a_function_identifier, affix_base::data::byte_buffer a_byte_buffer)
-	//		{
-	//			locked_resource l_function_data_transfers_to_remote = i_function_data_transfers_to_remote.lock();
-
-	//			std::string l_call_identifier;
-	//			l_call_identifier.resize(25);
-
-	//			CryptoPP::AutoSeededRandomPool l_random;
-	//			l_random.GenerateBlock((CryptoPP::byte*)l_call_identifier.data(), l_call_identifier.size());
-
-	//			function_data_transfer_declaration l_func_call_decl{
-	//				a_function_identifier,
-	//				l_call_identifier,
-	//				a_byte_buffer
-	//			};
-
-	//			l_function_data_transfers_to_remote->push_back(l_func_call_decl);
-
-	//			return l_call_identifier;
-
-	//		}),
-	//	std::function([&](std::string a_call_identifier)
-	//		{
-	//			while (true)
-	//			{
-	//				locked_resource l_function_data_transfers_to_local = i_function_data_transfers_to_local.lock();
-
-	//				auto l_it = std::find_if(l_function_data_transfers_to_local->begin(), l_function_data_transfers_to_local->end(),
-	//					[&](const function_data_transfer_declaration& a_func_decl)
-	//					{
-	//						return a_func_decl.m_call_identifier == a_call_identifier;
-	//					});
-
-	//				if (l_it != l_function_data_transfers_to_local->end())
-	//				{
-	//					return l_it->m_byte_buffer;
-	//				}
-
-	//			}
-	//		})
-	//);
-	//
-	//std::thread l_remote_thd(remote_main);
-
-	//// Wait for thread to start
-	//while (!l_remote_thd.joinable());
-
-	//for (int i = 0; i < 100; i++)
-	//{
-	//	std::future<double> l_future_result_0 = l_remote_function_invoker.invoke<double, double, double>
-	//		("multiply_doubles", 1, 1);
-	//	double l_result_0 = l_future_result_0.get();
-	//}
-
-	//l_remote_thd.join();
 
  	return EXIT_SUCCESS;
 
