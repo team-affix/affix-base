@@ -36,6 +36,16 @@ namespace affix_base
 			}
 
 			serializable(
+				const std::function<bool(affix_base::data::byte_buffer&)>& a_serialize,
+				const std::function<bool(affix_base::data::byte_buffer&)>& a_deserialize
+			) :
+				m_serialize(a_serialize),
+				m_deserialize(a_deserialize)
+			{
+
+			}
+
+			serializable(
 				const serializable&
 			) = delete;
 
