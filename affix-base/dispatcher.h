@@ -123,7 +123,7 @@ namespace affix_base
 			/// Returns the number of dispatches currently active.
 			/// </summary>
 			/// <returns></returns>
-			affix_base::threading::locked_resource<size_t, affix_base::threading::cross_thread_mutex> dispatched_count(
+			affix_base::threading::locked_resource<size_t> dispatched_count(
 
 			)
 			{

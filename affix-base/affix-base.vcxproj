@@ -418,6 +418,7 @@
     <ClInclude Include="stopwatch.h" />
     <ClInclude Include="string_extensions.h" />
     <ClInclude Include="cache.h" />
+    <ClInclude Include="synchronized_resource.h" />
     <ClInclude Include="transmission.h" />
     <ClInclude Include="byte_buffer.h" />
     <ClInclude Include="pch.h" />

@@ -26,7 +26,7 @@ namespace affix_base {
 			void link(void* a_raw) {
 
 				// LOCK RESOURCE MAP MUTEX
-				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+				affix_base::threading::locked_resource<std::map<void*, std::vector<ptr_base*>>> l_res_map = s_res_map.lock();
 
 				// LEAVE ANY RESOURCE GROUPS
 				unlink();
@@ -65,7 +65,7 @@ namespace affix_base {
 			void unlink() {
 
 				// LOCK RESOURCE MAP MUTEX
-				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+				affix_base::threading::locked_resource<std::map<void*, std::vector<ptr_base*>>> l_res_map = s_res_map.lock();
 
 				if (!owns_resource())
 					return;
@@ -112,7 +112,7 @@ namespace affix_base {
 			)
 			{
 				// LOCK RESOURCE MAP MUTEX
-				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+				affix_base::threading::locked_resource<std::map<void*, std::vector<ptr_base*>>> l_res_map = s_res_map.lock();
 
 				// GET RESOURCE PAIR AND GROUP
 				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
@@ -132,7 +132,7 @@ namespace affix_base {
 			void group_unlink()
 			{
 				// LOCK RESOURCE MAP MUTEX
-				affix_base::threading::locked_resource l_res_map = s_res_map.lock();
+				affix_base::threading::locked_resource<std::map<void*, std::vector<ptr_base*>>> l_res_map = s_res_map.lock();
 
 				// GET RESOURCE PAIR AND GROUP
 				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);

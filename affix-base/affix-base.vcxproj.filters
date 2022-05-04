@@ -305,5 +305,8 @@
     <ClInclude Include="distributed_computing.h">
       <Filter>Header Files\distributed_computing</Filter>
     </ClInclude>
+    <ClInclude Include="synchronized_resource.h">
+      <Filter>Header Files\threading</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
