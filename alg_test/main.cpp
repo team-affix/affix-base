@@ -4,6 +4,7 @@
 #include <tuple>
 #include "cryptopp/osrng.h"
 #include "guarded_resource.h"
+#include "synchronized_resource.h"
 
 using namespace affix_base::networking;
 using namespace affix_base::cryptography;
@@ -27,10 +28,10 @@ int main() {
 
 	byte_buffer l_byte_buffer;
 	l_byte_buffer.push_back(double(35));
-
+	
 	guarded_resource<std::vector<uint8_t>> l_bytes(l_byte_buffer.data());
 
-	synchronized_resource<double, std::vector<uint8_t>> l_sync(
+	synchronized_resource<double, std::vector<uint8_t>> l_sync_0(
 		l_bytes,
 		[](const std::vector<uint8_t>& a_remote)
 		{
@@ -46,9 +47,20 @@ int main() {
 			return l_push_byte_buffer.data();
 		});
 
+	synchronized_resource<double, double> l_sync_1(
+		l_sync_0,
+		[](const double& a_remote)
+		{
+			return a_remote;
+		},
+		[](const double& a_local)
+		{
+			return a_local;
+		});
+
 	{
-		locked_resource l_locked_resource = l_sync.lock();
-		(*l_locked_resource)++;
+		locked_resource l_locked_resource = l_sync_1.lock();
+		*l_locked_resource = 36;
 	}
 
  	return EXIT_SUCCESS;

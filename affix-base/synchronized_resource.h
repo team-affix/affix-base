@@ -36,7 +36,7 @@ namespace affix_base
 			}
 
 		public:
-			locked_resource<RESOURCE_TYPE> lock(
+			virtual locked_resource<RESOURCE_TYPE> lock(
 
 			)
 			{
@@ -46,7 +46,7 @@ namespace affix_base
 				// Lock the synchronized resource
 				affix_base::data::ptr<
 					affix_base::threading::locked_resource<SYNCHRONIZED_RESOURCE_TYPE>> l_locked_resource = 
-					m_synchronized_guarded_resource.lock_pointer();
+					new affix_base::threading::locked_resource<SYNCHRONIZED_RESOURCE_TYPE>(m_synchronized_guarded_resource.lock());
 
 				// Increment the mutation index in hopes to match the synchronized mutation index
 				affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutation_index++;
@@ -68,15 +68,14 @@ namespace affix_base
 					[&, l_locked_resource]
 					{
 						// Push the data to the synchronized location
-						affix_base::threading::locked_resource<SYNCHRONIZED_RESOURCE_TYPE>& l_locked_resource_ref =
-							l_locked_resource.val();/* = m_push(
-							affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource);*/
+						(*l_locked_resource).resource() = m_push(
+							affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource);
 						// Unlock the internal mutex on deconstructor callback
 						affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutex.unlock();
 					});
 			}
 
-			const locked_resource<RESOURCE_TYPE>& const_lock(
+			virtual const_locked_resource<RESOURCE_TYPE> const_lock(
 
 			)
 			{
@@ -86,7 +85,7 @@ namespace affix_base
 				// Lock the synchronized resource
 				affix_base::data::ptr<
 					affix_base::threading::const_locked_resource<SYNCHRONIZED_RESOURCE_TYPE>> l_locked_resource =
-					m_synchronized_guarded_resource.const_lock_pointer();
+					new affix_base::threading::const_locked_resource<SYNCHRONIZED_RESOURCE_TYPE>(m_synchronized_guarded_resource.const_lock());
 
 				if (affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutation_index != 
 					l_locked_resource.val().mutation_index())
@@ -100,7 +99,7 @@ namespace affix_base
 				affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutation_index = 
 					l_locked_resource.val().mutation_index();
 
-				return locked_resource<RESOURCE_TYPE>(
+				return const_locked_resource<RESOURCE_TYPE>(
 					affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource,
 					affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutation_index,
 					[&, l_locked_resource]
@@ -109,6 +108,7 @@ namespace affix_base
 						affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutex.unlock();
 					});
 			}
+
 
 		};
 		

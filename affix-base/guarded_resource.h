@@ -158,7 +158,7 @@ namespace affix_base
 
 			}
 
-			locked_resource<RESOURCE_TYPE> lock(
+			virtual locked_resource<RESOURCE_TYPE> lock(
 				
 			)
 			{
@@ -176,25 +176,7 @@ namespace affix_base
 					});
 			}
 
-			locked_resource<RESOURCE_TYPE>* lock_pointer(
-
-			)
-			{
-				// Lock the internal mutex now
-				m_mutex.lock();
-
-				// Increment the mutation index immediately
-				m_mutation_index++;
-
-				return new locked_resource<RESOURCE_TYPE>(m_resource, m_mutation_index,
-					[&]
-					{
-						// Unlock the internal mutex on deconstructor callback
-						m_mutex.unlock();
-					});
-			}
-
-			const_locked_resource<RESOURCE_TYPE> const_lock(
+			virtual const_locked_resource<RESOURCE_TYPE> const_lock(
 
 			)
 			{
@@ -202,22 +184,6 @@ namespace affix_base
 				m_mutex.lock();
 
 				return const_locked_resource<RESOURCE_TYPE>(m_resource, m_mutation_index,
-					[&]
-					{
-						// Unlock the internal mutex on deconstructor callback
-						m_mutex.unlock();
-					});
-			}
-
-
-			const_locked_resource<RESOURCE_TYPE>* const_lock_pointer(
-
-			)
-			{
-				// Lock the internal mutex now
-				m_mutex.lock();
-
-				return new const_locked_resource<RESOURCE_TYPE>(m_resource, m_mutation_index,
 					[&]
 					{
 						// Unlock the internal mutex on deconstructor callback
