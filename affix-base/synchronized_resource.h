@@ -14,14 +14,14 @@ namespace affix_base
 			affix_base::threading::guarded_resource<SYNCHRONIZED_RESOURCE_TYPE, MUTEX_TYPE>& 
 				m_synchronized_guarded_resource;
 
-			std::function<RESOURCE_TYPE(const SYNCHRONIZED_RESOURCE_TYPE&)> m_pull;
-			std::function<SYNCHRONIZED_RESOURCE_TYPE(const RESOURCE_TYPE&)> m_push;
+			std::function<void(const SYNCHRONIZED_RESOURCE_TYPE&, RESOURCE_TYPE&)> m_pull;
+			std::function<void(const RESOURCE_TYPE&, SYNCHRONIZED_RESOURCE_TYPE&)> m_push;
 
 		public:
 			synchronized_resource(
 				affix_base::threading::guarded_resource<SYNCHRONIZED_RESOURCE_TYPE, MUTEX_TYPE>& a_guarded_resource,
-				const std::function<RESOURCE_TYPE(const SYNCHRONIZED_RESOURCE_TYPE&)>& a_pull,
-				const std::function<SYNCHRONIZED_RESOURCE_TYPE(const RESOURCE_TYPE&)>& a_push
+				const std::function<void(const SYNCHRONIZED_RESOURCE_TYPE&, RESOURCE_TYPE&)>& a_pull,
+				const std::function<void(const RESOURCE_TYPE&, SYNCHRONIZED_RESOURCE_TYPE&)>& a_push
 			) :
 				m_synchronized_guarded_resource(a_guarded_resource),
 				m_pull(a_pull),
@@ -29,8 +29,7 @@ namespace affix_base
 			{
 				// Initialize all data using inputted guarded_resource reference
 				const_locked_resource<SYNCHRONIZED_RESOURCE_TYPE> l_locked_resource = a_guarded_resource.const_lock();
-				affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource = 
-					a_pull(l_locked_resource.resource());
+				a_pull(l_locked_resource.resource(), affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource);
 				affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutation_index = 
 					l_locked_resource.mutation_index();
 			}
@@ -55,7 +54,9 @@ namespace affix_base
 					l_locked_resource.val().mutation_index())
 				{
 					// The local data has fallen out of sync. It is time to pull
-					affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource = m_pull(l_locked_resource.val().resource());
+					m_pull(
+						l_locked_resource.val().resource(),
+						affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource);
 				}
 
 				// Resync mutation indices
@@ -68,8 +69,9 @@ namespace affix_base
 					[&, l_locked_resource]
 					{
 						// Push the data to the synchronized location
-						(*l_locked_resource).resource() = m_push(
-							affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource);
+						m_push(
+							affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource,
+							(*l_locked_resource).resource());
 						// Unlock the internal mutex on deconstructor callback
 						affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutex.unlock();
 					});
@@ -91,8 +93,9 @@ namespace affix_base
 					l_locked_resource.val().mutation_index())
 				{
 					// The local data has fallen out of sync. It is time to pull
-					affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource = 
-						m_pull(l_locked_resource.val().resource());
+					m_pull(
+						l_locked_resource.val().resource(),
+						affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource);
 				}
 
 				// Resync mutation indices

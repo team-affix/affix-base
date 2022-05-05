@@ -33,29 +33,27 @@ int main() {
 
 	synchronized_resource<double, std::vector<uint8_t>> l_sync_0(
 		l_bytes,
-		[](const std::vector<uint8_t>& a_remote)
+		[](const std::vector<uint8_t>& a_remote, double& a_local)
 		{
-			double l_result = 0;
 			byte_buffer l_pull_byte_buffer(a_remote);
-			l_pull_byte_buffer.pop_front(l_result);
-			return l_result;
+			l_pull_byte_buffer.pop_front(a_local);
 		},
-		[](const double& a_local)
+		[](const double& a_local, std::vector<uint8_t>& a_remote)
 		{
 			byte_buffer l_push_byte_buffer;
 			l_push_byte_buffer.push_back(a_local);
-			return l_push_byte_buffer.data();
+			a_remote = l_push_byte_buffer.data();
 		});
 
 	synchronized_resource<double, double> l_sync_1(
 		l_sync_0,
-		[](const double& a_remote)
+		[](const double& a_remote, double& a_local)
 		{
-			return a_remote;
+			a_local = a_remote;
 		},
-		[](const double& a_local)
+		[](const double& a_local, double& a_remote)
 		{
-			return a_local;
+			a_remote = a_local;
 		});
 
 	{
