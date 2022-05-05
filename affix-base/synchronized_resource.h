@@ -11,7 +11,7 @@ namespace affix_base
 		class synchronized_resource : public affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>
 		{
 		protected:
-			affix_base::threading::guarded_resource<SYNCHRONIZED_RESOURCE_TYPE, MUTEX_TYPE>& 
+			affix_base::threading::guarded_resource<SYNCHRONIZED_RESOURCE_TYPE, MUTEX_TYPE>&
 				m_synchronized_guarded_resource;
 
 			std::function<void(const SYNCHRONIZED_RESOURCE_TYPE&, RESOURCE_TYPE&)> m_pull;
@@ -27,10 +27,28 @@ namespace affix_base
 				m_pull(a_pull),
 				m_push(a_push)
 			{
-				// Initialize all data using inputted guarded_resource reference
+				// Initialize local resource by pulling
 				const_locked_resource<SYNCHRONIZED_RESOURCE_TYPE> l_locked_resource = a_guarded_resource.const_lock();
 				a_pull(l_locked_resource.resource(), affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource);
 				affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutation_index = 
+					l_locked_resource.mutation_index();
+			}
+
+			synchronized_resource(
+				affix_base::threading::guarded_resource<SYNCHRONIZED_RESOURCE_TYPE, MUTEX_TYPE>& a_guarded_resource,
+				const std::function<void(const SYNCHRONIZED_RESOURCE_TYPE&, RESOURCE_TYPE&)>& a_pull,
+				const std::function<void(const RESOURCE_TYPE&, SYNCHRONIZED_RESOURCE_TYPE&)>& a_push,
+				const RESOURCE_TYPE& a_resource
+			) :
+				m_synchronized_guarded_resource(a_guarded_resource),
+				m_pull(a_pull),
+				m_push(a_push),
+				affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>(a_resource)
+			{
+				// Initialize remote resource by pushing
+				locked_resource<SYNCHRONIZED_RESOURCE_TYPE> l_locked_resource = a_guarded_resource.lock();
+				a_push(affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_resource, l_locked_resource.resource());
+				affix_base::threading::guarded_resource<RESOURCE_TYPE, MUTEX_TYPE>::m_mutation_index =
 					l_locked_resource.mutation_index();
 			}
 
