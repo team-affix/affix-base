@@ -7,7 +7,7 @@ namespace affix_base
 {
 	namespace distributed_computing
 	{
-		template<typename FUNCTION_IDENTIFIER_TYPE, typename CALL_IDENTIFIER_TYPE>
+		template<typename FUNCTION_IDENTIFIER_TYPE>
 		class remote_invocation_processor
 		{
 		protected:
