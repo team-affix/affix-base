@@ -39,9 +39,9 @@ int main() {
 
 	remote_function_invoker<std::string, uint64_t> l_remote_function_invoker;
 	
-	byte_buffer l_result = l_remote_invocation_processor.process("print_string", 0.3, l_remote_function_invoker.argue<std::string>("test"));
+	byte_buffer l_result = l_remote_invocation_processor.process("print_string", 0.3, l_remote_function_invoker.serialize_function_args<std::string>("test"));
 
-	std::future<int> l_async_future = l_remote_function_invoker.async_get_result<int>(
+	std::future<int> l_async_future = l_remote_function_invoker.async_deserialize_result<int>(
 		[&]
 		{
 			return l_result;

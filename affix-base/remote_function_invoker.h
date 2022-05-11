@@ -11,7 +11,7 @@ namespace affix_base
 		{
 		public:
 			template<typename ... SERIALIZED_PARAMETER_TYPES>
-			affix_base::data::byte_buffer argue(
+			affix_base::data::byte_buffer serialize_function_args(
 				SERIALIZED_PARAMETER_TYPES ... a_params
 			)
 			{
@@ -27,7 +27,7 @@ namespace affix_base
 			}
 
 			template<typename RETURN_TYPE>
-			std::future<RETURN_TYPE> async_get_result(
+			std::future<RETURN_TYPE> async_deserialize_result(
 				const std::function<affix_base::data::byte_buffer()>& a_get_bytes
 			)
 			{
