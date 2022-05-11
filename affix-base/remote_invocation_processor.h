@@ -7,21 +7,21 @@ namespace affix_base
 {
 	namespace distributed_computing
 	{
-		template<typename FUNCTION_IDENTIFIER_TYPE>
+		template<typename FUNCTION_IDENTIFIER_TYPE, typename ... PROCESSING_ASSISTANCE_TYPES>
 		class remote_invocation_processor
 		{
 		protected:
-			std::map<FUNCTION_IDENTIFIER_TYPE, std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)>> m_function_map;
+			std::map<FUNCTION_IDENTIFIER_TYPE, std::function<affix_base::data::byte_buffer(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)>> m_function_map;
 
 		public:
 			template<typename RETURN_TYPE, typename ... PARAMETER_TYPES>
 			void add_function(
 				FUNCTION_IDENTIFIER_TYPE a_function_identifier,
-				std::function<RETURN_TYPE(PARAMETER_TYPES ...)> a_function
+				std::function<RETURN_TYPE(PROCESSING_ASSISTANCE_TYPES..., PARAMETER_TYPES ...)> a_function
 			)
 			{
-				std::function<affix_base::data::byte_buffer(affix_base::data::byte_buffer)> l_serial_io_function =
-					[&, a_function](affix_base::data::byte_buffer a_byte_buffer)
+				std::function<affix_base::data::byte_buffer(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)> l_serial_io_function =
+					[&, a_function](PROCESSING_ASSISTANCE_TYPES... a_processing_assistance_args, affix_base::data::byte_buffer a_byte_buffer)
 				{
 					// Construct the resulting byte buffer
 					affix_base::data::byte_buffer l_result;
@@ -50,7 +50,7 @@ namespace affix_base
 							std::apply(
 								[&](PARAMETER_TYPES&... a_params)
 								{
-									a_function(a_params...);
+									a_function(a_processing_assistance_args..., a_params...);
 								}, l_tuple);
 						}
 						else
@@ -58,7 +58,7 @@ namespace affix_base
 							std::apply(
 								[&](PARAMETER_TYPES&... a_params)
 								{
-									RETURN_TYPE l_returned_value = a_function(a_params...);
+									RETURN_TYPE l_returned_value = a_function(a_processing_assistance_args..., a_params...);
 									l_result.push_back(l_returned_value);
 								}, l_tuple);
 						}
@@ -68,11 +68,11 @@ namespace affix_base
 					{
 						if constexpr (std::is_same<RETURN_TYPE, void>::value)
 						{
-							a_function();
+							a_function(a_processing_assistance_args...);
 						}
 						else
 						{
-							RETURN_TYPE l_returned_value = a_function();
+							RETURN_TYPE l_returned_value = a_function(a_processing_assistance_args...);
 							l_result.push_back(l_returned_value);
 						}
 					}
@@ -96,6 +96,7 @@ namespace affix_base
 
 			affix_base::data::byte_buffer process(
 				FUNCTION_IDENTIFIER_TYPE a_function_identifier,
+				PROCESSING_ASSISTANCE_TYPES... a_processing_assistance_args,
 				affix_base::data::byte_buffer l_input
 			)
 			{
@@ -105,7 +106,7 @@ namespace affix_base
 
 				if (l_it != m_function_map.end())
 				{
-					l_result = l_it->second(l_input);
+					l_result = l_it->second(a_processing_assistance_args..., l_input);
 				}
 
 				return l_result;
