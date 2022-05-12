@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "byte_buffer.h"
+#include "ptr.h"
 
 namespace affix_base
 {

@@ -397,6 +397,7 @@
     <ClInclude Include="distributed_computing.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="guarded_resource.h" />
+    <ClInclude Include="organizer.h" />
     <ClInclude Include="path_attributes.h" />
     <ClInclude Include="file_ios.h" />
     <ClInclude Include="files.h" />
