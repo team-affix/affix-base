@@ -50,7 +50,7 @@ namespace affix_base
 				PARAMETER_TYPES... a_args
 			)
 			{
-				auto l_iterator = m_filers.find(a_tag);
+				auto l_iterator = m_filters.find(a_tag);
 
 				if (l_iterator == m_filters.end())
 					return false;
