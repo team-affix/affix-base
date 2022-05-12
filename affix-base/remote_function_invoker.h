@@ -6,7 +6,7 @@ namespace affix_base
 {
 	namespace distributed_computing
 	{
-		template<typename FUNCTION_IDENTIFIER_TYPE, typename INVOCATION_IDENTIFIER_TYPE>
+		template<typename FUNCTION_IDENTIFIER_TYPE>
 		class remote_function_invoker
 		{
 		public:

@@ -37,7 +37,7 @@ int main() {
 			return EXIT_SUCCESS;
 		}));
 
-	remote_function_invoker<std::string, uint64_t> l_remote_function_invoker;
+	remote_function_invoker<std::string> l_remote_function_invoker;
 	
 	byte_buffer l_result = l_remote_invocation_processor.process("print_string", 0.3, l_remote_function_invoker.serialize_function_args<std::string>("test"));
 
