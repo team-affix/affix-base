@@ -96,14 +96,16 @@ namespace affix_base
 			}
 
 			affix_base::data::byte_buffer process(
-				FUNCTION_IDENTIFIER_TYPE a_function_identifier,
 				PROCESSING_ASSISTANCE_TYPES... a_processing_assistance_args,
 				affix_base::data::byte_buffer l_input
 			)
 			{
 				affix_base::data::byte_buffer l_result;
 
-				auto l_it = m_function_map.find(a_function_identifier);
+				FUNCTION_IDENTIFIER_TYPE l_function_identifier;
+				l_input.pop_front(l_function_identifier);
+
+				auto l_it = m_function_map.find(l_function_identifier);
 
 				if (l_it != m_function_map.end())
 				{
