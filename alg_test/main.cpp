@@ -46,32 +46,11 @@ int main() {
 
 	remote_function_invoker<std::string> l_remote_function_invoker;
 
-	auto l_result = l_remote_function_invoker.invoke<void, std::string>(
-		std::launch::async,
-		[&]
-		{
-			while (true)
-			{
-				if (true)
-					return l_data_to_invoker.m_serialized_data;
-			}
-		},
+	byte_buffer l_serialized_function_call = l_remote_function_invoker.serialize_invocation<std::string>(
 		"print_string",
 		"hello");
 
-	l_data_to_processor.m_serialized_data = l_result.first;
-
-	l_data_to_invoker.m_serialized_data = l_remote_invocation_processor.process(
-		10, l_data_to_processor.m_serialized_data);
-
-	if (l_result.second.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
-	{
-		std::cout << "ready" << std::endl;
-	}
-	else
-	{
-		std::cout << "not ready" << std::endl;
-	}
+	l_remote_invocation_processor.process(10, l_serialized_function_call);
 
  	return EXIT_SUCCESS;
 

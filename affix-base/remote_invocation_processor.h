@@ -12,16 +12,16 @@ namespace affix_base
 		class remote_invocation_processor
 		{
 		protected:
-			std::map<FUNCTION_IDENTIFIER_TYPE, std::function<affix_base::data::byte_buffer(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)>> m_function_map;
+			std::map<FUNCTION_IDENTIFIER_TYPE, std::function<void(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)>> m_function_map;
 
 		public:
-			template<typename RETURN_TYPE, typename ... PARAMETER_TYPES>
+			template<typename ... PARAMETER_TYPES>
 			void add_function(
 				FUNCTION_IDENTIFIER_TYPE a_function_identifier,
-				std::function<RETURN_TYPE(PROCESSING_ASSISTANCE_TYPES..., PARAMETER_TYPES ...)> a_function
+				std::function<void(PROCESSING_ASSISTANCE_TYPES..., PARAMETER_TYPES ...)> a_function
 			)
 			{
-				std::function<affix_base::data::byte_buffer(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)> l_serial_io_function =
+				std::function<void(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)> l_serial_function =
 					[&, a_function](PROCESSING_ASSISTANCE_TYPES... a_processing_assistance_args, affix_base::data::byte_buffer a_byte_buffer)
 				{
 					// Construct the resulting byte buffer
@@ -44,45 +44,23 @@ namespace affix_base
 
 						// Deserialize the byte buffer
 						if (!l_serializer->deserialize(a_byte_buffer))
-							return l_result;
+							return;
 
-						if constexpr (std::is_same<RETURN_TYPE, void>::value)
-						{
-							std::apply(
-								[&](PARAMETER_TYPES&... a_params)
-								{
-									a_function(a_processing_assistance_args..., a_params...);
-								}, l_tuple);
-						}
-						else
-						{
-							std::apply(
-								[&](PARAMETER_TYPES&... a_params)
-								{
-									RETURN_TYPE l_returned_value = a_function(a_processing_assistance_args..., a_params...);
-									l_result.push_back(l_returned_value);
-								}, l_tuple);
-						}
+						std::apply(
+							[&](PARAMETER_TYPES&... a_params)
+							{
+								a_function(a_processing_assistance_args..., a_params...);
+							}, l_tuple);
 
 					}
 					else
 					{
-						if constexpr (std::is_same<RETURN_TYPE, void>::value)
-						{
-							a_function(a_processing_assistance_args...);
-						}
-						else
-						{
-							RETURN_TYPE l_returned_value = a_function(a_processing_assistance_args...);
-							l_result.push_back(l_returned_value);
-						}
+						a_function(a_processing_assistance_args...);
 					}
-
-					return l_result;
 
 				};
 
-				m_function_map.insert({ a_function_identifier, l_serial_io_function });
+				m_function_map.insert({ a_function_identifier, l_serial_function });
 
 			}
 
@@ -95,13 +73,11 @@ namespace affix_base
 					m_function_map.erase(l_it);
 			}
 
-			affix_base::data::byte_buffer process(
+			void process(
 				PROCESSING_ASSISTANCE_TYPES... a_processing_assistance_args,
 				affix_base::data::byte_buffer l_input
 			)
 			{
-				affix_base::data::byte_buffer l_result;
-
 				FUNCTION_IDENTIFIER_TYPE l_function_identifier;
 				l_input.pop_front(l_function_identifier);
 
@@ -109,10 +85,8 @@ namespace affix_base
 
 				if (l_it != m_function_map.end())
 				{
-					l_result = l_it->second(a_processing_assistance_args..., l_input);
+					l_it->second(a_processing_assistance_args..., l_input);
 				}
-
-				return l_result;
 
 			}
 
