@@ -33,24 +33,12 @@ int main() {
 	namespace fs = std::filesystem;
 	using namespace affix_base::distributed_computing;
 
-	function_data l_data_to_processor;
-	function_data l_data_to_invoker;
+	bool l_exit_code_0 = affix_base::files::file_write("test_file.txt", std::string("hello, this is a test"));
 
-	remote_invocation_processor<std::string, int> l_remote_invocation_processor;
 
-	l_remote_invocation_processor.add_function("print_string",
-		std::function([&](int a_assistance_type, std::string a_string)
-		{
-			std::cout << a_assistance_type << ": " << a_string << std::endl;
-		}));
+	std::string l_result;
 
-	remote_function_invoker<std::string> l_remote_function_invoker;
-
-	byte_buffer l_serialized_function_call = l_remote_function_invoker.serialize_invocation<std::string>(
-		"print_string",
-		"hello");
-
-	l_remote_invocation_processor.process(10, l_serialized_function_call);
+	bool l_exit_code_1 = affix_base::files::file_read("test_file.txt", l_result);
 
  	return EXIT_SUCCESS;
 
