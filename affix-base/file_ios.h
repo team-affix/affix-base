@@ -5,12 +5,12 @@
 namespace affix_base {
 	namespace files {
 
-		void file_write(
+		bool file_write(
 			const std::string& a_path,
 			const std::vector<uint8_t>& l_bytes
 		);
 
-		void file_read(
+		bool file_read(
 			const std::string& a_path,
 			std::vector<uint8_t>& l_bytes
 		);
@@ -26,16 +26,7 @@ namespace affix_base {
 			if (!l_byte_buffer.push_back(a_data))
 				return false;
 
-			try
-			{
-				file_write(a_path, l_byte_buffer.data());
-			}
-			catch (std::exception)
-			{
-				return false;
-			}
-
-			return true;
+			return file_write(a_path, l_byte_buffer.data());
 
 		}
 
@@ -47,14 +38,8 @@ namespace affix_base {
 		{
 			std::vector<uint8_t> l_bytes;
 
-			try
-			{
-				file_read(a_path, l_bytes);
-			}
-			catch (std::exception)
-			{
+			if (!file_read(a_path, l_bytes))
 				return false;
-			}
 
 			affix_base::data::byte_buffer l_byte_buffer(l_bytes);
 
