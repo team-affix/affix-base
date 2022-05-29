@@ -5,22 +5,33 @@
 
 using namespace affix_base;
 
-void files::file_write(
+bool files::file_write(
 	const std::string& a_path,
 	const std::vector<uint8_t>& a_bytes
 )
 {
 	std::ofstream l_ofs(a_path, std::ios::out | std::ios::binary);
+
+    if (!l_ofs.is_open())
+        return false;
+
 	l_ofs.write((const char*)a_bytes.data(), a_bytes.size());
 	l_ofs.close();
+
+    return true;
+
 }
 
-void files::file_read(
+bool files::file_read(
 	const std::string& a_path,
 	std::vector<uint8_t>& a_bytes
 )
 {
     std::ifstream file(a_path, std::ios::binary);
+
+    if (!file.is_open())
+        return false;
+
     file.unsetf(std::ios::skipws);
 
     file.seekg(0, std::ios::end);
@@ -37,6 +48,8 @@ void files::file_read(
         std::istream_iterator<uint8_t>());
 
     file.close();
+
+    return true;
 
 }
 

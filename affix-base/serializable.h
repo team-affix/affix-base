@@ -49,6 +49,10 @@ namespace affix_base
 				const serializable&
 			) = delete;
 
+			serializable& operator=(
+				const serializable&
+			) = delete;
+
 			bool serialize(
 				affix_base::data::byte_buffer& a_byte_buffer
 			) const
