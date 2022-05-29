@@ -62,5 +62,10 @@ namespace affix_base {
 
 		}
 
+		bool file_hash(
+			const std::string& a_path,
+			std::vector<uint8_t>& a_output
+		);
+
 	}
 }

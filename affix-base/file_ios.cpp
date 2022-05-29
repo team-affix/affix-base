@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "file_ios.h"
 #include <fstream>
+#include "sha.h"
 
 using namespace affix_base;
 
@@ -36,5 +37,18 @@ void files::file_read(
         std::istream_iterator<uint8_t>());
 
     file.close();
+
+}
+
+bool files::file_hash(
+    const std::string& a_path,
+    std::vector<uint8_t>& a_output
+)
+{
+    using namespace CryptoPP;
+
+    std::ifstream l_ifs(a_path, std::ios::in | std::ios::binary | std::ios::beg);
+
+    return affix_base::data::sha256_try_digest(l_ifs, a_output);
 
 }

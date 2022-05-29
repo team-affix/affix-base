@@ -38,3 +38,39 @@ bool data::sha256_try_validate(const vector<uint8_t>& a_input, const vector<uint
 		return false;
 	}
 }
+
+bool data::sha256_try_digest(
+	std::istream& a_istream,
+	std::vector<uint8_t>& a_output
+)
+{
+	if (!a_istream.good())
+		return false;
+
+	SHA256 hash;
+
+	std::vector<char> l_input_bytes(1000);
+
+	for (uint64_t l_block = 0; a_istream.peek() != EOF; l_block++)
+	{
+		// Read file IN BLOCKS. DO NOT HASH AT EVERY BYTE.
+
+		for (
+			int i = 0;
+			i < l_input_bytes.size() &&
+			a_istream.peek() != EOF; i++
+			)
+		{
+			a_istream.get(l_input_bytes[i]);
+		}
+
+		hash.Update((const byte*)l_input_bytes.data(), l_input_bytes.size());
+
+	}
+
+	a_output.resize(SHA256::DIGESTSIZE);
+	hash.TruncatedFinal((byte*)a_output.data(), SHA256::DIGESTSIZE);
+
+	return true;
+
+}

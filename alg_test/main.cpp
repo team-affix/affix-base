@@ -33,12 +33,27 @@ int main() {
 	namespace fs = std::filesystem;
 	using namespace affix_base::distributed_computing;
 
-	bool l_exit_code_0 = affix_base::files::file_write("test_file.txt", std::string("hello, this is a test"));
+	std::vector<uint8_t> l_hash_0;
+
+	bool l_successful_0 = affix_base::files::file_hash("test.jpg", l_hash_0);
+
+	std::vector<uint8_t> l_hash_1;
+
+	bool l_successful_1 = affix_base::files::file_hash("test.jpg", l_hash_1);
+
+	std::ofstream l_ofs("test.jpg", std::ios::out | std::ios::binary);
+
+	l_ofs.seekp(1000000);
+
+	l_ofs.write("1", 1);
+
+	l_ofs.close();
+
+	std::vector<uint8_t> l_hash_2;
+
+	bool l_successful_2 = affix_base::files::file_hash("test.jpg", l_hash_2);
 
 
-	std::string l_result;
-
-	bool l_exit_code_1 = affix_base::files::file_read("test_file.txt", l_result);
 
  	return EXIT_SUCCESS;
 
