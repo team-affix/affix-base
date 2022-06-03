@@ -16,7 +16,11 @@ cross_thread_mutex::~cross_thread_mutex() {
 }
 
 void cross_thread_mutex::lock() {
+	while (!try_lock());
+}
 
+bool cross_thread_mutex::try_lock()
+{
 	std::thread::id l_this_thread_id = std::this_thread::get_id();
 
 	m_state_mutex.lock();
@@ -35,14 +39,18 @@ void cross_thread_mutex::lock() {
 	if (!l_mutex_already_owned) {
 
 		LOG("[CROSS-THREAD-MUTEX] (" << l_this_thread_id << ") Attempting to acquire internal mutex." << std::endl);
-		m_mutex.lock();
-		
+		if (!m_mutex.try_lock())
+			return false;
+
 		LOG(std::clog << "[CROSS-THREAD-MUTEX] (" << l_this_thread_id << ") Acquired internal mutex." << std::endl);
 		m_id = l_this_thread_id;
 		m_lock_index = 0;
 
-		return;
+		return true;
 	}
+
+	return true;
+
 }
 
 void cross_thread_mutex::unlock() {
@@ -66,4 +74,10 @@ void cross_thread_mutex::unlock() {
 
 	m_state_mutex.unlock();
 
+}
+
+std::thread::id cross_thread_mutex::id()
+{
+	std::lock_guard l_lock(m_state_mutex);
+	return m_id;
 }

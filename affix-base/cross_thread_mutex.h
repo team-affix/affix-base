@@ -18,7 +18,9 @@ namespace affix_base {
 
 		public:
 			void lock();
+			bool try_lock();
 			void unlock();
+			std::thread::id id();
 
 		};
 

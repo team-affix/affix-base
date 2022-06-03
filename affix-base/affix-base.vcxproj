@@ -389,9 +389,9 @@
     <ClInclude Include="affix_base.h" />
     <ClInclude Include="async_authenticate.h" />
     <ClInclude Include="callback.h" />
+    <ClInclude Include="cross_thread_mutex.h" />
     <ClInclude Include="dispatcher.h" />
     <ClInclude Include="catch_friendly_assert.h" />
-    <ClInclude Include="cross_thread_mutex.h" />
     <ClInclude Include="details.h" />
     <ClInclude Include="diff.h" />
     <ClInclude Include="distributed_computing.h" />
@@ -419,7 +419,6 @@
     <ClInclude Include="stopwatch.h" />
     <ClInclude Include="string_extensions.h" />
     <ClInclude Include="cache.h" />
-    <ClInclude Include="synchronized_resource.h" />
     <ClInclude Include="transmission.h" />
     <ClInclude Include="byte_buffer.h" />
     <ClInclude Include="pch.h" />

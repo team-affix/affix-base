@@ -4,7 +4,6 @@
 #include <tuple>
 #include "cryptopp/osrng.h"
 #include "guarded_resource.h"
-#include "synchronized_resource.h"
 
 using namespace affix_base::networking;
 using namespace affix_base::cryptography;
@@ -33,27 +32,12 @@ int main() {
 	namespace fs = std::filesystem;
 	using namespace affix_base::distributed_computing;
 
-	std::vector<uint8_t> l_hash_0;
+	guarded_resource<std::vector<int>> l_guarded_resource_0;
+	guarded_resource<std::vector<int>> l_guarded_resource_1;
+	
+	std::scoped_lock l_lock(l_guarded_resource_0, l_guarded_resource_1);
 
-	bool l_successful_0 = affix_base::files::file_hash("test.jpg", l_hash_0);
-
-	std::vector<uint8_t> l_hash_1;
-
-	bool l_successful_1 = affix_base::files::file_hash("test.jpg", l_hash_1);
-
-	std::ofstream l_ofs("test.jpg", std::ios::out | std::ios::binary);
-
-	l_ofs.seekp(1000000);
-
-	l_ofs.write("1", 1);
-
-	l_ofs.close();
-
-	std::vector<uint8_t> l_hash_2;
-
-	bool l_successful_2 = affix_base::files::file_hash("test.jpg", l_hash_2);
-
-
+	l_guarded_resource_0->push_back(10);
 
  	return EXIT_SUCCESS;
 

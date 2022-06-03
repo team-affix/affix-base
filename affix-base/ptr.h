@@ -16,7 +16,7 @@ namespace affix_base {
 			/// <summary>
 			/// Resource map, which holds the owned resources as keys, and the groups of ptr_base's that own that resource as values.
 			/// </summary>
-			static affix_base::threading::guarded_resource<std::map<void*, std::vector<ptr_base*>>, affix_base::threading::cross_thread_mutex> s_res_map;
+			static affix_base::threading::guarded_resource<std::map<void*, std::vector<ptr_base*>>> s_res_map;
 
 		public:
 			/// <summary>
@@ -26,7 +26,7 @@ namespace affix_base {
 			void link(void* a_raw) {
 
 				// LOCK RESOURCE MAP MUTEX
-				affix_base::threading::locked_resource<std::map<void*, std::vector<ptr_base*>>> l_res_map = s_res_map.lock();
+				std::lock_guard l_lock(s_res_map);
 
 				// LEAVE ANY RESOURCE GROUPS
 				unlink();
@@ -35,9 +35,9 @@ namespace affix_base {
 					return;
 
 				// CHECK MAP FOR PRE-OWNED MEMORY ADDRESS
-				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = l_res_map->find(a_raw);
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = s_res_map->find(a_raw);
 
-				if (l_res_pair != l_res_map->end()) {
+				if (l_res_pair != s_res_map->end()) {
 
 					std::vector<ptr_base*>& group = l_res_pair->second;
 #if PTR_DEBUG
@@ -51,7 +51,7 @@ namespace affix_base {
 					std::cout << "GROUP CREATE" << std::endl;
 #endif
 					// CREATE NEW GROUP FOR THIS RESOURCE
-					l_res_map->insert({ a_raw, { this } });
+					s_res_map->insert({ a_raw, { this } });
 				}
 
 				// ACQUIRE RESOURCE
@@ -65,15 +65,15 @@ namespace affix_base {
 			void unlink() {
 
 				// LOCK RESOURCE MAP MUTEX
-				affix_base::threading::locked_resource<std::map<void*, std::vector<ptr_base*>>> l_res_map = s_res_map.lock();
+				std::lock_guard l_lock(s_res_map);
 
 				if (!owns_resource())
 					return;
 
 				// CHECK MAP FOR OWNERSHIP OVER A RESOURCE
-				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*s_res_map);
 
-				if (l_res_pair != l_res_map->end()) {
+				if (l_res_pair != s_res_map->end()) {
 
 					std::vector<ptr_base*>& group = l_res_pair->second;
 
@@ -90,7 +90,7 @@ namespace affix_base {
 						std::cout << "DELETE RESOURCE" << std::endl;
 #endif
 						// LEAVE GROUP AND DELETE RESOURCE
-						l_res_map->erase(l_res_pair);
+						s_res_map->erase(l_res_pair);
 						delete_resource();
 					}
 
@@ -112,10 +112,10 @@ namespace affix_base {
 			)
 			{
 				// LOCK RESOURCE MAP MUTEX
-				affix_base::threading::locked_resource<std::map<void*, std::vector<ptr_base*>>> l_res_map = s_res_map.lock();
+				std::lock_guard l_lock(s_res_map);
 
 				// GET RESOURCE PAIR AND GROUP
-				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*s_res_map);
 
 				std::vector<ptr_base*>& l_group = l_res_pair->second;
 
@@ -132,10 +132,10 @@ namespace affix_base {
 			void group_unlink()
 			{
 				// LOCK RESOURCE MAP MUTEX
-				affix_base::threading::locked_resource<std::map<void*, std::vector<ptr_base*>>> l_res_map = s_res_map.lock();
+				std::lock_guard l_lock(s_res_map);
 
 				// GET RESOURCE PAIR AND GROUP
-				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*l_res_map);
+				std::map<void*, std::vector<ptr_base*>>::iterator l_res_pair = res_pair(*s_res_map);
 
 				std::vector<ptr_base*>& l_group = l_res_pair->second;
 

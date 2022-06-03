@@ -132,9 +132,6 @@
     <ClCompile Include="stopwatch.cpp">
       <Filter>Source Files\timing</Filter>
     </ClCompile>
-    <ClCompile Include="cross_thread_mutex.cpp">
-      <Filter>Source Files\threading</Filter>
-    </ClCompile>
     <ClCompile Include="string_extensions.cpp">
       <Filter>Source Files\data</Filter>
     </ClCompile>
@@ -146,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="async_authenticate.cpp">
       <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="cross_thread_mutex.cpp">
+      <Filter>Source Files\threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -260,9 +260,6 @@
     <ClInclude Include="stopwatch.h">
       <Filter>Header Files\timing</Filter>
     </ClInclude>
-    <ClInclude Include="cross_thread_mutex.h">
-      <Filter>Header Files\threading</Filter>
-    </ClInclude>
     <ClInclude Include="byte_buffer.h">
       <Filter>Header Files\data</Filter>
     </ClInclude>
@@ -305,11 +302,11 @@
     <ClInclude Include="distributed_computing.h">
       <Filter>Header Files\distributed_computing</Filter>
     </ClInclude>
-    <ClInclude Include="synchronized_resource.h">
-      <Filter>Header Files\threading</Filter>
-    </ClInclude>
     <ClInclude Include="organizer.h">
       <Filter>Header Files\data</Filter>
+    </ClInclude>
+    <ClInclude Include="cross_thread_mutex.h">
+      <Filter>Header Files\threading</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
