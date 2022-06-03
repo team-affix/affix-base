@@ -23,7 +23,8 @@ bool cross_thread_mutex::try_lock()
 {
 	std::thread::id l_this_thread_id = std::this_thread::get_id();
 
-	m_state_mutex.lock();
+	if (!m_state_mutex.try_lock())
+		return false;
 
 	std::thread::id l_id = m_id;
 	bool l_mutex_already_owned = l_this_thread_id == l_id;
