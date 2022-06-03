@@ -32,10 +32,12 @@ int main() {
 	namespace fs = std::filesystem;
 	using namespace affix_base::distributed_computing;
 
-	guarded_resource<int> l_guarded_resource_0;
-	guarded_resource<int> l_guarded_resource_1;
+	guarded_resource<std::vector<int>> l_guarded_resource_0;
+	guarded_resource<std::vector<int>> l_guarded_resource_1;
 	
 	std::scoped_lock l_lock(l_guarded_resource_0, l_guarded_resource_1);
+
+	l_guarded_resource_0->push_back(10);
 
  	return EXIT_SUCCESS;
 
