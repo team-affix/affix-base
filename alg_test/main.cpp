@@ -4,7 +4,6 @@
 #include <tuple>
 #include "cryptopp/osrng.h"
 #include "guarded_resource.h"
-#include "synchronized_resource.h"
 
 using namespace affix_base::networking;
 using namespace affix_base::cryptography;
@@ -33,13 +32,26 @@ int main() {
 	namespace fs = std::filesystem;
 	using namespace affix_base::distributed_computing;
 
-	bool l_exit_code_0 = affix_base::files::file_write("test_file.txt", std::string("hello, this is a test"));
+	uint64_t l_start_time = affix_base::timing::utc_time();
 
+	auto l_continue = [&] { return affix_base::timing::utc_time() - l_start_time < 10; };
 
-	std::string l_result;
+	std::thread l_thread([&]
+		{
+			while (l_continue())
+			{
+				affix_base::data::ptr<double> l_ptr(new double(10.505));
+			}
+		});
 
-	bool l_exit_code_1 = affix_base::files::file_read("test_file.txt", l_result);
+	while (l_continue())
+	{
+		affix_base::data::ptr<double> l_ptr(new double(11.506));
+	}
 
+	if (l_thread.joinable())
+		l_thread.join();
+	
  	return EXIT_SUCCESS;
 
 }

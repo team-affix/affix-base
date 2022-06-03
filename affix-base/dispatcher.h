@@ -1,6 +1,5 @@
 #pragma once
 #include "pch.h"
-#include "cross_thread_mutex.h"
 #include "guarded_resource.h"
 
 namespace affix_base
@@ -13,14 +12,14 @@ namespace affix_base
 		/// <typeparam name="MUTEX_TYPE"></typeparam>
 		/// <typeparam name="RETURN_TYPE"></typeparam>
 		/// <typeparam name="...PARAMETER_TYPES"></typeparam>
-		template<typename MUTEX_TYPE, typename RETURN_TYPE = void, typename ... PARAMETER_TYPES>
+		template<typename RETURN_TYPE = void, typename ... PARAMETER_TYPES>
 		class dispatcher
 		{
 		protected:
 			/// <summary>
 			/// The current number of dispatched callbacks.
 			/// </summary>
-			affix_base::threading::guarded_resource<size_t, MUTEX_TYPE> m_dispatched_count = 0;
+			affix_base::threading::guarded_resource<size_t> m_dispatched_count = 0;
 
 		public:
 			/// <summary>
@@ -35,8 +34,8 @@ namespace affix_base
 			)
 			{
 				// Lock the guarded_resource, preventing concurrent reads/writes to the dispatch count
-				affix_base::threading::locked_resource<size_t> l_locked_resource_0 = m_dispatched_count.lock();
-				l_locked_resource_0.resource()++;
+				std::lock_guard l_dispatched_count_lock(m_dispatched_count);
+				(*m_dispatched_count)++;
 
 				if constexpr (std::is_same<RETURN_TYPE, void>::value)
 				{
@@ -52,8 +51,8 @@ namespace affix_base
 							a_function();
 
 							// Lock the guarded_resource, preventing concurrent reads/writes to the dispatch count
-							affix_base::threading::locked_resource<size_t> l_locked_resource_1 = m_dispatched_count.lock();
-							l_locked_resource_1.resource()--;
+							std::lock_guard l_lock(m_dispatched_count);
+							(*m_dispatched_count)--;
 
 						};
 
@@ -68,8 +67,8 @@ namespace affix_base
 							a_function(std::forward<PARAMETER_TYPES>(a_args)...);
 
 							// Lock the guarded_resource, preventing concurrent reads/writes to the dispatch count
-							affix_base::threading::locked_resource<size_t> l_locked_resource_1 = m_dispatched_count.lock();
-							l_locked_resource_1.resource()--;
+							std::lock_guard l_lock(m_dispatched_count);
+							(*m_dispatched_count)--;
 
 						};
 
@@ -90,8 +89,8 @@ namespace affix_base
 							RETURN_TYPE l_result = a_function();
 
 							// Lock the guarded_resource, preventing concurrent reads/writes to the dispatch count
-							affix_base::threading::locked_resource<size_t> l_locked_resource_1 = m_dispatched_count.lock();
-							l_locked_resource_1.resource()--;
+							std::lock_guard l_lock(m_dispatched_count);
+							(*m_dispatched_count)--;
 
 							return std::forward<RETURN_TYPE>(l_result);
 
@@ -108,8 +107,8 @@ namespace affix_base
 							RETURN_TYPE l_result = a_function(std::forward<PARAMETER_TYPES>(a_args)...);
 
 							// Lock the guarded_resource, preventing concurrent reads/writes to the dispatch count
-							affix_base::threading::locked_resource<size_t> l_locked_resource_1 = m_dispatched_count.lock();
-							l_locked_resource_1.resource()--;
+							std::lock_guard l_lock(m_dispatched_count);
+							(*m_dispatched_count)--;
 
 							return std::forward<RETURN_TYPE>(l_result);
 
@@ -123,11 +122,12 @@ namespace affix_base
 			/// Returns the number of dispatches currently active.
 			/// </summary>
 			/// <returns></returns>
-			affix_base::threading::locked_resource<size_t> dispatched_count(
+			size_t dispatched_count(
 
 			)
 			{
-				return m_dispatched_count.lock();
+				std::lock_guard l_lock(m_dispatched_count);
+				return *m_dispatched_count;
 			}
 
 		};
