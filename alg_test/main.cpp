@@ -32,26 +32,11 @@ int main() {
 	namespace fs = std::filesystem;
 	using namespace affix_base::distributed_computing;
 
-	uint64_t l_start_time = affix_base::timing::utc_time();
-
-	auto l_continue = [&] { return affix_base::timing::utc_time() - l_start_time < 10; };
-
-	std::thread l_thread([&]
-		{
-			while (l_continue())
-			{
-				affix_base::data::ptr<double> l_ptr(new double(10.505));
-			}
-		});
-
-	while (l_continue())
-	{
-		affix_base::data::ptr<double> l_ptr(new double(11.506));
-	}
-
-	if (l_thread.joinable())
-		l_thread.join();
+	guarded_resource<int> l_guarded_resource_0;
+	guarded_resource<int> l_guarded_resource_1;
 	
+	std::scoped_lock l_lock(l_guarded_resource_0, l_guarded_resource_1);
+
  	return EXIT_SUCCESS;
 
 }
