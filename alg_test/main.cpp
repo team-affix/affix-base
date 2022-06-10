@@ -32,12 +32,28 @@ int main() {
 	namespace fs = std::filesystem;
 	using namespace affix_base::distributed_computing;
 
-	guarded_resource<std::vector<int>> l_guarded_resource_0;
-	guarded_resource<std::vector<int>> l_guarded_resource_1;
-	
-	std::scoped_lock l_lock(l_guarded_resource_0, l_guarded_resource_1);
+	remote_function_invoker<std::string> l_remote_function_invoker;
 
-	l_guarded_resource_0->push_back(10);
+	remote_invocation_processor<std::string, int> l_remote_invocation_processor;
+
+	l_remote_invocation_processor.add_function("remote_function",
+		std::function([](int a_processing_assistance_arg, std::string a_text)
+			{
+				std::cout << a_processing_assistance_arg << ", " << a_text << std::endl;
+			}));
+
+	affix_base::data::byte_buffer l_byte_buffer;
+
+	if (!l_remote_function_invoker.serialize_invocation(l_byte_buffer, "remote_function"))
+	{
+		std::cout << "Unable to serialize invocation" << std::endl;
+	}
+
+	if (!l_remote_invocation_processor.process(10, l_byte_buffer))
+	{
+		std::cout << "Unable to deserialize invocation" << std::endl;
+	}
+
 
  	return EXIT_SUCCESS;
 

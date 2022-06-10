@@ -12,7 +12,7 @@ namespace affix_base
 		class remote_invocation_processor
 		{
 		protected:
-			std::map<FUNCTION_IDENTIFIER_TYPE, std::function<void(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)>> m_function_map;
+			std::map<FUNCTION_IDENTIFIER_TYPE, std::function<bool(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)>> m_function_map;
 
 		public:
 			template<typename ... PARAMETER_TYPES>
@@ -21,7 +21,7 @@ namespace affix_base
 				std::function<void(PROCESSING_ASSISTANCE_TYPES..., PARAMETER_TYPES ...)> a_function
 			)
 			{
-				std::function<void(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)> l_serial_function =
+				std::function<bool(PROCESSING_ASSISTANCE_TYPES..., affix_base::data::byte_buffer)> l_serial_function =
 					[&, a_function](PROCESSING_ASSISTANCE_TYPES... a_processing_assistance_args, affix_base::data::byte_buffer a_byte_buffer)
 				{
 					// Construct the resulting byte buffer
@@ -44,7 +44,7 @@ namespace affix_base
 
 						// Deserialize the byte buffer
 						if (!l_serializer->deserialize(a_byte_buffer))
-							return;
+							return false;
 
 						std::apply(
 							[&](PARAMETER_TYPES&... a_params)
@@ -57,6 +57,8 @@ namespace affix_base
 					{
 						a_function(a_processing_assistance_args...);
 					}
+
+					return true;
 
 				};
 
@@ -73,20 +75,24 @@ namespace affix_base
 					m_function_map.erase(l_it);
 			}
 
-			void process(
+			bool process(
 				PROCESSING_ASSISTANCE_TYPES... a_processing_assistance_args,
 				affix_base::data::byte_buffer l_input
 			)
 			{
 				FUNCTION_IDENTIFIER_TYPE l_function_identifier;
-				l_input.pop_front(l_function_identifier);
+				
+				if (!l_input.pop_front(l_function_identifier))
+					return false;
 
 				auto l_it = m_function_map.find(l_function_identifier);
 
 				if (l_it != m_function_map.end())
 				{
-					l_it->second(a_processing_assistance_args..., l_input);
+					return l_it->second(a_processing_assistance_args..., l_input);
 				}
+
+				return false;
 
 			}
 
