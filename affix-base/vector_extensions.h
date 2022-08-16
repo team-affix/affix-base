@@ -29,17 +29,16 @@ namespace affix_base {
             return result;
         }
 
-        template<typename T, typename J>
-		std::vector<J> convert(const std::vector<T>& a_vec, std::function<J(const T&)> a_function) {
-			std::vector<J> result(a_vec.size());
+        template<typename DEST_TYPE, typename SOURCE_TYPE>
+		std::vector<DEST_TYPE> cast(
+			const std::vector<SOURCE_TYPE>& a_vec,
+			std::function<DEST_TYPE(const SOURCE_TYPE&)> a_conversion = [](const SOURCE_TYPE& a_val) { return (DEST_TYPE)a_val; }
+		)
+		{
+			std::vector<DEST_TYPE> result(a_vec.size());
             for (int i = 0; i < a_vec.size(); i++)
-                result[i] = a_function(a_vec[i]);
+                result[i] = a_conversion(a_vec[i]);
             return result;
-        }
-
-        template<typename T, typename J>
-		std::vector<J> cast(const std::vector<T>& a_vec) {
-            return convert<T, J>(a_vec, [](const T& a_val) { return (J)a_val; });
         }
 
 		template<typename T>

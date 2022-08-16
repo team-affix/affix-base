@@ -32,28 +32,8 @@ int main() {
 	namespace fs = std::filesystem;
 	using namespace affix_base::distributed_computing;
 
-	remote_function_invoker<std::string> l_remote_function_invoker;
-
-	remote_invocation_processor<std::string, int> l_remote_invocation_processor;
-
-	l_remote_invocation_processor.add_function("remote_function",
-		std::function([](int a_processing_assistance_arg, std::string a_text)
-			{
-				std::cout << a_processing_assistance_arg << ", " << a_text << std::endl;
-			}));
-
-	affix_base::data::byte_buffer l_byte_buffer;
-
-	if (!l_remote_function_invoker.serialize_invocation(l_byte_buffer, "remote_function"))
-	{
-		std::cout << "Unable to serialize invocation" << std::endl;
-	}
-
-	if (!l_remote_invocation_processor.process(10, l_byte_buffer))
-	{
-		std::cout << "Unable to deserialize invocation" << std::endl;
-	}
-
+	std::vector<int> l_int_vector = { 1, 2, 3, 4 };
+	std::vector<double> l_double_vector = cast<double>(l_int_vector);
 
  	return EXIT_SUCCESS;
 
