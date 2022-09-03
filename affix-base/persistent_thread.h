@@ -6,33 +6,30 @@ namespace affix_base {
 	namespace threading {
 		class persistent_thread {
 		protected:
+			std::thread::id m_owner_id;
 			std::thread m_thread;
+			bool m_abort_thread = false;
 
 		public:
-			virtual ~persistent_thread();
-			persistent_thread();
-			persistent_thread(std::function<void()> a_func);
-			persistent_thread(const persistent_thread& a_other);
-			void operator=(const persistent_thread& a_other);
-
-		private:
-			void init();
+			std::function<void()>* m_function = nullptr;
+			volatile bool m_trigger = false;
 
 		public:
-			void call();
-			void call(std::function<void()> a_func);
-			void loop();
-			void loop(std::function<void()> a_func);
-			void stop_loop();
-			void join_call();
-			void join_loop();
+			virtual ~persistent_thread(
 
-		public:
-			affix_base::data::ptr<bool> m_persist = new bool(true);
-			affix_base::data::ptr<bool> m_call = new bool(false);
-			affix_base::data::ptr<bool> m_loop = new bool(false);
-			affix_base::data::ptr<bool> m_executing = new bool(false);
-			std::function<void()> m_function;
+			);
+
+			persistent_thread(
+
+			);
+
+			void execute(
+				std::function<void()>& a_function
+			);
+
+			void join(
+
+			);
 
 		};
 	}

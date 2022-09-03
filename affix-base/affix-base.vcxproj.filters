@@ -84,9 +84,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="persistent_thread_group.cpp">
-      <Filter>Source Files\threading</Filter>
-    </ClCompile>
     <ClCompile Include="persistent_thread.cpp">
       <Filter>Source Files\threading</Filter>
     </ClCompile>
@@ -150,9 +147,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="persistent_thread.h">
-      <Filter>Header Files\threading</Filter>
-    </ClInclude>
-    <ClInclude Include="persistent_thread_group.h">
       <Filter>Header Files\threading</Filter>
     </ClInclude>
     <ClInclude Include="ptr.h">
