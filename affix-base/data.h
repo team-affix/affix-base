@@ -10,7 +10,6 @@
 #include "object.h"
 #include "diff.h"
 #include "string_extensions.h"
-#include "cache.h"
 #include "tree.h"
 #include "serializable.h"
 #include "organizer.h"

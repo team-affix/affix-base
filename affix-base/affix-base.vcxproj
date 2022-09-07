@@ -417,7 +417,6 @@
     <ClInclude Include="socket_io_guard.h" />
     <ClInclude Include="stopwatch.h" />
     <ClInclude Include="string_extensions.h" />
-    <ClInclude Include="cache.h" />
     <ClInclude Include="transmission.h" />
     <ClInclude Include="byte_buffer.h" />
     <ClInclude Include="pch.h" />
