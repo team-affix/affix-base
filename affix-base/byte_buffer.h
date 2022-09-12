@@ -106,21 +106,18 @@ namespace affix_base {
 			template<>
 			bool push_back<std::string>(const std::string& a_data)
 			{
-				// Push the size onto the stack twice, once before
+				// Push the size onto the stack
 				if (!push_back(a_data.size())) return false;
 
 				for (int i = 0; i < a_data.size(); i++)
 					if (!push_back(a_data[i])) return false;
-
-				// and once after
-				if (!push_back(a_data.size())) return false;
 
 				return true;
 			}
 			template<>
 			bool pop_front<std::string>(std::string& a_data)
 			{
-				size_t l_size;
+				size_t l_size = 0;
 
 				if (!pop_front(l_size)) return false;
 
@@ -129,8 +126,6 @@ namespace affix_base {
 				for (int i = 0; i < l_size; i++)
 					if (!pop_front(a_data[i])) return false;
 
-				if (!pop_front(l_size)) return false;
-
 				return true;
 
 			}
@@ -138,15 +133,12 @@ namespace affix_base {
 			template<typename DATA_TYPE>
 			bool push_back(const std::vector<DATA_TYPE>& a_vec) {
 				
-				// STORE SIZE OF VECTOR AT FRONT IN CASE OF POP_FRONT CALL
+				// STORE SIZE OF VECTOR AT FRONT
 				if (!push_back(uint32_t(a_vec.size()))) return false;
 
 				// STORE DATA IN FRONT-FACING ORDER ALWAYS
 				for (int i = 0; i < a_vec.size(); i++)
 					if (!push_back(a_vec[i])) return false;
-
-				// STORE SIZE OF VECTOR AT END (AS WELL) IN CASE OF POP_BACK CALL
-				if (!push_back(uint32_t(a_vec.size()))) return false;
 
 				return true;
 			}
@@ -155,6 +147,7 @@ namespace affix_base {
 
 				// POP SIZE OF VECTOR FROM FRONT
 				uint32_t vec_size = 0;
+
 				if (!pop_front(vec_size)) return false;
 				a_vec.resize(vec_size);
 
@@ -162,9 +155,6 @@ namespace affix_base {
 				for (int i = 0; i < vec_size; i++) {
 					if (!pop_front(a_vec[i])) return false;
 				}
-
-				// REMOVE THE POP_BACK SIZE
-				if (!pop_front(vec_size)) return false;
 
 				return true;
 			}
