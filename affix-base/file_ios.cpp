@@ -10,12 +10,18 @@ bool files::file_write(
 	const std::vector<uint8_t>& a_bytes
 )
 {
-	std::ofstream l_ofs(a_path, std::ios::out | std::ios::binary);
+	std::ofstream l_ofs(a_path, std::ios::out | std::ios::binary | std::ios::trunc);
 
-    if (!l_ofs.is_open())
+    if (!l_ofs.is_open() || !l_ofs.good())
+    {
+        l_ofs.close();
         return false;
+    }
 
 	l_ofs.write((const char*)a_bytes.data(), a_bytes.size());
+
+    l_ofs.flush();
+
 	l_ofs.close();
 
     return true;
@@ -27,27 +33,24 @@ bool files::file_read(
 	std::vector<uint8_t>& a_bytes
 )
 {
-    std::ifstream file(a_path, std::ios::binary);
+    a_bytes.clear();
 
-    if (!file.is_open())
+    std::ifstream l_ifs(a_path, std::ios::binary | std::ios::in);
+
+    
+
+    if (!l_ifs.is_open() || !l_ifs.good())
+    {
+        l_ifs.close();
         return false;
+    }
 
-    file.unsetf(std::ios::skipws);
+    char l_char = 0;
 
-    file.seekg(0, std::ios::end);
-    std::streampos fileSize = file.tellg();
+    while (l_ifs >> l_char)
+        a_bytes.push_back((uint8_t)l_char);
 
-    // RESET HEAD
-    file.seekg(0, std::ios::beg);
-
-    // RESIZE BYTE VECTOR
-    a_bytes.reserve(fileSize);
-
-    a_bytes.insert(a_bytes.begin(),
-        std::istream_iterator<uint8_t>(file),
-        std::istream_iterator<uint8_t>());
-
-    file.close();
+    l_ifs.close();
 
     return true;
 

@@ -18,55 +18,75 @@ using std::string;
 namespace ip = asio::ip;
 using asio::error_code;
 
-struct my_serializable_struct : public affix_base::data::serializable
+class training_set
 {
-	std::string m_string = "";
-	int m_int = 0;
-	std::vector<double> m_vector = { };
+public:
+	std::vector<double> m_x;
+	std::vector<double> m_y;
+	training_set(
 
-	my_serializable_struct(
-
-	) :
-		affix_base::data::serializable(m_string, m_int, m_vector)
+	)
 	{
 
 	}
-
-	my_serializable_struct(
-		const std::string& a_string,
-		const int& a_int,
-		const std::vector<double>& a_vector
+	training_set(
+		const std::vector<double>& a_x,
+		const std::vector<double>& a_y
 	) :
-		affix_base::data::serializable(m_string, m_int, m_vector),
-		m_string(a_string),
-		m_int(a_int),
-		m_vector(a_vector)
+		m_x(a_x),
+		m_y(a_y)
 	{
 
 	}
-
+	bool serialize(
+		affix_base::data::byte_buffer& a_byte_buffer
+	) const
+	{
+		if (!a_byte_buffer.push_back(m_x))
+			return false;
+		if (!a_byte_buffer.push_back(m_y))
+			return false;
+		return true;
+	}
+	bool deserialize(
+		affix_base::data::byte_buffer& a_byte_buffer
+	)
+	{
+		if (!a_byte_buffer.pop_front(m_x))
+			return false;
+		if (!a_byte_buffer.pop_front(m_y))
+			return false;
+		return true;
+	}
 };
 
 int main(
 
 )
 {
-	using namespace affix_base::callback;
-	using namespace affix_base::threading;
-	using namespace affix_base::data;
-	namespace fs = std::filesystem;
-	using namespace affix_base::distributed_computing;
+	{
+		training_set l_training_set({ 0, 1, 2 }, { 3, 4, 5 });
 
-	affix_base::data::byte_buffer l_byte_buffer;
+		if (affix_base::files::file_write("test.bin", l_training_set))
+			std::cerr << "Successfully wrote to file" << std::endl;
 
-	my_serializable_struct l_struct("testing123", 13, { 1.2, 2.3, 3.4, 4.5 });
+	}
 
-	l_byte_buffer.push_back(l_struct);
+	std::cout << "done writing" << std::endl;
 
-	my_serializable_struct l_struct_2;
+	{
 
-	l_byte_buffer.pop_front(l_struct_2);
+		training_set l_recovered;
 
- 	return EXIT_SUCCESS;
+		if (affix_base::files::file_read("test.bin", l_recovered))
+			std::cerr << "Successfully read from file" << std::endl;
+
+		std::cout << l_recovered.m_x.size() << std::endl;
+
+	}
+
+	std::cout << "done reading" << std::endl;
+
+  	return EXIT_SUCCESS;
 
 }

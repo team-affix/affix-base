@@ -35,7 +35,12 @@ namespace affix_base {
 		public:
 			template<typename DATA_TYPE>
 			bool push_back(const DATA_TYPE& a_data) {
-				if constexpr (std::is_standard_layout<DATA_TYPE>::value)
+				if constexpr (requires{ a_data.serialize(*this); })
+				{
+					// Data type implements it's own serialize method.
+					return a_data.serialize(*this);
+				}
+				else
 				{
 					// PUSH DATA TO BACK OF STACK
 					uint8_t* l_data_begin = (uint8_t*)&a_data;
@@ -43,14 +48,15 @@ namespace affix_base {
 					m_body.insert(m_body.end(), l_data_begin, l_data_end);
 					return true;
 				}
-				else
-				{
-					return a_data.serialize(*this);
-				}
 			}
 			template<typename DATA_TYPE>
 			bool pop_front(DATA_TYPE& a_data) {
-				if constexpr (std::is_standard_layout<DATA_TYPE>::value)
+				if constexpr (requires { a_data.deserialize(*this); })
+				{
+					// Data type implements it's own deserialize method.
+					return a_data.deserialize(*this);
+				}
+				else
 				{
 					if (m_body.size() < sizeof(DATA_TYPE)) return false;
 
@@ -59,10 +65,6 @@ namespace affix_base {
 					m_body.erase(m_body.begin(), m_body.begin() + sizeof(DATA_TYPE));
 
 					return true;
-				}
-				else
-				{
-					return a_data.deserialize(*this);
 				}
 			}
 
