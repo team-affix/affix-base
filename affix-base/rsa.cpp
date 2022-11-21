@@ -23,7 +23,7 @@ using namespace affix_base;
 namespace affix_base {
     namespace cryptography {
 
-        rsa_key_pair cryptography::rsa_generate_key_pair(uint32_t a_key_size) {
+        rsa_key_pair rsa_generate_key_pair(uint32_t a_key_size) {
             AutoSeededRandomPool random;
             RSA::PrivateKey priKey;
             priKey.GenerateRandomWithKeySize(random, a_key_size);
@@ -31,7 +31,7 @@ namespace affix_base {
             return { priKey, pubKey };
         }
 
-        bool cryptography::rsa_to_base64_string(
+        bool rsa_to_base64_string(
             const CryptoPP::RSA::PrivateKey& a_private_key,
             std::string& a_string
         )
@@ -50,7 +50,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_to_base64_string(
+        bool rsa_to_base64_string(
             const CryptoPP::RSA::PublicKey& a_public_key,
             std::string& a_string
         )
@@ -69,7 +69,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_from_base64_string(
+        bool rsa_from_base64_string(
             CryptoPP::RSA::PrivateKey& a_private_key,
             const std::string& a_base_64_string
         )
@@ -89,7 +89,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_from_base64_string(
+        bool rsa_from_base64_string(
             CryptoPP::RSA::PublicKey& a_public_key,
             const std::string& a_base_64_string
         )
@@ -109,47 +109,47 @@ namespace affix_base {
             }
         }
 
-        void cryptography::rsa_export(const RSA::PrivateKey& a_private_key, const string& a_file_name) {
+        void rsa_export(const RSA::PrivateKey& a_private_key, const string& a_file_name) {
             FileSink fs(a_file_name.c_str(), true);
             a_private_key.Save(fs);
         }
 
-        void cryptography::rsa_export(const RSA::PublicKey& a_public_key, const string& a_file_name) {
+        void rsa_export(const RSA::PublicKey& a_public_key, const string& a_file_name) {
             FileSink fs(a_file_name.c_str(), true);
             a_public_key.Save(fs);
         }
 
-        void cryptography::rsa_export(const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
+        void rsa_export(const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
             VectorSink vs(a_output);
             a_private_key.Save(vs);
         }
 
-        void cryptography::rsa_export(const RSA::PublicKey& a_public_key, vector<byte>& a_output) {
+        void rsa_export(const RSA::PublicKey& a_public_key, vector<byte>& a_output) {
             VectorSink vs(a_output);
             a_public_key.Save(vs);
         }
 
-        void cryptography::rsa_import(RSA::PrivateKey& a_private_key, const string& a_file_name) {
+        void rsa_import(RSA::PrivateKey& a_private_key, const string& a_file_name) {
             FileSource fs(a_file_name.c_str(), true);
             a_private_key.Load(fs);
         }
 
-        void cryptography::rsa_import(RSA::PublicKey& a_public_key, const string& a_file_name) {
+        void rsa_import(RSA::PublicKey& a_public_key, const string& a_file_name) {
             FileSource fs(a_file_name.c_str(), true);
             a_public_key.Load(fs);
         }
 
-        void cryptography::rsa_import(RSA::PrivateKey& a_private_key, const vector<byte>& a_input) {
+        void rsa_import(RSA::PrivateKey& a_private_key, const vector<byte>& a_input) {
             VectorSource vs(a_input, true);
             a_private_key.Load(vs);
         }
 
-        void cryptography::rsa_import(RSA::PublicKey& a_public_key, const vector<byte>& a_input) {
+        void rsa_import(RSA::PublicKey& a_public_key, const vector<byte>& a_input) {
             VectorSource vs(a_input, true);
             a_public_key.Load(vs);
         }
 
-        bool cryptography::rsa_try_import(RSA::PrivateKey& a_private_key, const string& a_file_name) {
+        bool rsa_try_import(RSA::PrivateKey& a_private_key, const string& a_file_name) {
             try {
                 rsa_import(a_private_key, a_file_name);
                 AutoSeededRandomPool random;
@@ -160,7 +160,7 @@ namespace affix_base {
             }
         }
         
-        bool cryptography::rsa_try_import(RSA::PublicKey& a_public_key, const string& a_file_name) {
+        bool rsa_try_import(RSA::PublicKey& a_public_key, const string& a_file_name) {
             try {
                 rsa_import(a_public_key, a_file_name);
                 AutoSeededRandomPool random;
@@ -171,7 +171,7 @@ namespace affix_base {
             }
         }
         
-        bool cryptography::rsa_try_import(RSA::PrivateKey& a_private_key, const vector<byte>& a_input) {
+        bool rsa_try_import(RSA::PrivateKey& a_private_key, const vector<byte>& a_input) {
             try {
                 rsa_import(a_private_key, a_input);
                 AutoSeededRandomPool random;
@@ -182,7 +182,7 @@ namespace affix_base {
             }
         }
         
-        bool cryptography::rsa_try_import(RSA::PublicKey& a_public_key, const vector<byte>& a_input) {
+        bool rsa_try_import(RSA::PublicKey& a_public_key, const vector<byte>& a_input) {
             try {
                 rsa_import(a_public_key, a_input);
                 AutoSeededRandomPool random;
@@ -193,7 +193,7 @@ namespace affix_base {
             }
         }
 
-        vector<byte> cryptography::rsa_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key) {
+        vector<byte> rsa_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key) {
             AutoSeededRandomPool random;
             RSAES<OAEP<SHA256>>::Encryptor encryptor(a_public_key);
             SecByteBlock cipher(encryptor.CiphertextLength(a_input.size()));
@@ -203,7 +203,7 @@ namespace affix_base {
             return result;
         }
 
-        vector<byte> cryptography::rsa_decrypt(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {
+        vector<byte> rsa_decrypt(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {
             AutoSeededRandomPool random;
             RSAES<OAEP<SHA256>>::Decryptor decryptor(a_private_key);
             SecByteBlock plain(decryptor.MaxPlaintextLength(a_input.size()));
@@ -214,7 +214,7 @@ namespace affix_base {
             return result;
         }
 
-        vector<byte> cryptography::rsa_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key) {
+        vector<byte> rsa_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key) {
             RSAES<OAEP<SHA256>>::Encryptor encryptor(a_public_key);
             vector<vector<byte>> result;
             for (int i = 0; i < a_input.size(); i += encryptor.FixedMaxPlaintextLength()) {
@@ -227,7 +227,7 @@ namespace affix_base {
             return l_buffer.data();
         }
 
-        vector<byte> cryptography::rsa_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {
+        vector<byte> rsa_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {
             byte_buffer l_buffer(a_input);
             vector<vector<byte>> l_input;
             l_buffer.pop_front(l_input);
@@ -240,7 +240,7 @@ namespace affix_base {
             return result;
         }
 
-        void cryptography::rsa_encrypt(
+        void rsa_encrypt(
             std::istream& a_input_stream,
             std::ostream& a_output_stream,
             const CryptoPP::RSA::PublicKey a_public_key
@@ -309,7 +309,7 @@ namespace affix_base {
 
         }
 
-        vector<byte> cryptography::rsa_sign(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {
+        vector<byte> rsa_sign(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key) {
             AutoSeededRandomPool random;
             RSASS<PSS, SHA256>::Signer signer(a_private_key);
             SecByteBlock signature(signer.MaxSignatureLength());
@@ -320,13 +320,13 @@ namespace affix_base {
             return result;
         }
 
-        bool cryptography::rsa_verify(const vector<byte>& a_input, const vector<byte>& a_signature, const RSA::PublicKey& a_public_key) {
+        bool rsa_verify(const vector<byte>& a_input, const vector<byte>& a_signature, const RSA::PublicKey& a_public_key) {
             AutoSeededRandomPool random;
             RSASS<PSS, SHA256>::Verifier verifier(a_public_key);
             return verifier.VerifyMessage(a_input.data(), a_input.size(), a_signature.data(), a_signature.size());
         }
 
-        bool cryptography::rsa_try_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<byte>& a_output) {
+        bool rsa_try_encrypt(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<byte>& a_output) {
             try {
                 a_output = rsa_encrypt(a_input, a_public_key);
                 return a_output.size() > 0;
@@ -336,7 +336,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_try_decrypt(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
+        bool rsa_try_decrypt(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
             try {
                 a_output = rsa_decrypt(a_input, a_private_key);
                 return a_output.size() > 0;
@@ -346,7 +346,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_try_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<byte>& a_output) {
+        bool rsa_try_encrypt_in_chunks(const vector<byte>& a_input, const RSA::PublicKey& a_public_key, vector<byte>& a_output) {
             try {
                 a_output = rsa_encrypt_in_chunks(a_input, a_public_key);
                 return a_output.size() > 0;
@@ -356,7 +356,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_try_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
+        bool rsa_try_decrypt_in_chunks(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
             try {
                 a_output = rsa_decrypt_in_chunks(a_input, a_private_key);
                 return a_output.size() > 0;
@@ -366,7 +366,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_try_sign(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
+        bool rsa_try_sign(const vector<byte>& a_input, const RSA::PrivateKey& a_private_key, vector<byte>& a_output) {
             try {
                 a_output = rsa_sign(a_input, a_private_key);
                 return a_output.size() > 0;
@@ -376,7 +376,7 @@ namespace affix_base {
             }
         }
 
-        bool cryptography::rsa_try_verify(const vector<byte>& a_input, const vector<byte>& a_signature, const RSA::PublicKey& a_public_key, bool& a_output) {
+        bool rsa_try_verify(const vector<byte>& a_input, const vector<byte>& a_signature, const RSA::PublicKey& a_public_key, bool& a_output) {
             try {
                 a_output = rsa_verify(a_input, a_signature, a_public_key);
                 return true;

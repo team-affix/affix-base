@@ -10,7 +10,7 @@ bool files::file_write(
 	const std::vector<uint8_t>& a_bytes
 )
 {
-	std::ofstream l_ofs(a_path, std::ios::out | std::ios::binary | std::ios::trunc);
+	std::ofstream l_ofs(a_path, std::ios_base::openmode(std::ios::out | std::ios::binary | std::ios::trunc));
 
     if (!l_ofs.is_open() || !l_ofs.good())
     {
@@ -35,7 +35,7 @@ bool files::file_read(
 {
     a_bytes.clear();
 
-    std::ifstream l_ifs(a_path, std::ios::binary | std::ios::in);
+    std::ifstream l_ifs(a_path, std::ios_base::openmode(std::ios::binary | std::ios::in));
 
     
 
@@ -63,7 +63,7 @@ bool files::file_hash(
 {
     using namespace CryptoPP;
 
-    std::ifstream l_ifs(a_path, std::ios::in | std::ios::binary | std::ios::beg);
+    std::ifstream l_ifs(a_path, std::ios_base::openmode(std::ios::in | std::ios::binary | std::ios::beg));
 
     return affix_base::data::sha256_try_digest(l_ifs, a_output);
 

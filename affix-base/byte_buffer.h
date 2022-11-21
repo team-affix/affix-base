@@ -105,8 +105,7 @@ namespace affix_base {
 				}
 			}
 
-			template<>
-			bool push_back<std::string>(const std::string& a_data)
+			bool push_back(const std::string& a_data)
 			{
 				// Push the size onto the stack
 				if (!push_back(a_data.size())) return false;
@@ -116,8 +115,7 @@ namespace affix_base {
 
 				return true;
 			}
-			template<>
-			bool pop_front<std::string>(std::string& a_data)
+			bool pop_front(std::string& a_data)
 			{
 				size_t l_size = 0;
 

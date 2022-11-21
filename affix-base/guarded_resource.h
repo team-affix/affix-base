@@ -55,7 +55,7 @@ namespace affix_base
 			)
 			{
 				if (m_resource_mutex.id() != std::this_thread::get_id())
-					throw std::exception("[ GUARDED RESOURCE ] Error: unable to obtain resource as it is not owned by the current thread. ");
+					throw std::runtime_error("[ GUARDED RESOURCE ] Error: unable to obtain resource as it is not owned by the current thread. ");
 				return m_resource;
 			}
 
