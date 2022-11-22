@@ -64,29 +64,8 @@ int main(
 
 )
 {
-	{
-		training_set l_training_set({ 0, 1, 2 }, { 3, 4, 5 });
-
-		if (affix_base::files::file_write("test.bin", l_training_set))
-			std::cerr << "Successfully wrote to file" << std::endl;
-
-	}
-
-	std::cout << "done writing" << std::endl;
-
-	{
-
-		training_set l_recovered;
-
-		if (affix_base::files::file_read("test.bin", l_recovered))
-			std::cerr << "Successfully read from file" << std::endl;
-
-		std::cout << l_recovered.m_x.size() << std::endl;
-
-	}
-
-	std::cout << "done reading" << std::endl;
-
+    CryptoPP::AutoSeededRandomPool l_random;
+    std::cout << l_random.GenerateWord32() << std::endl;
   	return EXIT_SUCCESS;
 
 }
