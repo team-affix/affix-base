@@ -20,8 +20,6 @@ bool files::file_write(
 
 	l_ofs.write((const char*)a_bytes.data(), a_bytes.size());
 
-    l_ofs.flush();
-
 	l_ofs.close();
 
     return true;
