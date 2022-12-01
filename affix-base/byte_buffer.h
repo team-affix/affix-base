@@ -209,6 +209,39 @@ namespace affix_base {
 				return true;
 			}
 
+			/// <summary>
+			/// Special case for std::vector<bool>, since 'bool' has its own template specialization for std::vector.
+			/// The template specialization packs the booleans as bits, and as such, one cannot reference these bits to
+			/// populate them with values. This means that we must handle things ourselves, the manual and ugly way.
+			/// </summary>
+			/// <param name="a_vec"></param>
+			/// <returns></returns>
+			bool pop_front(std::vector<bool>& a_vec)
+			{
+				// POP SIZE OF VECTOR FROM FRONT
+				uint32_t vec_size = 0;
+
+				if (!pop_front(vec_size)) return false;
+
+				// Resize the vector to size zero.
+				a_vec.clear();
+
+				// POP ELEMENTS IN FRONT-FACING ORDER
+				for (int i = 0; i < vec_size; i++) {
+
+					// Deserialize a single boolean
+					bool l_temp_bool = false;
+					if (!pop_front(l_temp_bool)) return false;
+
+					// Push the single boolean to the back of the vector
+					a_vec.push_back(l_temp_bool);
+
+				}
+
+				return true;
+
+			}
+
 			bool push_back(const byte_buffer& a_byte_buffer)
 			{
 				return push_back(a_byte_buffer.data());

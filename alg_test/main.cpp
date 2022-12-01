@@ -64,8 +64,15 @@ int main(
 
 )
 {
-    CryptoPP::AutoSeededRandomPool l_random;
-    std::cout << l_random.GenerateWord32() << std::endl;
-  	return EXIT_SUCCESS;
+	affix_base::data::byte_buffer l_byte_buffer;
 
+	std::vector<bool> l_vec = {0, 1, 1, 1, 0};
+
+	l_byte_buffer.push_back(l_vec);
+
+	std::vector<bool> l_recovered;
+
+	l_byte_buffer.pop_front(l_recovered);
+
+  	return EXIT_SUCCESS;
 }
